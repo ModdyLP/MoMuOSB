@@ -2,6 +2,7 @@ package Events;
 
 import Modules.ChangeCommands;
 import Modules.HelpCommand;
+import Modules.Moderation;
 import Modules.StatsCommand;
 import Util.Console;
 
@@ -16,6 +17,7 @@ class RegisterCommands {
         EventListener.getInstance().registerCommand(HelpCommand.class, new HelpCommand());
         EventListener.getInstance().registerCommand(StatsCommand.class, new StatsCommand());
         EventListener.getInstance().registerCommand(ChangeCommands.class, new ChangeCommands());
+        EventListener.getInstance().registerCommand(Moderation.class, new Moderation());
 
         Console.println("All Commands("+EventListener.getInstance().getAllCommands().size()+") added to Bot");
     }

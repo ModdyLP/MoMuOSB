@@ -37,6 +37,7 @@ public class HelpCommand extends Module {
         builder.withColor(Color.CYAN);
         for (Command command : EventListener.getInstance().getAllCommands()) {
             builder.appendDesc("\nCommand:   "+BotUtils.BOT_PREFIX+command.command()+
+                                "\nAlias:        "+BotUtils.BOT_PREFIX+command.alias()+
                                "\nDescription: "+command.description()+"\n");
         }
         return builder;
