@@ -1,3 +1,7 @@
 /.idea/
 /target/
 *.properties
+*.json
+/licenseheader.txt
+/momuosb.iml
+/nb-configuration.xml

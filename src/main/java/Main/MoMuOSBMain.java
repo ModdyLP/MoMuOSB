@@ -7,6 +7,7 @@ import Modules.ChangeCommands;
 import Modules.StatsCommand;
 import Storage.ConfigDriver;
 import Util.Console;
+import Util.Language;
 
 import java.util.Date;
 
@@ -24,6 +25,8 @@ public class MoMuOSBMain {
             Console.println("Bot starting...");
             Console.println("Bot was created by ModdyLP - Niklas H. https://moddylp.de");
             ConfigDriver.getInstance().getProperty("invitepermission", "2146958591");
+            Console.println("Loading language management class...");
+            Language.getInstance();
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     shutdown();
