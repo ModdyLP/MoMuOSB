@@ -36,9 +36,9 @@ public class HelpCommand extends Module {
         builder.withTitle(":information_source: All Commands ("+EventListener.getInstance().getAllCommands().size()+") :information_source:");
         builder.withColor(Color.CYAN);
         for (Command command : EventListener.getInstance().getAllCommands()) {
-            builder.appendDesc("\nCommand:   "+BotUtils.BOT_PREFIX+command.command()+
-                                "\nAlias:        "+BotUtils.BOT_PREFIX+command.alias()+
-                               "\nDescription: "+command.description()+"\n");
+            builder.appendDesc("\nCommand:    | "+BotUtils.BOT_PREFIX+command.command()+
+                                "\nAlias:              | "+BotUtils.BOT_PREFIX+command.alias()+
+                               "\nDescription:  | "+command.description()+"\n");
         }
         return builder;
     }

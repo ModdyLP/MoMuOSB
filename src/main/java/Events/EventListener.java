@@ -43,7 +43,8 @@ public class EventListener {
                             }
                             modules.get(command).invoke(instances.get(command), event, args);
                         } else {
-                            BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.");
+                            Console.debug(Console.sendprefix+"No permission: "+event.getAuthor().getName());
+                            BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.", true);
                         }
 
                     } else if (message.startsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
@@ -53,7 +54,8 @@ public class EventListener {
                             }
                             modules.get(command).invoke(instances.get(command), event, args);
                         } else {
-                            BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.");
+                            Console.debug(Console.sendprefix+"No permission: "+event.getAuthor().getName());
+                            BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.", true);
                         }
                     }
                 }
@@ -64,7 +66,8 @@ public class EventListener {
                             Console.debug(Console.sendprefix + "Message deleted: ["+event.getMessage().getContent()+"]");
                             event.getMessage().delete();
                         } else {
-                            BotUtils.sendMessage(event.getChannel(), "The Bot has no Permission to Manage Permissions");
+                            Console.debug(Console.sendprefix+"No permission: "+event.getAuthor().getName());
+                            BotUtils.sendMessage(event.getChannel(), "The Bot has no Permission to Manage Permissions", true);
                         }
                     }
                 }
@@ -82,7 +85,7 @@ public class EventListener {
         StringBuilder serverstr = new StringBuilder();
         int count = 1;
         for (IGuild server: DiscordInit.getInstance().getDiscordClient().getGuilds()) {
-            serverstr.append("\n").append(count).append(". [").append(server.getName()).append("   ").append(server.getStringID()+"]");
+            serverstr.append("\n").append(count).append(". [").append(server.getName()).append("   ").append(server.getStringID()).append("]");
         }
         Console.println("Servers: "+serverstr);
         RegisterCommands.registerAll();

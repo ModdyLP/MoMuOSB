@@ -28,7 +28,7 @@ public class StatsCommand extends Module {
             permission = Permissions.READ_MESSAGES
     )
     public boolean stats(MessageReceivedEvent event, String[] args) {
-        BotUtils.sendEmbMessage(event.getChannel(), genbuild());
+        BotUtils.sendEmbMessage(event.getChannel(), genbuild(), false);
         return true;
     }
     private EmbedBuilder genbuild() {

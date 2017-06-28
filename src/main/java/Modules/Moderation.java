@@ -41,7 +41,7 @@ public class Moderation extends Module{
                     }
 
                 } catch (Exception ex) {
-                    BotUtils.sendMessage(event.getChannel(), "Deletion of Messages failed ("+total+"): "+ex.getMessage());
+                    BotUtils.sendMessage(event.getChannel(), "Deletion of Messages failed ("+total+"): "+ex.getMessage(), true);
                 }
             }
         }).start();
@@ -77,7 +77,7 @@ public class Moderation extends Module{
                         Console.debug(Console.sendprefix+"FDM: "+count+" of "+total);
                     }
                 } catch (Exception ex) {
-                    BotUtils.sendMessage(event.getChannel(), "Force Deletion of Messages failed ("+count+" of "+total+"): "+ex.getMessage());
+                    BotUtils.sendMessage(event.getChannel(), "Force Deletion of Messages failed ("+count+" of "+total+"): "+ex.getMessage(), true);
                 }
             }
         }).start();

@@ -30,7 +30,7 @@ public class ChangeCommands extends Module {
             DiscordInit.getInstance().getDiscordClient().changeAvatar(Image.forUrl("png", args[0]));
         } else {
             Console.error("No enought arguments");
-            BotUtils.sendMessage(event.getChannel(), "Not enought arguments: Missing Url");
+            BotUtils.sendMessage(event.getChannel(), "Not enought arguments: Missing Url", true);
         }
         return true;
     }
@@ -47,7 +47,7 @@ public class ChangeCommands extends Module {
             DiscordInit.getInstance().getDiscordClient().changePlayingText(args[0]);
         } else {
             Console.error("No enought arguments");
-            BotUtils.sendMessage(event.getChannel(), "Not enought arguments: Missing Game");
+            BotUtils.sendMessage(event.getChannel(), "Not enought arguments: Missing Game", true);
         }
         return true;
     }
@@ -63,7 +63,7 @@ public class ChangeCommands extends Module {
             DiscordInit.getInstance().getDiscordClient().changeUsername(args[0]);
         } else {
             Console.error("No enought arguments");
-            BotUtils.sendMessage(event.getChannel(), "Not enought arguments: Missing Name");
+            BotUtils.sendMessage(event.getChannel(), "Not enought arguments: Missing Name", true);
         }
         return true;
     }

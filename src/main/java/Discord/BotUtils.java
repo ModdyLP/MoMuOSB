@@ -9,6 +9,7 @@ import sx.blah.discord.handle.impl.obj.Message;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IPrivateChannel;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MessageHistory;
@@ -33,11 +34,15 @@ public class BotUtils {
                 .build();
 
     }
-    public static void sendMessage(IChannel channel, String message){
+    public static void sendMessage(IChannel channel, String message, boolean delete){
         RequestBuffer.request(() -> {
             try{
-                channel.sendMessage(message);
-                deleteMessageFromBot(channel);
+                if (channel.getModifiedPermissions(DiscordInit.getInstance().getDiscordClient().getOurUser()).contains(Permissions.SEND_MESSAGES)) {
+                    channel.sendMessage(message);
+                    deleteMessageFromBot(channel, delete);
+                } else {
+                    Console.error("Cant send Message to Server ["+channel.getGuild().getName()+"] #"+channel.getName()+", no permissions");
+                }
             } catch (DiscordException e){
                 Console.error("Message could not be sent with error: "+ e.getMessage());
             }
@@ -54,12 +59,16 @@ public class BotUtils {
         });
 
     }
-    public static void sendEmbMessage(IChannel channel, EmbedBuilder builder){
+    public static void sendEmbMessage(IChannel channel, EmbedBuilder builder, boolean delete){
         RequestBuffer.request(() -> {
             try{
-                Footer.addFooter(builder);
-                channel.sendMessage(builder.build());
-                deleteMessageFromBot(channel);
+                if (channel.getModifiedPermissions(DiscordInit.getInstance().getDiscordClient().getOurUser()).contains(Permissions.SEND_MESSAGES)) {
+                    Footer.addFooter(builder);
+                    channel.sendMessage(builder.build());
+                    deleteMessageFromBot(channel, delete);
+                } else {
+                    Console.error("Cant send Message to Server ["+channel.getGuild().getName()+"] #"+channel.getName()+", no permissions");
+                }
             } catch (DiscordException e){
                 Console.error("Message could not be sent with error: "+ e.getMessage());
             }
@@ -77,12 +86,12 @@ public class BotUtils {
         });
 
     }
-    private static void deleteMessageFromBot(IChannel channel) {
-        if (ConfigDriver.getInstance().getProperty("deleteBotAnswers", "true").equals("true")) {
+    private static void deleteMessageFromBot(IChannel channel, boolean delete) {
+        if (delete && ConfigDriver.getInstance().getProperty("deleteBotAnswers", "true").equals("true")) {
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(Integer.parseInt(ConfigDriver.getInstance().getProperty("botanswerdeletseconds", "5")) * 1000);
                         MessageHistory messages = channel.getMessageHistory(50);
                         for (IMessage message: messages) {
                             if (message.getAuthor().isBot()) {
