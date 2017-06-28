@@ -26,7 +26,6 @@ public class Moderation extends Module{
     public boolean deleteMessages(MessageReceivedEvent event, String[] args) {
         new Thread(new Runnable() {
             public void run(){
-                int count = 0;
                 int total = 0;
                 try {
                     IChannel channel = event.getChannel();
@@ -35,19 +34,14 @@ public class Moderation extends Module{
                         MessageHistory messages = channel.getMessageHistory(Integer.parseInt(args[0]));
                         total = messages.size();
                         BotUtils.bulkdeleteMessage(channel, messages);
-                        for (IMessage message: messages) {
-                            if (message.isDeleted()) {
-                                count++;
-                            }
-                        }
-                        channel.changeTopic(origintopic + " [Deletion: "+total+" of "+count+"]");
-                        Console.debug(Console.sendprefix+"FDM: "+count+" of "+total);
+                        channel.changeTopic(origintopic + " [Deletion: "+total+"]");
+                        Console.debug(Console.sendprefix+"FDM: "+total);
                         Thread.sleep(2000);
                         channel.changeTopic(origintopic);
                     }
 
                 } catch (Exception ex) {
-                    BotUtils.sendMessage(event.getChannel(), "Deletion of Messages failed ("+count+" of "+total+"): "+ex.getMessage());
+                    BotUtils.sendMessage(event.getChannel(), "Deletion of Messages failed ("+total+"): "+ex.getMessage());
                 }
             }
         }).start();
@@ -75,7 +69,7 @@ public class Moderation extends Module{
                             if (!message.isDeleted()) {
                                 BotUtils.deleteMessageOne(message);
                                 count++;
-                                channel.changeTopic(origintopic + " [Deletion: "+total+" of "+count+"]");
+                                channel.changeTopic(origintopic + " [Deletion: "+count+" of "+total+"]");
                             }
                         }
                         Thread.sleep(1000);
