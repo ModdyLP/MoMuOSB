@@ -12,6 +12,7 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -31,51 +32,67 @@ public class EventListener {
     }
     @EventSubscriber
     public void onMessageReceivedEvent(MessageReceivedEvent event) { // This method is NOT called because it doesn't have the @EventSubscriber annotation
-        try {
-            if (!event.getChannel().isPrivate()) {
-                String message = event.getMessage().getContent();
-                for (Command command : modules.keySet()) {
-                    String[] args = new String[] {};
-                    if (message.startsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase())) {
-                        if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
-                            if (!message.endsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase()) && !message.endsWith(" ")) {
-                                args = message.substring((BotUtils.BOT_PREFIX + command.command()).length() + 1).split(" ");
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    if (!event.getChannel().isPrivate()) {
+                        String message = event.getMessage().getContent();
+                        if (message.startsWith(BotUtils.BOT_PREFIX)) {
+                            Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
+                            if (ConfigDriver.getInstance().getProperty("deleteinvokes", "true").equals("true")) {
+                                if (DiscordInit.getInstance().getDiscordClient().getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
+                                    Console.debug(Console.sendprefix + "Message deleted: [" + event.getMessage().getContent() + "]");
+                                    event.getMessage().delete();
+                                } else {
+                                    Console.debug(Console.sendprefix + "No permission: " + event.getAuthor().getName());
+                                    BotUtils.sendMessage(event.getChannel(), "The Bot has no Permission to Manage Permissions", true);
+                                }
                             }
-                            modules.get(command).invoke(instances.get(command), event, args);
-                        } else {
-                            Console.debug(Console.sendprefix+"No permission: "+event.getAuthor().getName());
-                            BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.", true);
+                        }
+                        for (Command command : modules.keySet()) {
+                            String[] args = new String[]{};
+                            if (message.startsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase())) {
+                                if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
+                                    if (!message.endsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase()) && !message.endsWith(" ")) {
+                                        args = message.substring((BotUtils.BOT_PREFIX + command.command()).length() + 1).split(" ");
+                                    }
+                                    initiateCommand(args, command, event);
+                                } else {
+                                    Console.debug(Console.sendprefix + "No permission: " + event.getAuthor().getName());
+                                    BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.", true);
+                                }
+
+                            } else if (message.startsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
+                                if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
+                                    if (!message.endsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
+                                        args = message.substring((BotUtils.BOT_PREFIX + command.alias()).length() + 1).split(" ");
+                                    }
+                                    initiateCommand(args, command, event);
+                                } else {
+                                    Console.debug(Console.sendprefix + "No permission: " + event.getAuthor().getName());
+                                    BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.", true);
+                                }
+                            }
                         }
 
-                    } else if (message.startsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
-                        if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
-                            if (!message.endsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase())) {
-                                args = message.substring((BotUtils.BOT_PREFIX + command.alias()).length() + 1).split(" ");
-                            }
-                            modules.get(command).invoke(instances.get(command), event, args);
-                        } else {
-                            Console.debug(Console.sendprefix+"No permission: "+event.getAuthor().getName());
-                            BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.", true);
-                        }
                     }
+                } catch (Exception ex) {
+                    Console.error("Error on execution: " + ex.getMessage());
+                    ex.printStackTrace();
                 }
-                if (message.startsWith(BotUtils.BOT_PREFIX)) {
-                    Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
-                    if (ConfigDriver.getInstance().getProperty("deleteinvokes", "true").equals("true")) {
-                        if (DiscordInit.getInstance().getDiscordClient().getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
-                            Console.debug(Console.sendprefix + "Message deleted: ["+event.getMessage().getContent()+"]");
-                            event.getMessage().delete();
-                        } else {
-                            Console.debug(Console.sendprefix+"No permission: "+event.getAuthor().getName());
-                            BotUtils.sendMessage(event.getChannel(), "The Bot has no Permission to Manage Permissions", true);
-                        }
-                    }
-                }
-
             }
-        }catch (Exception ex) {
-            Console.error("Error on execution: "+ex.getMessage());
-            ex.printStackTrace();
+        }).start();
+    }
+    private void initiateCommand(String[] args, Command command, MessageReceivedEvent event) {
+        try {
+            if (args.length == command.arguments().length) {
+                modules.get(command).invoke(instances.get(command), event, args);
+            } else {
+                Console.debug(Console.sendprefix + "Not enought arguments");
+                BotUtils.sendMessage(event.getChannel(), "You have not provided all arguments: " + Arrays.toString(command.arguments()), true);
+            }
+        } catch (Exception ex) {
+            Console.error("Error occured on Command Exceution: "+ex.getMessage());
         }
     }
     @EventSubscriber

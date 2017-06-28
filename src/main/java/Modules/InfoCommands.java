@@ -6,32 +6,64 @@ import Events.Command;
 import Events.EventListener;
 import Events.Module;
 import Main.MoMuOSBMain;
+import Storage.ConfigDriver;
 import Util.Footer;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.util.BotInviteBuilder;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
 import java.sql.Date;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class StatsCommand extends Module {
-    public static Module instance;
+public class InfoCommands extends Module {
+
+    @Command(
+            command = "help",
+            description = "Display the help",
+            alias = "h",
+            arguments = {},
+            permission = Permissions.READ_MESSAGES
+    )
+    public boolean help(MessageReceivedEvent event, String[] args) {
+        BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), genbuildHelp());
+        return true;
+    }
+
+    @Command(
+            command = "invitebot",
+            description = "Invites the bot",
+            alias = "ib",
+            arguments = {},
+            permission = Permissions.ADMINISTRATOR
+    )
+    public boolean inviteBot(MessageReceivedEvent event, String[] args) {
+        EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
+        BotInviteBuilder builder = new BotInviteBuilder(DiscordInit.getInstance().getDiscordClient()).withPermissions(permissions);
+        BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build());
+        return true;
+    }
 
     @Command(
             command = "stats",
             description = "Display the stats",
             alias = "st",
+            arguments = {},
             permission = Permissions.READ_MESSAGES
     )
     public boolean stats(MessageReceivedEvent event, String[] args) {
-        BotUtils.sendEmbMessage(event.getChannel(), genbuild(), false);
+        BotUtils.sendEmbMessage(event.getChannel(), genbuildStats(), false);
         return true;
     }
-    private EmbedBuilder genbuild() {
+
+    private EmbedBuilder genbuildStats() {
         Date now = new Date(System.currentTimeMillis());
         long diffInSeconds = (now.getTime() - MoMuOSBMain.starttime.getTime()) / 1000;
 
@@ -62,4 +94,18 @@ public class StatsCommand extends Module {
         builder.appendDesc("\nCommands: "+ EventListener.getInstance().getAllCommands().size());
         return builder;
     }
+
+    private EmbedBuilder genbuildHelp() {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.withTitle(":information_source: All Commands ("+EventListener.getInstance().getAllCommands().size()+") :information_source:");
+        builder.withColor(Color.CYAN);
+        for (Command command : EventListener.getInstance().getAllCommands()) {
+            builder.appendDesc("\nCommand:    | "+BotUtils.BOT_PREFIX+command.command()+
+                                "\nAlias:              | "+BotUtils.BOT_PREFIX+command.alias()+
+                                "\nArguments:   | "+ Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
+                               "\nDescription:  | "+command.description()+"\n");
+        }
+        return builder;
+    }
+
 }
