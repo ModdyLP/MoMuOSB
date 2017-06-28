@@ -5,6 +5,7 @@ import Events.EventListener;
 import Modules.HelpCommand;
 import Modules.ChangeCommands;
 import Modules.StatsCommand;
+import Storage.ConfigDriver;
 import Util.Console;
 
 import java.util.Date;
@@ -22,17 +23,13 @@ public class MoMuOSBMain {
         try {
             Console.println("Bot starting...");
             Console.println("Bot was created by ModdyLP - Niklas H. https://moddylp.de");
+            ConfigDriver.getInstance().getProperty("invitepermission", "2146958591");
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     shutdown();
                 }
             });
             DiscordInit.getInstance().init();
-
-            //register commands
-            EventListener.getInstance().registerCommand(HelpCommand.class, new HelpCommand());
-            EventListener.getInstance().registerCommand(StatsCommand.class, new StatsCommand());
-            EventListener.getInstance().registerCommand(ChangeCommands.class, new ChangeCommands());
 
         } catch (Exception ex) {
             Console.error(ex.getMessage());

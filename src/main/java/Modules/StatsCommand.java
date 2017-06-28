@@ -3,6 +3,7 @@ package Modules;
 import Discord.BotUtils;
 import Discord.DiscordInit;
 import Events.Command;
+import Events.EventListener;
 import Events.Module;
 import Main.MoMuOSBMain;
 import Util.Footer;
@@ -27,10 +28,10 @@ public class StatsCommand extends Module {
             permission = Permissions.READ_MESSAGES
     )
     public boolean stats(MessageReceivedEvent event, String[] args) {
-        BotUtils.sendEmbMessage(event.getChannel(), genbuild().build());
+        BotUtils.sendEmbMessage(event.getChannel(), genbuild());
         return true;
     }
-    public EmbedBuilder genbuild() {
+    private EmbedBuilder genbuild() {
         Date now = new Date(System.currentTimeMillis());
         long diffInSeconds = (now.getTime() - MoMuOSBMain.starttime.getTime()) / 1000;
 
@@ -58,7 +59,7 @@ public class StatsCommand extends Module {
                 diff[3],
                 diff[3] > 1 ? "s" : ""));
         builder.appendDesc("\nBotOwner: "+ DiscordInit.getInstance().getDiscordClient().getApplicationOwner().getName());
-        Footer.addFooter(builder);
+        builder.appendDesc("\nCommands: "+ EventListener.getInstance().getAllCommands().size());
         return builder;
     }
 }

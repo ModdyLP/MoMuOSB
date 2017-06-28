@@ -27,19 +27,18 @@ public class HelpCommand extends Module {
             permission = Permissions.READ_MESSAGES
     )
     public boolean help(MessageReceivedEvent event, String[] args) {
-        BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), genbuild().build());
+        BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), genbuild());
         return true;
     }
 
-    public EmbedBuilder genbuild() {
+    private EmbedBuilder genbuild() {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.withTitle(":information_source: All Commands :information_source:");
+        builder.withTitle(":information_source: All Commands ("+EventListener.getInstance().getAllCommands().size()+") :information_source:");
         builder.withColor(Color.CYAN);
         for (Command command : EventListener.getInstance().getAllCommands()) {
             builder.appendDesc("\nCommand:   "+BotUtils.BOT_PREFIX+command.command()+
                                "\nDescription: "+command.description()+"\n");
         }
-        Footer.addFooter(builder);
         return builder;
     }
 

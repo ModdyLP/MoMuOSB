@@ -58,14 +58,17 @@ public class EventListener {
                         }
                     }
                 }
-                if (ConfigDriver.getInstance().getProperty("deleteinvokes", "true").equals("true")) {
-                    if (DiscordInit.getInstance().getDiscordClient().getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
-                        Console.debug(Console.sendprefix + "Message deleted");
-                        event.getMessage().delete();
-                    } else {
-                        BotUtils.sendMessage(event.getChannel(), "The Bot has no Permission to Manage Permissions");
+                if (message.startsWith(BotUtils.BOT_PREFIX)) {
+                    if (ConfigDriver.getInstance().getProperty("deleteinvokes", "true").equals("true")) {
+                        if (DiscordInit.getInstance().getDiscordClient().getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
+                            Console.debug(Console.sendprefix + "Message deleted: ["+event.getMessage().getContent()+"]");
+                            event.getMessage().delete();
+                        } else {
+                            BotUtils.sendMessage(event.getChannel(), "The Bot has no Permission to Manage Permissions");
+                        }
                     }
                 }
+
             }
         }catch (Exception ex) {
             Console.error("Error on execution: "+ex.getMessage());
@@ -77,12 +80,15 @@ public class EventListener {
         Console.println("Bot is ready");
         Console.println("Shards: "+DiscordInit.getInstance().getDiscordClient().getShardCount());
         StringBuilder serverstr = new StringBuilder();
+        int count = 1;
         for (IGuild server: DiscordInit.getInstance().getDiscordClient().getGuilds()) {
-            serverstr.append("\n["+server.getName()).append("   ").append(server.getStringID()+"]");
+            serverstr.append("\n").append(count).append(". [").append(server.getName()).append("   ").append(server.getStringID()+"]");
         }
         Console.println("Servers: "+serverstr);
+        RegisterCommands.registerAll();
+        Console.println("Bot Start completed");
     }
-    public void registerCommand(Class module, Module instance) {
+    void registerCommand(Class module, Module instance) {
         HashMap<Command, Method> annotations = GetAnnotation.getAnnotation(module);
         for (Command anno : annotations.keySet()) {
             modules.put(anno, annotations.get(anno));

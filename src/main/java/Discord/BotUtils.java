@@ -2,12 +2,13 @@ package Discord;
 
 import Storage.ConfigDriver;
 import Util.Console;
+import Util.Footer;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IPrivateChannel;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.RequestBuffer;
 
 /**
@@ -47,20 +48,22 @@ public class BotUtils {
         });
 
     }
-    public static void sendEmbMessage(IChannel channel, EmbedObject message){
+    public static void sendEmbMessage(IChannel channel, EmbedBuilder builder){
         RequestBuffer.request(() -> {
             try{
-                channel.sendMessage(message);
+                Footer.addFooter(builder);
+                channel.sendMessage(builder.build());
             } catch (DiscordException e){
                 Console.error("Message could not be sent with error: "+ e.getMessage());
             }
         });
 
     }
-    public static void sendPrivEmbMessage(IPrivateChannel channel, EmbedObject message){
+    public static void sendPrivEmbMessage(IPrivateChannel channel, EmbedBuilder builder){
         RequestBuffer.request(() -> {
             try{
-                channel.sendMessage(message);
+                Footer.addFooter(builder);
+                channel.sendMessage(builder.build());
             } catch (DiscordException e){
                 Console.error("Message could not be sent with error: "+ e.getMessage());
             }

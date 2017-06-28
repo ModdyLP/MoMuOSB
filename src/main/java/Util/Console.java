@@ -9,21 +9,21 @@ import Storage.ConfigDriver;
 public class Console {
 
     private static String prefix = "[MoMuOSB]";
-    private static String debugprefix = "[DEBUG]";
-    private static String errorprefix = "[ERROR]";
-    private static String infoprefix = "[INFO]";
     public static String recievedprefix = "[R]";
     public static String sendprefix = "[S]";
 
     public static void debug(String message) {
         if (ConfigDriver.getInstance().getProperty("debug", "false").equals("true")) {
+            String debugprefix = "[DEBUG]";
             System.out.println(prefix + debugprefix + message);
         }
     }
     public static void error(String message) {
+        String errorprefix = "[ERROR]";
         System.out.println(prefix + errorprefix + message);
     }
     public static void println(String message) {
+        String infoprefix = "[INFO]";
         System.out.println(prefix + infoprefix + message);
     }
 }
