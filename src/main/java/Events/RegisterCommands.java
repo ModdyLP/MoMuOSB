@@ -1,9 +1,8 @@
 package Events;
 
 import Modules.ChangeCommands;
-import Modules.HelpCommand;
+import Modules.InfoCommands;
 import Modules.Moderation;
-import Modules.StatsCommand;
 import Util.Console;
 
 /**
@@ -14,8 +13,7 @@ class RegisterCommands {
     static void registerAll() {
         Console.println("Command scanning...");
         //register commands
-        EventListener.getInstance().registerCommand(HelpCommand.class, new HelpCommand());
-        EventListener.getInstance().registerCommand(StatsCommand.class, new StatsCommand());
+        EventListener.getInstance().registerCommand(InfoCommands.class, new InfoCommands());
         EventListener.getInstance().registerCommand(ChangeCommands.class, new ChangeCommands());
         EventListener.getInstance().registerCommand(Moderation.class, new Moderation());
 

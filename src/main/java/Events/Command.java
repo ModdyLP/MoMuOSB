@@ -12,6 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
     String command();
+    String[] arguments();
     String description();
     String alias();
     Permissions permission();

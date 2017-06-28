@@ -21,6 +21,7 @@ public class Moderation extends Module{
             command = "deletemessages",
             description = "Deletion of Message Amount",
             alias = "dm",
+            arguments = {"Count"},
             permission = Permissions.MANAGE_MESSAGES
     )
     public boolean deleteMessages(MessageReceivedEvent event, String[] args) {
@@ -30,15 +31,19 @@ public class Moderation extends Module{
                 try {
                     IChannel channel = event.getChannel();
                     String origintopic = channel.getTopic();
-                    if (args.length > 0) {
                         MessageHistory messages = channel.getMessageHistory(Integer.parseInt(args[0]));
+                        if (messages.getLatestMessage().getLongID() == event.getMessage().getLongID()) {
+                            while (!event.getMessage().isDeleted()) {
+                                Thread.sleep(200);
+                            }
+                            messages = channel.getMessageHistory(Integer.parseInt(args[0]));
+                        }
                         total = messages.size();
                         BotUtils.bulkdeleteMessage(channel, messages);
                         channel.changeTopic(origintopic + " [Deletion: "+total+"]");
-                        Console.debug(Console.sendprefix+"FDM: "+total);
+                        Console.debug(Console.sendprefix+"DM: "+total);
                         Thread.sleep(2000);
                         channel.changeTopic(origintopic);
-                    }
 
                 } catch (Exception ex) {
                     BotUtils.sendMessage(event.getChannel(), "Deletion of Messages failed ("+total+"): "+ex.getMessage(), true);
@@ -52,6 +57,7 @@ public class Moderation extends Module{
             command = "forcedeletemessages",
             description = "Deletion of Message Amount",
             alias = "fdm",
+            arguments = {"Count"},
             permission = Permissions.MANAGE_MESSAGES
     )
     public boolean forcedeleteMessages(MessageReceivedEvent event, String[] args) {
@@ -62,8 +68,13 @@ public class Moderation extends Module{
                 try {
                     IChannel channel = event.getChannel();
                     String origintopic = channel.getTopic();
-                    if (args.length > 0) {
                         MessageHistory messages = channel.getMessageHistory(Integer.parseInt(args[0]));
+                    if (messages.getLatestMessage().getLongID() == event.getMessage().getLongID()) {
+                        while (!event.getMessage().isDeleted()) {
+                            Thread.sleep(200);
+                        }
+                        messages = channel.getMessageHistory(Integer.parseInt(args[0]));
+                    }
                         total = messages.size();
                         for (IMessage message: messages) {
                             if (!message.isDeleted()) {
@@ -75,7 +86,6 @@ public class Moderation extends Module{
                         Thread.sleep(1000);
                         channel.changeTopic(origintopic);
                         Console.debug(Console.sendprefix+"FDM: "+count+" of "+total);
-                    }
                 } catch (Exception ex) {
                     BotUtils.sendMessage(event.getChannel(), "Force Deletion of Messages failed ("+count+" of "+total+"): "+ex.getMessage(), true);
                 }
