@@ -34,7 +34,6 @@ public class EventListener {
         try {
             if (!event.getChannel().isPrivate()) {
                 String message = event.getMessage().getContent();
-                Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
                 for (Command command : modules.keySet()) {
                     String[] args = new String[] {};
                     if (message.startsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase())) {
@@ -59,6 +58,7 @@ public class EventListener {
                     }
                 }
                 if (message.startsWith(BotUtils.BOT_PREFIX)) {
+                    Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
                     if (ConfigDriver.getInstance().getProperty("deleteinvokes", "true").equals("true")) {
                         if (DiscordInit.getInstance().getDiscordClient().getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
                             Console.debug(Console.sendprefix + "Message deleted: ["+event.getMessage().getContent()+"]");

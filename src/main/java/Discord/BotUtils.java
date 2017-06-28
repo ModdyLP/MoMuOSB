@@ -5,11 +5,13 @@ import Util.Console;
 import Util.Footer;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.impl.obj.Message;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IPrivateChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.EmbedBuilder;
+import sx.blah.discord.util.MessageHistory;
 import sx.blah.discord.util.RequestBuffer;
 
 import java.util.List;
@@ -35,6 +37,7 @@ public class BotUtils {
         RequestBuffer.request(() -> {
             try{
                 channel.sendMessage(message);
+                deleteMessageFromBot(channel);
             } catch (DiscordException e){
                 Console.error("Message could not be sent with error: "+ e.getMessage());
             }
@@ -56,6 +59,7 @@ public class BotUtils {
             try{
                 Footer.addFooter(builder);
                 channel.sendMessage(builder.build());
+                deleteMessageFromBot(channel);
             } catch (DiscordException e){
                 Console.error("Message could not be sent with error: "+ e.getMessage());
             }
@@ -73,6 +77,27 @@ public class BotUtils {
         });
 
     }
+    private static void deleteMessageFromBot(IChannel channel) {
+        if (ConfigDriver.getInstance().getProperty("deleteBotAnswers", "true").equals("true")) {
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        MessageHistory messages = channel.getMessageHistory(50);
+                        for (IMessage message: messages) {
+                            if (message.getAuthor().isBot()) {
+                                message.delete();
+                                break;
+                            }
+                        }
+                    } catch (Exception ex) {
+                        Console.error("Error occured: "+ex.getMessage());
+                    }
+                }
+            }).start();
+        }
+    }
+
     public static void deleteMessageOne(IMessage message) {
         RequestBuffer.request(() -> {
             try {
