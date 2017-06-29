@@ -139,6 +139,10 @@ public class BotUtils implements Fast{
         }
     }
 
+    /**
+     * Delete One message
+     * @param message message
+     */
     public static void deleteMessageOne(IMessage message) {
         RequestBuffer.request(() -> {
             try {
@@ -148,6 +152,12 @@ public class BotUtils implements Fast{
             }
         });
     }
+
+    /**
+     * Deletes a List of messages
+     * @param channel channel
+     * @param messages messages
+     */
     public static void bulkdeleteMessage(IChannel channel, List<IMessage> messages) {
         RequestBuffer.request(() -> {
             try {

@@ -14,6 +14,7 @@ import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 
@@ -37,7 +38,9 @@ public class InfoCommands extends Module implements Fast {
             permission = Permissions.READ_MESSAGES
     )
     public boolean help(MessageReceivedEvent event, String[] args) {
-        BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), genbuildHelp());
+        for (EmbedBuilder builder: genbuildHelp()) {
+            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
+        }
         return true;
     }
 
@@ -92,26 +95,37 @@ public class InfoCommands extends Module implements Fast {
         EmbedBuilder builder = new EmbedBuilder();
         builder.withTitle(":information_source: "+LANG.getTranslation("stats_title")+" :information_source:");
         builder.withColor(Color.CYAN);
-        builder.withDescription(LANG.getTranslation("stats_servercount")+": "+ INIT.BOT.getGuilds().size());
-        builder.appendDesc("\n"+LANG.getTranslation("stats_shards")+": "+ INIT.BOT.getShardCount());
-        builder.appendDesc("\n"+LANG.getTranslation("stats_user")+": "+ INIT.BOT.getUsers().size());
-        builder.appendDesc("\n"+LANG.getTranslation("stats_uptime")+": "+ Utils.calculateAndFormatTimeDiff(MoMuOSBMain.starttime, now));
-        builder.appendDesc("\n"+LANG.getTranslation("stats_owner")+": "+ INIT.BOT.getApplicationOwner().getName());
-        builder.appendDesc("\n"+LANG.getTranslation("stats_commands")+": "+ EVENT.getAllCommands().size());
+        String stringBuilder = LANG.getTranslation("stats_servercount") + ": " + INIT.BOT.getGuilds().size() +
+                "\n" + LANG.getTranslation("stats_shards") + ": " + INIT.BOT.getShardCount() +
+                "\n" + LANG.getTranslation("stats_user") + ": " + INIT.BOT.getUsers().size() +
+                "\n" + LANG.getTranslation("stats_uptime") + ": " + Utils.calculateAndFormatTimeDiff(MoMuOSBMain.starttime, now) +
+                "\n" + LANG.getTranslation("stats_owner") + ": " + INIT.BOT.getApplicationOwner().getName() +
+                "\n" + LANG.getTranslation("stats_commands") + ": " + EVENT.getAllCommands().size();
+
+        builder.appendField("", stringBuilder, false);
         return builder;
     }
 
-    private EmbedBuilder genbuildHelp() {
+    private ArrayList<EmbedBuilder> genbuildHelp() {
+        ArrayList<EmbedBuilder> builders = new ArrayList<>();
+        int page = 1;
         EmbedBuilder builder = new EmbedBuilder();
-        builder.withTitle(":information_source: "+ LANG.getTranslation("help_title")+" ("+EVENT.getAllCommands().size()+") :information_source:");
-        builder.withColor(Color.CYAN);
+        builders.add(page-1, builder);
+        builders.get(page-1).withTitle(":information_source: "+ LANG.getTranslation("help_title")+" ("+EVENT.getAllCommands().size()+") Page: "+page+" :information_source:");
+        builders.get(page-1).withColor(Color.CYAN);
         for (Command command : EVENT.getAllCommands()) {
-            builder.appendDesc("\n"+LANG.getTranslation("help_command")+"    | "+BotUtils.BOT_PREFIX+command.command()+
-                                "\n"+LANG.getTranslation("help_alias")+":              | "+BotUtils.BOT_PREFIX+command.alias()+
+            String string = "\n"+LANG.getTranslation("help_alias")+":              | "+BotUtils.BOT_PREFIX+command.alias()+
                                 "\n"+LANG.getTranslation("help_arguments")+":   | "+ Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
-                                "\n"+LANG.getTranslation("help_description")+":  | "+command.description()+"\n");
+                                "\n"+LANG.getTranslation("help_description")+":  | "+command.description()+"\n";
+            builders.get(page-1).appendField(LANG.getTranslation("help_command")+"    | "+BotUtils.BOT_PREFIX+command.command(), string, false);
+            if (builders.get(page-1).getFieldCount() ==  EmbedBuilder.FIELD_COUNT_LIMIT) {
+                EmbedBuilder buildertemp = new EmbedBuilder();
+                builders.add(page-1, buildertemp);
+                page++;
+            }
         }
-        return builder;
+
+        return builders;
     }
 
 }
