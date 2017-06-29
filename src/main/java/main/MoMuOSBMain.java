@@ -27,10 +27,10 @@ public class MoMuOSBMain implements Fast{
             LANG.setDefaultLanguage();
             Console.println("Language loading complete!");
             Runtime.getRuntime().addShutdownHook(new Thread() {
-                public void run() {
-                    shutdown();
-                }
-            });
+                    public void run() {
+                        shutdown();
+                    }
+                });
             DiscordInit.getInstance().init();
 
         } catch (Exception ex) {

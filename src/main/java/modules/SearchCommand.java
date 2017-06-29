@@ -53,7 +53,7 @@ public class SearchCommand extends Module{
                 links.put(event.getGuild(), linkcache);
                 BotUtils.sendMessage(event.getChannel(), links.get(event.getGuild()).get(searchmarker.get(event.getGuild())), false);
             } else {
-                BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage("Search Engine Unknown"), true);
+                BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.getTranslation("engine_unknown")), true);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -71,7 +71,7 @@ public class SearchCommand extends Module{
         if (links.get(event.getGuild()).size() > searchmarker.get(event.getGuild())) {
             BotUtils.sendMessage(event.getChannel(), links.get(event.getGuild()).get(searchmarker.get(event.getGuild())), false);
         } else {
-            BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage("End reached"), true);
+            BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.getTranslation("results_end")), true);
             links.remove(event.getGuild());
             searchmarker.remove(event.getGuild());
         }
@@ -84,7 +84,7 @@ public class SearchCommand extends Module{
             permission = Permissions.EMBED_LINKS
     )
     public void clearImages(MessageReceivedEvent event, String[] args) {
-        BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage("Cleared"), true);
+        BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.getTranslation("results_cleared")), true);
         links.remove(event.getGuild());
         searchmarker.remove(event.getGuild());
     }

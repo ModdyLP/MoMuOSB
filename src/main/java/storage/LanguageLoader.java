@@ -58,25 +58,25 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "commonmessage_error", "There was an error! Error: {1}");
         DRIVER.setProperty(DEF_LANG, "annotation_error", "Invalid Annotation in Module {1} Ex: {2}");
         DRIVER.setProperty(DEF_LANG, "token_error", "Please provide a token inside of the config.yml");
-        DRIVER.setProperty(DEF_LANG, "execution_error", "Error occured on Command Exceution: {1}");
+        DRIVER.setProperty(DEF_LANG, "execution_error", "Error occurred on Command Execution: {1}");
 
         DRIVER.setProperty(DEF_LANG, "notsend_error", "Message could not be sent! Error: {1}");
         DRIVER.setProperty(DEF_LANG, "notdeleted_error", "Message could not be deleted! Error: {1}");
-        DRIVER.setProperty(DEF_LANG, "notsendpermission_error", "Message could not be send! The Bot has not enought Permissions for [{1}] - #{2} Error: {1}");
+        DRIVER.setProperty(DEF_LANG, "notsendpermission_error", "Message could not be send! The Bot has not enough Permissions for [{1}] - #{2} Error: {1}");
         DRIVER.setProperty(DEF_LANG, "private_error", "You can not use commands in direct messages");
         DRIVER.setProperty(DEF_LANG, "nopermissions_error", "You have no Permission to use this command.");
-        DRIVER.setProperty(DEF_LANG, "nomanagepermission_error", "The Bot has no Permission to Manage Permissions");
-        DRIVER.setProperty(DEF_LANG, "tofewarguments_error", "You have provieded to few arguments. {1} of {2}");
-        DRIVER.setProperty(DEF_LANG, "tomanyarguments_error", "You have provieded to many arguments. {1} of {2}");
+        DRIVER.setProperty(DEF_LANG, "nomanagepermission_error", "The Bot has no Permission to Manage Messages");
+        DRIVER.setProperty(DEF_LANG, "tofewarguments_error", "You have provided to few arguments. {1} of {2}");
+        DRIVER.setProperty(DEF_LANG, "tomanyarguments_error", "You have provided to many arguments. {1} of {2}");
         DRIVER.setProperty(DEF_LANG, "botowner_error", "This command can only be used from Bot Owner.");
         DRIVER.setProperty(DEF_LANG, "deletion_error", "Deletion of Messages failed ({1} of {2}) Error: {3}");
 
         //Infos
-        DRIVER.setProperty(DEF_LANG, "login_info", "Bot is logging in. Please wait until its ready...");
+        DRIVER.setProperty(DEF_LANG, "login_info", "Bot sign into the server. Please wait until the Bot is ready...");
 
         //Stats Command
         DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
-        DRIVER.setProperty(DEF_LANG, "stats_servercount", "Servercount");
+        DRIVER.setProperty(DEF_LANG, "stats_servercount", "Server Count");
         DRIVER.setProperty(DEF_LANG, "stats_shards", "Shards");
         DRIVER.setProperty(DEF_LANG, "stats_owner", "Bot Owner");
         DRIVER.setProperty(DEF_LANG, "stats_user", "Users");
@@ -92,6 +92,11 @@ public class LanguageLoader implements Fast{
 
         //Deletion
         DRIVER.setProperty(DEF_LANG, "del_topic", "Deletion {1} of {2}");
+
+        //Search
+        DRIVER.setProperty(DEF_LANG, "engine_unknown", "The Search Engine is unknown!");
+        DRIVER.setProperty(DEF_LANG, "results_end", "You reached the end of results.");
+        DRIVER.setProperty(DEF_LANG, "results_cleared", "The results were cleared.");
 
 
     }
