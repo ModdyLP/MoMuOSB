@@ -173,5 +173,23 @@ public class FileDriver {
 
     }
 
+    /**
+     * Removes A property in a specific file
+     * @param filename filename
+     * @param option option
+     */
+    public void removeProperty(String filename, String option) {
+        try {
+            loadJson();
+            if (jsons.get(filename).containsKey(option)) {
+                jsons.get(filename).remove(option);
+            }
+            saveJson();
+        } catch (Exception ex) {
+            Console.error("Can not remove Property: ");
+            ex.printStackTrace();
+        }
+    }
+
 
 }

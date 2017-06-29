@@ -1,9 +1,12 @@
 package util;
 
+import com.sun.jna.StringArray;
 import events.Command;
 import main.Fast;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 
 /**
@@ -23,8 +26,16 @@ public class GetAnnotation implements Fast{
                 for (Method method : methods) {
                     Command annotation = method.getAnnotation(Command.class);
                     if (annotation != null) {
-                        Console.debug("Method added as Command: " + method.getName());
-                        allannotation.put(annotation, method);
+                        if (method.getParameters().length == 2) {
+                            if (method.getParameters()[0].getParameterizedType().equals(MessageReceivedEvent.class) && method.getParameters()[1].getParameterizedType().equals(String[].class)) {
+                                Console.debug("Method added as Command: " + method.getName());
+                                allannotation.put(annotation, method);
+                            } else {
+                                Console.error("Method has no valid Parameters: "+method.getName());
+                            }
+                        } else {
+                            Console.error("Method has no valid Parameters Count: "+method.getName());
+                        }
                     }
                 }
         } catch (Exception ex) {
