@@ -10,7 +10,7 @@ import util.Console;
 public class LanguageLoader implements Fast{
 
     public String LANG;
-    private String DEF_LANG = "lang_en.yml";
+    private String DEF_LANG = "lang_en.json";
     public String ERROR = ":warning: ";
 
     private static LanguageLoader instance;
@@ -32,7 +32,7 @@ public class LanguageLoader implements Fast{
         if (DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")) {
             LANG = DEF_LANG;
         } else {
-            LANG = "lang_"+ DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")+".yml";
+            LANG = "lang_"+ DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")+".json";
             DRIVER.createNewFile(LANG);
         }
         DRIVER.createNewFile(DEF_LANG);

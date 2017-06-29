@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class FileDriver {
 
     //FILEDRIVE IS NOT TRANSLATED - CAUSES ERRORS BECAUSE LANGUAGE IS NOT LOADED
-    public String CONFIG = "config.yml";
+    public String CONFIG = "config.json";
 
     private static FileDriver instance;
     private static HashMap<String, File> files = new HashMap<>();
