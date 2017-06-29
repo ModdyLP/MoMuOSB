@@ -1,9 +1,9 @@
-package Main;
+package main;
 
-import Discord.DiscordInit;
-import Events.EventListener;
-import Storage.FileDriver;
-import Storage.LanguageLoader;
+import discord.DiscordInit;
+import events.EventListener;
+import storage.FileDriver;
+import storage.LanguageLoader;
 
 /**
  * Created by N.Hartmann on 29.06.2017.

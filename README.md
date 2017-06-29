@@ -1,5 +1,5 @@
 # MoMuOSB
-Multi OS Discord Bot
+Multi OS discord Bot
 
 Build with Maven
 Requirment: Java 1.8

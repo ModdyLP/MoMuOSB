@@ -1,6 +1,6 @@
-package Storage;
+package storage;
 
-import Util.Console;
+import util.Console;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 

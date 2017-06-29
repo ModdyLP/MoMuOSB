@@ -1,7 +1,7 @@
-package Main;
+package main;
 
-import Discord.DiscordInit;
-import Util.Console;
+import discord.DiscordInit;
+import util.Console;
 
 import java.sql.Date;
 
@@ -14,7 +14,7 @@ public class MoMuOSBMain implements Fast{
     public static Date starttime = new Date(System.currentTimeMillis());
 
     /**
-     * Main Method
+     * main Method
      * @param args Start Argumente
      */
     public static void main(String[] args) {

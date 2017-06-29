@@ -1,9 +1,9 @@
-package Events;
+package events;
 
-import Discord.BotUtils;
-import Main.Fast;
-import Util.Console;
-import Util.GetAnnotation;
+import discord.BotUtils;
+import main.Fast;
+import util.Console;
+import util.GetAnnotation;
 import org.tritonus.share.ArraySet;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;

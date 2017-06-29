@@ -1,10 +1,10 @@
-package Events;
+package events;
 
-import Main.Fast;
-import Modules.ChangeCommands;
-import Modules.InfoCommands;
-import Modules.Moderation;
-import Util.Console;
+import main.Fast;
+import modules.ChangeCommands;
+import modules.InfoCommands;
+import modules.Moderation;
+import util.Console;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
