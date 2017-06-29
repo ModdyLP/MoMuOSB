@@ -1,10 +1,10 @@
 package Events;
 
 import Discord.BotUtils;
-import Discord.DiscordInit;
-import Storage.ConfigDriver;
+import Main.Fast;
 import Util.Console;
 import Util.GetAnnotation;
+import org.tritonus.share.ArraySet;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -12,7 +12,6 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -20,104 +19,167 @@ import java.util.Set;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class EventListener {
+public class EventListener implements Fast{
     private HashMap<Command, Method> modules = new HashMap<>();
     private HashMap<Command, Module> instances = new HashMap<>();
     private static EventListener instance;
+
+    /**
+     * Get Instance
+     * @return Class Instance
+     */
     public static EventListener getInstance() {
         if (instance == null) {
             instance = new EventListener();
         }
         return instance;
     }
+
+    /**
+     * If Bot recieves any Message
+     * @param event The Event
+     */
     @EventSubscriber
     public void onMessageReceivedEvent(MessageReceivedEvent event) { // This method is NOT called because it doesn't have the @EventSubscriber annotation
         new Thread(new Runnable() {
             public void run() {
                 try {
+                    //Check if Channel is Private (DM)
                     if (!event.getChannel().isPrivate()) {
                         String message = event.getMessage().getContent();
+                        //Check if Message contains Prefix
                         if (message.startsWith(BotUtils.BOT_PREFIX)) {
                             Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
-                            if (ConfigDriver.getInstance().getProperty("deleteinvokes", "true").equals("true")) {
-                                if (DiscordInit.getInstance().getDiscordClient().getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
+                            //Check if Invoke Messages should be deleted
+                            if (DRIVER.getProperty(DRIVER.CONFIG,"deleteinvokes", true).equals(true)) {
+                                if (INIT.BOT.getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
                                     Console.debug(Console.sendprefix + "Message deleted: [" + event.getMessage().getContent() + "]");
                                     event.getMessage().delete();
                                 } else {
-                                    Console.debug(Console.sendprefix + "No permission: " + event.getAuthor().getName());
-                                    BotUtils.sendMessage(event.getChannel(), "The Bot has no Permission to Manage Permissions", true);
+                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("nomanagepermission_error"), true);
                                 }
                             }
                         }
+                        //Iterate commands
                         for (Command command : modules.keySet()) {
                             String[] args = new String[]{};
+                            //Check each command if the command was called
                             if (message.startsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase())) {
+                                //Check Permissions
                                 if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
                                     if (!message.endsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase()) && !message.endsWith(" ")) {
                                         args = message.substring((BotUtils.BOT_PREFIX + command.command()).length() + 1).split(" ");
                                     }
+                                    //Execute Command
                                     initiateCommand(args, command, event);
                                 } else {
-                                    Console.debug(Console.sendprefix + "No permission: " + event.getAuthor().getName());
-                                    BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.", true);
+                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("nopermissions_error"), true);
                                 }
-
+                            //Check each alias if the alias was called
                             } else if (message.startsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
+                                //Check Permissions
                                 if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
                                     if (!message.endsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
                                         args = message.substring((BotUtils.BOT_PREFIX + command.alias()).length() + 1).split(" ");
                                     }
+                                    //Execute Command
                                     initiateCommand(args, command, event);
                                 } else {
-                                    Console.debug(Console.sendprefix + "No permission: " + event.getAuthor().getName());
-                                    BotUtils.sendMessage(event.getChannel(), "You have no Permission to use this command.", true);
+                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("nopermissions_error"), true);
                                 }
                             }
                         }
 
+                    } else {
+                        BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR+LANG.getTranslation("private_error"));
                     }
                 } catch (Exception ex) {
-                    Console.error("Error on execution: " + ex.getMessage());
-                    ex.printStackTrace();
+                    Console.error(String.format(LANG.getTranslation("commonmessage_error"),ex.getMessage()));
                 }
             }
         }).start();
     }
+
+    /**
+     * Executes the Command
+     * @param args Arguments which should be delivered
+     * @param command The Command Annotation Object
+     * @param event The Message Event
+     */
     private void initiateCommand(String[] args, Command command, MessageReceivedEvent event) {
         try {
             if (args.length == command.arguments().length) {
                 modules.get(command).invoke(instances.get(command), event, args);
             } else {
-                Console.debug(Console.sendprefix + "Not enought arguments");
-                BotUtils.sendMessage(event.getChannel(), "You have not provided all arguments: " + Arrays.toString(command.arguments()), true);
+                if (args.length < command.arguments().length) {
+                    BotUtils.sendMessage(event.getChannel(), String.format(LANG.getTranslation("tofewarguments_error"),args.length,command.arguments().length), true);
+                } else {
+                    BotUtils.sendMessage(event.getChannel(), String.format(LANG.getTranslation("tomanyarguments_error"),args.length,command.arguments().length), true);
+                }
             }
         } catch (Exception ex) {
-            Console.error("Error occured on Command Exceution: "+ex.getMessage());
+            Console.error(String.format(LANG.getTranslation("execution_error"), ex.getMessage()));
         }
     }
+
+    /**
+     * If Bot is started and ready to recieve anything
+     * @param event The Event
+     */
     @EventSubscriber
     public void onReadyEvent(ReadyEvent event) { // This method is called when the ReadyEvent is dispatched
         Console.println("Bot is ready");
-        Console.println("Shards: "+DiscordInit.getInstance().getDiscordClient().getShardCount());
+        Console.println("Shards: "+INIT.BOT.getShardCount());
         StringBuilder serverstr = new StringBuilder();
         int count = 1;
-        for (IGuild server: DiscordInit.getInstance().getDiscordClient().getGuilds()) {
-            serverstr.append("\n").append(count).append(". [").append(server.getName()).append("   ").append(server.getStringID()).append("]");
+        for (IGuild server: INIT.BOT.getGuilds()) {
+            serverstr.append("\n")
+                    .append(count)
+                    .append(". [")
+                    .append(server.getName())
+                    .append("   ")
+                    .append(server.getStringID())
+                    .append("]");
+            count++;
         }
         Console.println("Servers: "+serverstr);
         RegisterCommands.registerAll();
+        INIT.BOT.changePlayingText(DRIVER.getProperty(DRIVER.CONFIG,"defaultplaying", "TestBetrieb").toString());
+        INIT.BOT.changeUsername(DRIVER.getProperty(DRIVER.CONFIG,"defaultUsername", "MoMuOSB").toString());
         Console.println("Bot Start completed");
     }
     void registerCommand(Class module, Module instance) {
         HashMap<Command, Method> annotations = GetAnnotation.getAnnotation(module);
         for (Command anno : annotations.keySet()) {
-            modules.put(anno, annotations.get(anno));
-            instances.put(anno, instance);
+            if (!getAllCommandsAsString().contains(anno.command())) {
+                if (!getAllAliasAsString().contains(anno.alias())) {
+                    modules.put(anno, annotations.get(anno));
+                    instances.put(anno, instance);
+                } else {
+                    Console.error("Duplicate Alias: "+anno.alias());
+                }
+            } else {
+                Console.error("Duplicate Command: "+anno.command());
+            }
         }
 
     }
     public Set<Command> getAllCommands() {
         return modules.keySet();
+    }
+    public Set<String> getAllCommandsAsString() {
+        Set<String> commandsAsString = new ArraySet<>();
+        for (Command element: getAllCommands()) {
+            commandsAsString.add(element.command());
+        }
+        return commandsAsString;
+    }
+    public Set<String> getAllAliasAsString() {
+        Set<String> commandsAsString = new ArraySet<>();
+        for (Command element: getAllCommands()) {
+            commandsAsString.add(element.alias());
+        }
+        return commandsAsString;
     }
     public HashMap<Command, Method> getAllModules() {
         return modules;

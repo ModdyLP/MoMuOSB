@@ -16,7 +16,12 @@ import sx.blah.discord.util.MessageHistory;
  */
 public class Moderation extends Module{
 
-
+    /**
+     * Deletes a List Message
+     * @param event MessageEvent
+     * @param args Argumente [Not needed]
+     * @return state
+     */
     @Command(
             command = "deletemessages",
             description = "Deletion of Message Amount",
@@ -40,19 +45,25 @@ public class Moderation extends Module{
                         }
                         total = messages.size();
                         BotUtils.bulkdeleteMessage(channel, messages);
-                        channel.changeTopic(origintopic + " [Deletion: "+total+"]");
+                        channel.changeTopic(origintopic + " ["+String.format(LANG.getTranslation("del_topic"), total, total)+"]");
                         Console.debug(Console.sendprefix+"DM: "+total);
                         Thread.sleep(2000);
                         channel.changeTopic(origintopic);
 
                 } catch (Exception ex) {
-                    BotUtils.sendMessage(event.getChannel(), "Deletion of Messages failed ("+total+"): "+ex.getMessage(), true);
+                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR+String.format(LANG.getTranslation("deletion_error"), total, total, ex.getMessage()), true);
                 }
             }
         }).start();
 
         return true;
     }
+    /**
+     * Force Deletes a List Message
+     * @param event MessageEvent
+     * @param args Argumente [Not needed]
+     * @return state
+     */
     @Command(
             command = "forcedeletemessages",
             description = "Deletion of Message Amount",
@@ -80,14 +91,14 @@ public class Moderation extends Module{
                             if (!message.isDeleted()) {
                                 BotUtils.deleteMessageOne(message);
                                 count++;
-                                channel.changeTopic(origintopic + " [Deletion: "+count+" of "+total+"]");
+                                channel.changeTopic(origintopic + " ["+String.format(LANG.getTranslation("del_topic"), count, total)+"]");
                             }
                         }
                         Thread.sleep(1000);
                         channel.changeTopic(origintopic);
                         Console.debug(Console.sendprefix+"FDM: "+count+" of "+total);
                 } catch (Exception ex) {
-                    BotUtils.sendMessage(event.getChannel(), "Force Deletion of Messages failed ("+count+" of "+total+"): "+ex.getMessage(), true);
+                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR+String.format(LANG.getTranslation("deletion_error"), count, total, ex.getMessage()), true);
                 }
             }
         }).start();

@@ -1,8 +1,7 @@
 package Discord;
 
 import Events.EventListener;
-import Main.MoMuOSBMain;
-import Storage.ConfigDriver;
+import Main.Fast;
 import Util.Console;
 import sx.blah.discord.api.IDiscordClient;
 
@@ -10,10 +9,15 @@ import sx.blah.discord.api.IDiscordClient;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class DiscordInit {
+public class DiscordInit implements Fast{
 
     private static DiscordInit instance;
     private IDiscordClient cli;
+    public IDiscordClient BOT;
+    /**
+     * Get Instance
+     * @return Class Instance
+     */
     public static DiscordInit getInstance() {
         if (instance == null) {
             instance = new DiscordInit();
@@ -21,16 +25,20 @@ public class DiscordInit {
         return instance;
     }
 
+    /**
+     * Init the Bot
+     */
     public void init() {
-        String token = ConfigDriver.getInstance().getProperty("token", "");
+        String token = DRIVER.getProperty(DRIVER.CONFIG,"token", "").toString();
         if (token.equals("")) {
-            Console.error("Please provide a token inside of the config.properties");
-            MoMuOSBMain.setRunstate(false);
+            Console.error(LANG.getTranslation("token_error"));
+
         } else {
-            Console.println("Bot is logging in. Please wait until its ready...");
+            Console.println(LANG.getTranslation("login_info"));
              cli = BotUtils.getBuiltDiscordClient(token);
              cli.getDispatcher().registerListener(EventListener.getInstance());
              cli.login();
+             BOT = cli;
         }
     }
     public IDiscordClient getDiscordClient() {

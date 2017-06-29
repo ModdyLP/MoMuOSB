@@ -3,11 +3,11 @@ package Modules;
 import Discord.BotUtils;
 import Discord.DiscordInit;
 import Events.Command;
-import Events.EventListener;
 import Events.Module;
+import Main.Fast;
 import Main.MoMuOSBMain;
-import Storage.ConfigDriver;
-import Util.Footer;
+import Util.Console;
+import Util.Utils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.BotInviteBuilder;
@@ -17,14 +17,19 @@ import java.awt.*;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Set;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class InfoCommands extends Module {
+public class InfoCommands extends Module implements Fast {
 
+    /**
+     * Help Command
+     * @param event MessageEvent
+     * @param args Argumente [Not needed]
+     * @return state
+     */
     @Command(
             command = "help",
             description = "Display the help",
@@ -37,6 +42,12 @@ public class InfoCommands extends Module {
         return true;
     }
 
+    /**
+     * Send a invitation
+     * @param event MessageEvent
+     * @param args Argumente [Not needed]
+     * @return state
+     */
     @Command(
             command = "invitebot",
             description = "Invites the bot",
@@ -45,12 +56,23 @@ public class InfoCommands extends Module {
             permission = Permissions.ADMINISTRATOR
     )
     public boolean inviteBot(MessageReceivedEvent event, String[] args) {
-        EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
-        BotInviteBuilder builder = new BotInviteBuilder(DiscordInit.getInstance().getDiscordClient()).withPermissions(permissions);
-        BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build());
+        if (event.getAuthor().equals(DiscordInit.getInstance().getDiscordClient().getApplicationOwner())) {
+            EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
+            BotInviteBuilder builder = new BotInviteBuilder(INIT.BOT).withPermissions(permissions);
+            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build());
+        } else {
+            BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("botowner_error"), true);
+        }
+
         return true;
     }
 
+    /**
+     * Stats Command
+     * @param event MessageEvent
+     * @param args Argumente [Not needed]
+     * @return state
+     */
     @Command(
             command = "stats",
             description = "Display the stats",
@@ -65,45 +87,30 @@ public class InfoCommands extends Module {
 
     private EmbedBuilder genbuildStats() {
         Date now = new Date(System.currentTimeMillis());
-        long diffInSeconds = (now.getTime() - MoMuOSBMain.starttime.getTime()) / 1000;
 
-        long diff[] = new long[] { 0, 0, 0, 0 };
-    /* sec */diff[3] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
-    /* min */diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
-    /* hours */diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
-    /* days */diff[0] = (diffInSeconds = (diffInSeconds / 24));
 
 
         EmbedBuilder builder = new EmbedBuilder();
-        builder.withTitle(":information_source: Generell Stats :information_source:");
+        builder.withTitle(":information_source: "+LANG.getTranslation("stats_title")+" :information_source:");
         builder.withColor(Color.CYAN);
-        builder.withDescription("Servercount: "+ DiscordInit.getInstance().getDiscordClient().getGuilds().size());
-        builder.appendDesc("\nShardcount: "+ DiscordInit.getInstance().getDiscordClient().getShardCount());
-        builder.appendDesc("\nUsers: "+ DiscordInit.getInstance().getDiscordClient().getUsers().size());
-        builder.appendDesc("\nUptime: "+ String.format(
-                "%d day%s, %d hour%s, %d minute%s, %d second%s",
-                diff[0],
-                diff[0] > 1 ? "s" : "",
-                diff[1],
-                diff[1] > 1 ? "s" : "",
-                diff[2],
-                diff[2] > 1 ? "s" : "",
-                diff[3],
-                diff[3] > 1 ? "s" : ""));
-        builder.appendDesc("\nBotOwner: "+ DiscordInit.getInstance().getDiscordClient().getApplicationOwner().getName());
-        builder.appendDesc("\nCommands: "+ EventListener.getInstance().getAllCommands().size());
+        builder.withDescription(LANG.getTranslation("stats_servercount")+": "+ INIT.BOT.getGuilds().size());
+        builder.appendDesc("\n"+LANG.getTranslation("stats_shards")+": "+ INIT.BOT.getShardCount());
+        builder.appendDesc("\n"+LANG.getTranslation("stats_user")+": "+ INIT.BOT.getUsers().size());
+        builder.appendDesc("\n"+LANG.getTranslation("stats_uptime")+": "+ Utils.calculateAndFormatTimeDiff(MoMuOSBMain.starttime, now));
+        builder.appendDesc("\n"+LANG.getTranslation("stats_owner")+": "+ INIT.BOT.getApplicationOwner().getName());
+        builder.appendDesc("\n"+LANG.getTranslation("stats_commands")+": "+ EVENT.getAllCommands().size());
         return builder;
     }
 
     private EmbedBuilder genbuildHelp() {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.withTitle(":information_source: All Commands ("+EventListener.getInstance().getAllCommands().size()+") :information_source:");
+        builder.withTitle(":information_source: "+ LANG.getTranslation("help_title")+" ("+EVENT.getAllCommands().size()+") :information_source:");
         builder.withColor(Color.CYAN);
-        for (Command command : EventListener.getInstance().getAllCommands()) {
-            builder.appendDesc("\nCommand:    | "+BotUtils.BOT_PREFIX+command.command()+
-                                "\nAlias:              | "+BotUtils.BOT_PREFIX+command.alias()+
-                                "\nArguments:   | "+ Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
-                               "\nDescription:  | "+command.description()+"\n");
+        for (Command command : EVENT.getAllCommands()) {
+            builder.appendDesc("\n"+LANG.getTranslation("help_command")+"    | "+BotUtils.BOT_PREFIX+command.command()+
+                                "\n"+LANG.getTranslation("help_alias")+":              | "+BotUtils.BOT_PREFIX+command.alias()+
+                                "\n"+LANG.getTranslation("help_arguments")+":   | "+ Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
+                                "\n"+LANG.getTranslation("help_description")+":  | "+command.description()+"\n");
         }
         return builder;
     }

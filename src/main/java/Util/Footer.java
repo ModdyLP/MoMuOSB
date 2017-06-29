@@ -7,6 +7,10 @@ import sx.blah.discord.util.EmbedBuilder;
  * Copyright 2017
  */
 public class Footer {
+    /**
+     * Set Footer of Embeded Messages
+     * @param builder builder
+     */
     public static void addFooter(EmbedBuilder builder) {
         builder.withFooterText("Created by ModdyLP @2017");
     }

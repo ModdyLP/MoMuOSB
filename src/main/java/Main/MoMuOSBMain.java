@@ -3,21 +3,29 @@ package Main;
 import Discord.DiscordInit;
 import Util.Console;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class MoMuOSBMain {
+public class MoMuOSBMain implements Fast{
 
-    private static boolean runstate = true;
     public static Date starttime = new Date(System.currentTimeMillis());
 
+    /**
+     * Main Method
+     * @param args Start Argumente
+     */
     public static void main(String[] args) {
         try {
             Console.println("Bot starting...");
-            Console.println("Bot was created by ModdyLP - Niklas H. https://moddylp.de");
+            Console.println("Bot was created by ModdyLP - Niklas H. https://moddylp.de.");
+            DRIVER.createNewFile(DRIVER.CONFIG);
+            Console.println("Loading Language....");
+            LANG.createTranslations();
+            LANG.setDefaultLanguage();
+            Console.println("Language loading complete!");
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     shutdown();
@@ -32,15 +40,14 @@ public class MoMuOSBMain {
 
     }
 
-    public static void shutdown() {
+    /**
+     * Shutdown Method
+     */
+    private static void shutdown() {
         Console.println("Bot shutting down...");
-        if (DiscordInit.getInstance().getDiscordClient().isLoggedIn()) {
-            DiscordInit.getInstance().getDiscordClient().logout();
+        if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
+            INIT.BOT.logout();
         }
-    }
-
-
-    public static void setRunstate(boolean state) {
-        runstate = state;
+        Console.println("ByeBye... Created by ModdyLP @2017");
     }
 }
