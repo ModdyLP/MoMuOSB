@@ -1,6 +1,6 @@
-package Util;
+package util;
 
-import Main.Fast;
+import main.Fast;
 
 /**
  * Created by N.Hartmann on 28.06.2017.

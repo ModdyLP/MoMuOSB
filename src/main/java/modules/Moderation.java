@@ -1,9 +1,9 @@
-package Modules;
+package modules;
 
-import Discord.BotUtils;
-import Events.Command;
-import Events.Module;
-import Util.Console;
+import discord.BotUtils;
+import events.Command;
+import events.Module;
+import util.Console;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;

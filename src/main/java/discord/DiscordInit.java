@@ -1,8 +1,8 @@
-package Discord;
+package discord;
 
-import Events.EventListener;
-import Main.Fast;
-import Util.Console;
+import events.EventListener;
+import main.Fast;
+import util.Console;
 import sx.blah.discord.api.IDiscordClient;
 
 /**

@@ -1,4 +1,4 @@
-package Util;
+package util;
 
 import sx.blah.discord.util.EmbedBuilder;
 

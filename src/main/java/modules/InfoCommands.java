@@ -1,13 +1,12 @@
-package Modules;
+package modules;
 
-import Discord.BotUtils;
-import Discord.DiscordInit;
-import Events.Command;
-import Events.Module;
-import Main.Fast;
-import Main.MoMuOSBMain;
-import Util.Console;
-import Util.Utils;
+import discord.BotUtils;
+import discord.DiscordInit;
+import events.Command;
+import events.Module;
+import main.Fast;
+import main.MoMuOSBMain;
+import util.Utils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.BotInviteBuilder;

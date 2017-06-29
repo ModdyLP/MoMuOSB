@@ -39,7 +39,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        Main.MoMuOSBMain
+                                        main.MoMuOSBMain
                                     </mainClass>
                                 </manifest>
                             </archive>

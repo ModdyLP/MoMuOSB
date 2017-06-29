@@ -1,4 +1,4 @@
-package Events;
+package events;
 
 import sx.blah.discord.handle.obj.Permissions;
 

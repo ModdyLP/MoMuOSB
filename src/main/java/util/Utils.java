@@ -1,6 +1,4 @@
-package Util;
-
-import Main.MoMuOSBMain;
+package util;
 
 import java.sql.Date;
 

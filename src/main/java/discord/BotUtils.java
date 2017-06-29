@@ -1,8 +1,8 @@
-package Discord;
+package discord;
 
-import Main.Fast;
-import Util.Console;
-import Util.Footer;
+import main.Fast;
+import util.Console;
+import util.Footer;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IChannel;

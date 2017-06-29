@@ -1,8 +1,7 @@
-package Util;
+package util;
 
-import Events.Command;
-import Events.Module;
-import Main.Fast;
+import events.Command;
+import main.Fast;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
