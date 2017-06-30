@@ -2,14 +2,14 @@ package events;
 
 import discord.BotUtils;
 import main.Fast;
-import util.Console;
-import util.GetAnnotation;
 import org.tritonus.share.ArraySet;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
+import util.Console;
+import util.GetAnnotation;
 import util.SMB;
 
 import java.lang.reflect.Method;
@@ -166,7 +166,7 @@ public class EventListener implements Fast{
         Console.println("Bot Start completed");
     }
     void registerCommand(Class module, Module instance) {
-        HashMap<Command, Method> annotations = GetAnnotation.getAnnotation(module);
+        HashMap<Command, Method> annotations = GetAnnotation.getCommandAnnotation(module);
         for (Command anno : annotations.keySet()) {
             if (!getAllCommandsAsString().contains(anno.command())) {
                 if (!getAllAliasAsString().contains(anno.alias())) {

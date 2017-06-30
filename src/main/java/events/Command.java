@@ -1,6 +1,5 @@
 package events;
 
-import main.Prefix;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.lang.annotation.Retention;

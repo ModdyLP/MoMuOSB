@@ -1,12 +1,10 @@
 package util;
 
-import com.sun.jna.StringArray;
 import events.Command;
 import main.Fast;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.HashMap;
 
 /**
@@ -19,7 +17,7 @@ public class GetAnnotation implements Fast{
      * @param clazz Class
      * @return A Collection of Annotation and Methods
      */
-    public static HashMap<Command, Method> getAnnotation(Class clazz){
+    public static HashMap<Command, Method> getCommandAnnotation(Class clazz){
         HashMap<Command, Method> allannotation = new HashMap<>();
         try {
                 Method[] methods = clazz.getDeclaredMethods();

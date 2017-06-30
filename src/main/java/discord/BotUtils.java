@@ -1,16 +1,15 @@
 package discord;
 
 import main.Fast;
-import sx.blah.discord.api.internal.json.objects.EmbedObject;
-import sx.blah.discord.handle.obj.*;
-import util.Console;
-import util.Footer;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MessageHistory;
 import sx.blah.discord.util.RequestBuffer;
+import util.Console;
+import util.Footer;
 
 import java.awt.*;
 import java.util.List;

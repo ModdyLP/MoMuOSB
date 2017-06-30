@@ -2,9 +2,8 @@ package discord;
 
 import events.EventListener;
 import main.Fast;
-import storage.ConfigLoader;
-import util.Console;
 import sx.blah.discord.api.IDiscordClient;
+import util.Console;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
