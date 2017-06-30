@@ -7,7 +7,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
-
+/**
+ * A collection of useful methods.
+ *
+ * @author Jens F. | https://m4taiori.de
+ */
 public class WebClient 
 {
 

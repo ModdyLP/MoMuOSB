@@ -6,7 +6,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * A simple request for rest based apis.
+ *
+ * @author Jens F. | https://m4taiori.de
+ */
 public class RestRequest 
 {
     /**
