@@ -11,7 +11,17 @@ Type .help to see all Commands
 #### Contribute
 Help to translate the Bot in your language: https://poeditor.com/join/project/3l3vkPqspd
 
-Help to add new Features:
+#### Languages
+- [x] English
+- [x] German
+- [ ] Dutch
+- [ ] French
+- [ ] Spanish
+- [ ] more ?
+
+***
+
+Help me to add new Features:
 1. Fork this Repo
 2. Add your Feature (Help is in the Wiki or ask me on Discord ModdyLP#9519
 3. Create a Pull Request
