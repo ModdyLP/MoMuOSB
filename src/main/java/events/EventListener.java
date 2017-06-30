@@ -10,8 +10,10 @@ import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
+import util.SMB;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -41,61 +43,63 @@ public class EventListener implements Fast{
      */
     @EventSubscriber
     public void onMessageReceivedEvent(MessageReceivedEvent event) { // This method is NOT called because it doesn't have the @EventSubscriber annotation
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    //Check if Channel is Private (DM)
-                    if (!event.getChannel().isPrivate()) {
-                        String message = event.getMessage().getContent();
-                        //Check if Message contains Prefix
-                        if (message.startsWith(BotUtils.BOT_PREFIX)) {
-                            Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
-                            //Check if Invoke Messages should be deleted
-                            if (DRIVER.getProperty(DRIVER.CONFIG,"deleteinvokes", true).equals(true)) {
-                                if (INIT.BOT.getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
-                                    Console.debug(Console.sendprefix + "Message deleted: [" + event.getMessage().getContent() + "]");
-                                    event.getMessage().delete();
-                                } else {
-                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("nomanagepermission_error"), true);
-                                }
-                            }
-                        }
+        new Thread(() -> {
+            try {
+                //Check if Channel is Private (DM)
+                if (!event.getChannel().isPrivate()) {
+                    String message = event.getMessage().getContent();
+                    String[] messageparts = message.split(" ");
+                    if (messageparts.length > 0) {
                         //Iterate commands
                         for (Command command : modules.keySet()) {
                             String[] args = new String[]{};
-                            //Check each command if the command was called
-                            if (message.startsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase())) {
-                                //Check Permissions
-                                if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
-                                    if (!message.endsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase()) && !message.endsWith(" ")) {
-                                        args = message.substring((BotUtils.BOT_PREFIX + command.command()).length() + 1).split(" ");
+                            //Check if Message contains Prefix
+                            if (messageparts[0].equalsIgnoreCase(command.prefix() + command.command().toLowerCase()) || messageparts[0].equalsIgnoreCase(command.prefix() + command.alias().toLowerCase())) {
+                                Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
+                                //Check if Invoke Messages should be deleted
+                                if (DRIVER.getProperty(DRIVER.CONFIG, "deleteinvokes", true).equals(true)) {
+                                    if (INIT.BOT.getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
+                                        Console.debug(Console.sendprefix + "Message deleted: [" + message + "]");
+                                        event.getMessage().delete();
+                                    } else {
+                                        BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("nomanagepermission_error"), true);
                                     }
-                                    //Execute Command
-                                    initiateCommand(args, command, event);
-                                } else {
-                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("nopermissions_error"), true);
                                 }
-                            //Check each alias if the alias was called
-                            } else if (message.startsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
+                            }
+                            //Check each command if the command was called
+                            if (messageparts[0].equalsIgnoreCase(command.prefix() + command.command().toLowerCase())) {
                                 //Check Permissions
                                 if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
-                                    if (!message.endsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
-                                        args = message.substring((BotUtils.BOT_PREFIX + command.alias()).length() + 1).split(" ");
+                                    if (!message.endsWith(command.prefix() + command.command().toLowerCase()) && !message.endsWith(" ")) {
+                                        args = message.substring((command.prefix() + command.command()).length() + 1).split(" ");
                                     }
                                     //Execute Command
                                     initiateCommand(args, command, event);
                                 } else {
-                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("nopermissions_error"), true);
+                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("nopermissions_error"), true);
+                                }
+                                //Check each alias if the alias was called
+                            } else if (messageparts[0].equalsIgnoreCase(command.prefix() + command.alias().toLowerCase()) && !message.endsWith(" ")) {
+                                //Check Permissions
+                                if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
+                                    if (!message.endsWith(command.prefix() + command.alias().toLowerCase()) && !message.endsWith(" ")) {
+                                        args = message.substring((command.prefix() + command.alias()).length() + 1).split(" ");
+                                    }
+                                    //Execute Command
+                                    initiateCommand(args, command, event);
+                                } else {
+                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("nopermissions_error"), true);
                                 }
                             }
                         }
-
-                    } else {
-                        BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR+LANG.getTranslation("private_error"));
                     }
-                } catch (Exception ex) {
-                    Console.error(String.format(LANG.getTranslation("commonmessage_error"),ex.getMessage()));
+
+                } else {
+                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR+LANG.getTranslation("private_error"));
                 }
+            } catch (Exception ex) {
+                Console.error(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace())));
+                ex.printStackTrace();
             }
         }).start();
     }
@@ -108,17 +112,25 @@ public class EventListener implements Fast{
      */
     private void initiateCommand(String[] args, Command command, MessageReceivedEvent event) {
         try {
-            if (args.length == command.arguments().length) {
-                modules.get(command).invoke(instances.get(command), event, args);
-            } else {
-                if (args.length < command.arguments().length) {
-                    BotUtils.sendMessage(event.getChannel(), String.format(LANG.getTranslation("tofewarguments_error"),args.length,command.arguments().length), true);
-                } else {
-                    BotUtils.sendMessage(event.getChannel(), String.format(LANG.getTranslation("tomanyarguments_error"),args.length,command.arguments().length), true);
+            for (String string: command.arguments()) {
+                if (string.contains("[]")) {
+                    modules.get(command).invoke(instances.get(command), event, args);
+                    return;
                 }
             }
+                if (args.length == command.arguments().length) {
+                    modules.get(command).invoke(instances.get(command), event, args);
+                } else {
+                    if (args.length < command.arguments().length) {
+                        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+String.format(LANG.getTranslation("tofewarguments_error"), args.length, command.arguments().length)), true);
+                    } else {
+                        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+String.format(LANG.getTranslation("tomanyarguments_error"), args.length, command.arguments().length)), true);
+                    }
+                }
+
         } catch (Exception ex) {
-            Console.error(String.format(LANG.getTranslation("execution_error"), ex.getMessage()));
+            Console.error(String.format(LANG.getTranslation("execution_error"), ex.getCause()));
+            ex.printStackTrace();
         }
     }
 
@@ -144,8 +156,13 @@ public class EventListener implements Fast{
         }
         Console.println("Servers: "+serverstr);
         RegisterCommands.registerAll();
-        INIT.BOT.changePlayingText(DRIVER.getProperty(DRIVER.CONFIG,"defaultplaying", "TestBetrieb").toString());
-        INIT.BOT.changeUsername(DRIVER.getProperty(DRIVER.CONFIG,"defaultUsername", "MoMuOSB").toString());
+        INIT.BOT.changePlayingText(DRIVER.getPropertyOnly(DRIVER.CONFIG,"defaultplaying").toString());
+        INIT.BOT.changeUsername(DRIVER.getPropertyOnly(DRIVER.CONFIG,"defaultUsername").toString());
+        Console.println("Loading Command Descriptions");
+        for (Command command: getAllCommands()) {
+            LANG.getMethodDescription(command);
+        }
+
         Console.println("Bot Start completed");
     }
     void registerCommand(Class module, Module instance) {
@@ -180,6 +197,9 @@ public class EventListener implements Fast{
             commandsAsString.add(element.alias());
         }
         return commandsAsString;
+    }
+    public String getMethodNameByCommand(Command command) {
+        return modules.get(command).getName();
     }
     public HashMap<Command, Method> getAllModules() {
         return modules;

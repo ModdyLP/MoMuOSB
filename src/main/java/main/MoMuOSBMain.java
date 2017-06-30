@@ -1,6 +1,7 @@
 package main;
 
 import discord.DiscordInit;
+import storage.ConfigLoader;
 import util.Console;
 
 import java.sql.Date;
@@ -21,16 +22,18 @@ public class MoMuOSBMain implements Fast{
         try {
             Console.println("Bot starting...");
             Console.println("Bot was created by ModdyLP - Niklas H. https://moddylp.de.");
-            DRIVER.createNewFile(DRIVER.CONFIG);
+            ConfigLoader.loadConfigOptions();
             Console.println("Loading Language....");
             LANG.createTranslations();
             LANG.setDefaultLanguage();
             Console.println("Language loading complete!");
+
+
             Runtime.getRuntime().addShutdownHook(new Thread() {
-                public void run() {
-                    shutdown();
-                }
-            });
+                    public void run() {
+                        shutdown();
+                    }
+                });
             DiscordInit.getInstance().init();
 
         } catch (Exception ex) {
@@ -43,7 +46,7 @@ public class MoMuOSBMain implements Fast{
     /**
      * Shutdown Method
      */
-    private static void shutdown() {
+    public static void shutdown() {
         Console.println("Bot shutting down...");
         if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
             INIT.BOT.logout();

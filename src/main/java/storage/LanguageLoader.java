@@ -1,5 +1,6 @@
 package storage;
 
+import events.Command;
 import main.Fast;
 import util.Console;
 
@@ -9,8 +10,9 @@ import util.Console;
  */
 public class LanguageLoader implements Fast{
 
+    public String SUCCESS = ":heavy_check_mark: ";
     public String LANG;
-    private String DEF_LANG = "lang_en.yml";
+    private String DEF_LANG = "lang/lang_en.json";
     public String ERROR = ":warning: ";
 
     private static LanguageLoader instance;
@@ -29,13 +31,16 @@ public class LanguageLoader implements Fast{
      * Create Language Files
      */
     public void createTranslations() {
-        if (DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")) {
+        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "language").equals("en")) {
             LANG = DEF_LANG;
         } else {
-            LANG = "lang_"+ DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")+".yml";
+            LANG = "lang/lang_"+ DRIVER.getPropertyOnly(DRIVER.CONFIG, "language")+".json";
             DRIVER.createNewFile(LANG);
         }
         DRIVER.createNewFile(DEF_LANG);
+    }
+    public String getMethodDescription(Command command) {
+        return DRIVER.getProperty(LANG, EVENT.getMethodNameByCommand(command)+"_"+command.command(), command.description()).toString();
     }
 
     /**
@@ -44,7 +49,7 @@ public class LanguageLoader implements Fast{
      * @return String
      */
     public String getTranslation(String option) {
-        return DRIVER.getProperty(LANG, option, DRIVER.getLangProperty(DEF_LANG, option).toString()).toString();
+        return DRIVER.getProperty(LANG, option, DRIVER.getPropertyOnly(DEF_LANG, option).toString()).toString();
     }
 
     /**
@@ -55,28 +60,30 @@ public class LanguageLoader implements Fast{
 
         //Errors
         DRIVER.setProperty(DEF_LANG, "common_error", "There was an error!");
-        DRIVER.setProperty(DEF_LANG, "commonmessage_error", "There was an error! Error: {1}");
-        DRIVER.setProperty(DEF_LANG, "annotation_error", "Invalid Annotation in Module {1} Ex: {2}");
+        DRIVER.setProperty(DEF_LANG, "commonmessage_error", "There was an error! Error: %1s");
+        DRIVER.setProperty(DEF_LANG, "annotation_error", "Invalid Annotation in Module %1s Ex: %2s");
         DRIVER.setProperty(DEF_LANG, "token_error", "Please provide a token inside of the config.yml");
-        DRIVER.setProperty(DEF_LANG, "execution_error", "Error occured on Command Exceution: {1}");
+        DRIVER.setProperty(DEF_LANG, "execution_error", "Error occurred on Command Execution: %1s");
 
-        DRIVER.setProperty(DEF_LANG, "notsend_error", "Message could not be sent! Error: {1}");
-        DRIVER.setProperty(DEF_LANG, "notdeleted_error", "Message could not be deleted! Error: {1}");
-        DRIVER.setProperty(DEF_LANG, "notsendpermission_error", "Message could not be send! The Bot has not enought Permissions for [{1}] - #{2} Error: {1}");
+        DRIVER.setProperty(DEF_LANG, "notsend_error", "Message could not be sent! Error: %1s");
+        DRIVER.setProperty(DEF_LANG, "notdeleted_error", "Message could not be deleted! Error: %1s");
+        DRIVER.setProperty(DEF_LANG, "notsendpermission_error", "Message could not be send! The Bot has not enough Permissions for [%1s] - #%2s Error: %3s");
         DRIVER.setProperty(DEF_LANG, "private_error", "You can not use commands in direct messages");
         DRIVER.setProperty(DEF_LANG, "nopermissions_error", "You have no Permission to use this command.");
-        DRIVER.setProperty(DEF_LANG, "nomanagepermission_error", "The Bot has no Permission to Manage Permissions");
-        DRIVER.setProperty(DEF_LANG, "tofewarguments_error", "You have provieded to few arguments. {1} of {2}");
-        DRIVER.setProperty(DEF_LANG, "tomanyarguments_error", "You have provieded to many arguments. {1} of {2}");
+        DRIVER.setProperty(DEF_LANG, "nomanagepermission_error", "The Bot has no Permission to Manage Messages");
+        DRIVER.setProperty(DEF_LANG, "tofewarguments_error", "You have provided to few arguments. %1s of %2s");
+        DRIVER.setProperty(DEF_LANG, "tomanyarguments_error", "You have provided to many arguments. %1s of %2s");
         DRIVER.setProperty(DEF_LANG, "botowner_error", "This command can only be used from Bot Owner.");
-        DRIVER.setProperty(DEF_LANG, "deletion_error", "Deletion of Messages failed ({1} of {2}) Error: {3}");
+        DRIVER.setProperty(DEF_LANG, "deletion_error", "Deletion of Messages failed (%1s of %2s) Error: %3s");
 
         //Infos
-        DRIVER.setProperty(DEF_LANG, "login_info", "Bot is logging in. Please wait until its ready...");
+        DRIVER.setProperty(DEF_LANG, "login_info", "Bot sign into the server. Please wait until the Bot is ready...");
+        DRIVER.setProperty(DEF_LANG, "command_success", "The command was successful!");
+        DRIVER.setProperty(DEF_LANG, "shutdowninfo", "The Bot will shutting down in 10 seconds! Bye bye");
 
         //Stats Command
         DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
-        DRIVER.setProperty(DEF_LANG, "stats_servercount", "Servercount");
+        DRIVER.setProperty(DEF_LANG, "stats_servercount", "Server Count");
         DRIVER.setProperty(DEF_LANG, "stats_shards", "Shards");
         DRIVER.setProperty(DEF_LANG, "stats_owner", "Bot Owner");
         DRIVER.setProperty(DEF_LANG, "stats_user", "Users");
@@ -89,11 +96,29 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "help_alias", "Alias");
         DRIVER.setProperty(DEF_LANG, "help_arguments", "Arguments");
         DRIVER.setProperty(DEF_LANG, "help_description", "Description");
+        DRIVER.setProperty(DEF_LANG, "help_noneinfo", "If you want to reset a Value, then type for each argument NA");
+        DRIVER.setProperty(DEF_LANG, "help_prefixinfo", "\nThe Prefixes are \n" +
+                "Admin Prefix:   !   \n" +
+                "Info Prefix:    .   \n" +
+                "Game Prefix:    ~   \n" +
+                "Music Prefix:   $   \n");
 
         //Deletion
-        DRIVER.setProperty(DEF_LANG, "del_topic", "Deletion {1} of {2}");
+        DRIVER.setProperty(DEF_LANG, "del_topic", "Deletion %1s of %2s");
 
+        //Search
+        DRIVER.setProperty(DEF_LANG, "engine_unknown", "The Search Engine is unknown!");
+        DRIVER.setProperty(DEF_LANG, "results_end", "You reached the end of results.");
+        DRIVER.setProperty(DEF_LANG, "results_cleared", "The results were cleared.");
+        DRIVER.setProperty(DEF_LANG, "searchtoken_google", "Please provide a google search api token");
+        DRIVER.setProperty(DEF_LANG, "result_out", "The Result is out of Range.");
+        DRIVER.setProperty(DEF_LANG, "no_search", "There is no search running");
 
+        //Changes
+        DRIVER.setProperty(DEF_LANG, "changeprop_error", "This option can't found in the config file!");
+        DRIVER.setProperty(DEF_LANG, "notchanged_error", "The change Command does not provide resetting.");
+        DRIVER.setProperty(DEF_LANG, "parse_error", "The Value cant parsed into a valid format.");
+        DRIVER.setProperty(DEF_LANG, "props", "Properties");
     }
 
 }

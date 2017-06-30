@@ -3,3 +3,4 @@
 config.properties
 /lang.properties
 *.yml
+/config.json

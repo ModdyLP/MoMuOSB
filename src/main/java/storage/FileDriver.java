@@ -1,10 +1,14 @@
 package storage;
 
+import discord.BotUtils;
+import main.MoMuOSBMain;
+import org.apache.commons.io.FileUtils;
 import util.Console;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -14,7 +18,7 @@ import java.util.HashMap;
 public class FileDriver {
 
     //FILEDRIVE IS NOT TRANSLATED - CAUSES ERRORS BECAUSE LANGUAGE IS NOT LOADED
-    public String CONFIG = "config.yml";
+    public String CONFIG = "config.json";
 
     private static FileDriver instance;
     private static HashMap<String, File> files = new HashMap<>();
@@ -37,6 +41,16 @@ public class FileDriver {
      */
     public void createNewFile(String filenamewithpath) {
         try {
+            String[] parts = filenamewithpath.split("/");
+            for (int i = 0; i < parts.length-1; i++) {
+                File file = new File(parts[i]);
+                if(!file.exists()) {
+                    if (!file.mkdir()) {
+                        Console.error("Cant create Folder: "+file.getAbsolutePath());
+                        MoMuOSBMain.shutdown();
+                    }
+                }
+            }
             File file = new File(filenamewithpath);
             files.put(filenamewithpath, file);
             if (!file.exists()) {
@@ -50,6 +64,7 @@ public class FileDriver {
         } catch (Exception ex) {
             Console.error("File can not be accessed: "+filenamewithpath);
             ex.printStackTrace();
+            MoMuOSBMain.shutdown();
         }
     }
 
@@ -91,6 +106,7 @@ public class FileDriver {
         } catch (Exception ex) {
             Console.error("File can not be loaded");
             ex.printStackTrace();
+            MoMuOSBMain.shutdown();
         }
     }
 
@@ -103,7 +119,7 @@ public class FileDriver {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(files.get(filename)));
                 String json = jsons.get(filename).toJSONString();
                 json = json.replace("{\"", "{\n     \"")
-                        .replace(",", ",\n     ")
+                        .replace(",\"", ",\n     \"")
                         .replace("\"}", "\"\n}");
                 writer.write(json);
                 writer.close();
@@ -111,6 +127,7 @@ public class FileDriver {
         } catch (Exception ex) {
             Console.error("File can not be saved");
             ex.printStackTrace();
+            MoMuOSBMain.shutdown();
         }
     }
 
@@ -124,6 +141,9 @@ public class FileDriver {
         try {
             loadJson();
             if (jsons.get(filename) != null) {
+                if (jsons.get(filename).containsKey(option)) {
+                    removeProperty(filename, option);
+                }
                 jsons.get(filename).put(option, value);
             } else {
                 JSONObject json = new JSONObject();
@@ -147,7 +167,7 @@ public class FileDriver {
     public Object getProperty(String filename, String option, Object defaultvalue) {
         loadJson();
         try {
-            if (!jsons.get(filename).containsKey(option)) {
+            if (jsons.get(filename) == null || !jsons.get(filename).containsKey(option)) {
                 setProperty(filename, option, defaultvalue);
             }
         } catch (Exception ex) {
@@ -163,15 +183,49 @@ public class FileDriver {
      * @param option option
      * @return value
      */
-    public Object getLangProperty(String filename, String option) {
+    public Object getPropertyOnly(String filename, String option) {
         loadJson();
         if (jsons.get(filename).containsKey(option)) {
             return jsons.get(filename).get(option);
         } else {
-            return "No Translation.";
+            return "No Value";
         }
 
     }
+
+    /**
+     * Removes A property in a specific file
+     * @param filename filename
+     * @param option option
+     */
+    public void removeProperty(String filename, String option) {
+        try {
+            loadJson();
+            if (jsons.get(filename).containsKey(option)) {
+                jsons.get(filename).remove(option);
+            }
+            saveJson();
+        } catch (Exception ex) {
+            Console.error("Can not remove Property: ");
+            ex.printStackTrace();
+        }
+    }
+
+    public HashMap<String, Object> getAllKeysWithValues(String filename) {
+        HashMap<String, Object> objects = new HashMap<>();
+        try {
+            loadJson();
+            for (Object string: jsons.get(filename).keySet()) {
+                objects.put(string.toString(), jsons.get(filename).get(string));
+            }
+            saveJson();
+        } catch (Exception ex) {
+            Console.error("Can not list Property: ");
+            ex.printStackTrace();
+        }
+        return objects;
+    }
+
 
 
 }

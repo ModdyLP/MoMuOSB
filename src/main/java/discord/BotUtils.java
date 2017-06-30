@@ -1,19 +1,18 @@
 package discord;
 
 import main.Fast;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
+import sx.blah.discord.handle.obj.*;
 import util.Console;
 import util.Footer;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IPrivateChannel;
-import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MessageHistory;
 import sx.blah.discord.util.RequestBuffer;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -21,7 +20,6 @@ import java.util.List;
  * Copyright 2017
  */
 public class BotUtils implements Fast{
-    public static String BOT_PREFIX = DRIVER.getProperty(DRIVER.CONFIG, "prefix", ".").toString();
 
     /**
      * Creates a Bot Instance
@@ -119,21 +117,25 @@ public class BotUtils implements Fast{
      * @param delete delete
      */
     private static void deleteMessageFromBot(IChannel channel, boolean delete) {
-        if (delete && DRIVER.getProperty(DRIVER.CONFIG,"deleteBotAnswers", true).equals(true)) {
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Thread.sleep(Integer.parseInt(DRIVER.getProperty(DRIVER.CONFIG,"botanswerdeletseconds", 5).toString()) * 1000);
-                        MessageHistory messages = channel.getMessageHistory(50);
-                        for (IMessage message: messages) {
-                            if (message.getAuthor().isBot()) {
-                                message.delete();
-                                break;
+        if (delete && DRIVER.getPropertyOnly(DRIVER.CONFIG,"deleteBotAnswers").equals(true)) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(Integer.parseInt(DRIVER.getPropertyOnly(DRIVER.CONFIG,"botanswerdeletseconds").toString()) * 1000);
+                    MessageHistory messages = channel.getMessageHistory(10);
+                    for (IMessage message: messages) {
+                        if (message.getAuthor().isBot()) {
+                            for (IEmbed obj: message.getEmbeds()) {
+                                if (obj.getColor().equals(Color.green)) {
+                                    if (!message.isDeleted()) {
+                                        message.delete();
+                                    }
+                                }
                             }
+                            break;
                         }
-                    } catch (Exception ex) {
-                        Console.error(LANG.getTranslation("common_error"));
                     }
+                } catch (Exception ex) {
+                    Console.error(LANG.getTranslation("common_error"));
                 }
             }).start();
         }

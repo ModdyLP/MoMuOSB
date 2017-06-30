@@ -1,5 +1,6 @@
 package events;
 
+import main.Prefix;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.lang.annotation.Retention;
@@ -16,4 +17,5 @@ public @interface Command {
     String description();
     String alias();
     Permissions permission();
+    String prefix();
 }

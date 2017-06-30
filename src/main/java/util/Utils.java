@@ -1,6 +1,8 @@
 package util;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 /**
  * Created by N.Hartmann on 29.06.2017.
@@ -31,5 +33,16 @@ public class Utils {
                 diff[2] > 1 ? "s" : "",
                 diff[3],
                 diff[3] > 1 ? "s" : "");
+    }
+    public static String format(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-d:HH-mm");
+        return sdf.format(date);
+    }
+    public static String makeArgsToString(String[] args, String[] replace) {
+        String string = Arrays.toString(args).replace("[", "").replace("]", "").replace(",", "");
+        for (String arg: replace) {
+            string = string.replace(arg, "");
+        }
+        return string;
     }
 }
