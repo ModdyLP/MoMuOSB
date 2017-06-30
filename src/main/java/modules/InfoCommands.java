@@ -7,6 +7,9 @@ import events.Module;
 import main.Fast;
 import main.MoMuOSBMain;
 import main.Prefix;
+import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.StatusType;
+import util.SMB;
 import util.Utils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
@@ -27,8 +30,9 @@ public class InfoCommands extends Module implements Fast {
 
     /**
      * Help Command
+     *
      * @param event MessageEvent
-     * @param args Argumente [Not needed]
+     * @param args  Argumente [Not needed]
      * @return state
      */
     @Command(
@@ -40,16 +44,18 @@ public class InfoCommands extends Module implements Fast {
             prefix = Prefix.INFO_PREFIX
     )
     public boolean help(MessageReceivedEvent event, String[] args) {
-        for (EmbedBuilder builder: genbuildHelp()) {
+        for (EmbedBuilder builder : genbuildHelp(event)) {
             BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         }
         return true;
     }
 
     /**
      * Send a invitation
+     *
      * @param event MessageEvent
-     * @param args Argumente [Not needed]
+     * @param args  Argumente [Not needed]
      * @return state
      */
     @Command(
@@ -65,8 +71,9 @@ public class InfoCommands extends Module implements Fast {
             EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
             BotInviteBuilder builder = new BotInviteBuilder(INIT.BOT).withPermissions(permissions);
             BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build());
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         } else {
-            BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("botowner_error"), true);
+            BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("botowner_error"), true);
         }
 
         return true;
@@ -74,8 +81,9 @@ public class InfoCommands extends Module implements Fast {
 
     /**
      * Stats Command
+     *
      * @param event MessageEvent
-     * @param args Argumente [Not needed]
+     * @param args  Argumente [Not needed]
      * @return state
      */
     @Command(
@@ -94,36 +102,45 @@ public class InfoCommands extends Module implements Fast {
     private EmbedBuilder genbuildStats(MessageReceivedEvent event) {
         Date now = new Date(System.currentTimeMillis());
         EmbedBuilder builder = new EmbedBuilder();
-        builder.withTitle(":information_source: "+LANG.getTranslation("stats_title")+" :information_source:");
         builder.withColor(Color.CYAN);
+
+        ArrayList<IUser> statusTypes = new ArrayList<>();
+        event.getGuild().getUsers().forEach(iUser -> {
+            if (iUser.getPresence().getStatus() != StatusType.OFFLINE) {
+                statusTypes.add(iUser);
+            }
+        });
+
         String stringBuilder = LANG.getTranslation("stats_servercount") + ": " + INIT.BOT.getGuilds().size() +
-                "\n" + LANG.getTranslation("stats_shards") + ": " + event.getGuild().getShard()+" / "+INIT.BOT.getShardCount() +
-                "\n" + LANG.getTranslation("stats_user") + ": " + event.getGuild().getUsers().size()+ " / "+INIT.BOT.getUsers().size() +
+                "\n" + LANG.getTranslation("stats_shards") + ": " + event.getGuild().getShard().getInfo()[0] + " / " + INIT.BOT.getShardCount() +
+                "\n" + LANG.getTranslation("stats_user") + ": " + statusTypes.size() + " / " + INIT.BOT.getUsers().size() +
                 "\n" + LANG.getTranslation("stats_uptime") + ": " + Utils.calculateAndFormatTimeDiff(MoMuOSBMain.starttime, now) +
                 "\n" + LANG.getTranslation("stats_owner") + ": " + INIT.BOT.getApplicationOwner().getName() +
                 "\n" + LANG.getTranslation("stats_commands") + ": " + EVENT.getAllCommands().size();
 
-        builder.appendField("", stringBuilder, false);
+        builder.appendField(":information_source: " + LANG.getTranslation("stats_title") + " :information_source:", stringBuilder, false);
         return builder;
     }
 
-    private ArrayList<EmbedBuilder> genbuildHelp() {
+    private ArrayList<EmbedBuilder> genbuildHelp(MessageReceivedEvent event) {
         ArrayList<EmbedBuilder> builders = new ArrayList<>();
         int page = 1;
         EmbedBuilder builder = new EmbedBuilder();
-        builders.add(page-1, builder);
-        builders.get(page-1).withTitle(":information_source: "+ LANG.getTranslation("help_title")+" ("+EVENT.getAllCommands().size()+") Page: "+page+" :information_source:");
-        builders.get(page-1).withColor(Color.CYAN);
-        builders.get(page-1).withDescription(LANG.getTranslation("help_noneinfo"));
-        builders.get(page-1).appendDescription(LANG.getTranslation("help_prefixinfo"));
+        builders.add(page - 1, builder);
+        builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") + " (" + EVENT.getAllCommands().size() + ") Page: " + page + " :information_source:");
+        builders.get(page - 1).withColor(Color.CYAN);
+        builders.get(page - 1).withDescription(LANG.getTranslation("help_noneinfo"));
+        builders.get(page - 1).appendDescription(LANG.getTranslation("help_prefixinfo"));
         for (Command command : EVENT.getAllCommands()) {
-            String string = "\n"+LANG.getTranslation("help_alias")+":               | "+command.prefix()+command.alias()+
-                                "\n"+LANG.getTranslation("help_arguments")+":   | "+ Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
-                                "\n"+LANG.getTranslation("help_description")+":   | "+command.description()+"\n";
-            builders.get(page-1).appendField(LANG.getTranslation("help_command")+"       | "+command.prefix()+command.command(), string, false);
-            if (builders.get(page-1).getFieldCount() ==  EmbedBuilder.FIELD_COUNT_LIMIT) {
+            if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
+                String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + command.prefix() + command.alias() +
+                        "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
+                        "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) + "\n";
+                builders.get(page - 1).appendField(LANG.getTranslation("help_command") + "       | " + command.prefix() + command.command(), string, false);
+            }
+            if (builders.get(page - 1).getFieldCount() == EmbedBuilder.FIELD_COUNT_LIMIT) {
                 EmbedBuilder buildertemp = new EmbedBuilder();
-                builders.add(page-1, buildertemp);
+                builders.add(page - 1, buildertemp);
                 page++;
             }
         }

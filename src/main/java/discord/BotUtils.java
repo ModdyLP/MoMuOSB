@@ -1,19 +1,18 @@
 package discord;
 
 import main.Fast;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
+import sx.blah.discord.handle.obj.*;
 import util.Console;
 import util.Footer;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IPrivateChannel;
-import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MessageHistory;
 import sx.blah.discord.util.RequestBuffer;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -123,10 +122,16 @@ public class BotUtils implements Fast{
                 public void run() {
                     try {
                         Thread.sleep(Integer.parseInt(DRIVER.getProperty(DRIVER.CONFIG,"botanswerdeletseconds", 5).toString()) * 1000);
-                        MessageHistory messages = channel.getMessageHistory(50);
+                        MessageHistory messages = channel.getMessageHistory(10);
                         for (IMessage message: messages) {
                             if (message.getAuthor().isBot()) {
-                                message.delete();
+                                for (IEmbed obj: message.getEmbeds()) {
+                                    if (obj.getColor().equals(Color.green)) {
+                                        if (!message.isDeleted()) {
+                                            message.delete();
+                                        }
+                                    }
+                                }
                                 break;
                             }
                         }

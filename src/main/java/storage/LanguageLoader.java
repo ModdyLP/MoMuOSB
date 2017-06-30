@@ -1,5 +1,6 @@
 package storage;
 
+import events.Command;
 import main.Fast;
 import util.Console;
 
@@ -9,6 +10,7 @@ import util.Console;
  */
 public class LanguageLoader implements Fast{
 
+    public String SUCCESS = ":heavy_check_mark: ";
     public String LANG;
     private String DEF_LANG = "lang/lang_en.json";
     public String ERROR = ":warning: ";
@@ -32,10 +34,13 @@ public class LanguageLoader implements Fast{
         if (DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")) {
             LANG = DEF_LANG;
         } else {
-            LANG = "lang/lang_"+ DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")+".json";
+            LANG = "lang/lang_"+ DRIVER.getProperty(DRIVER.CONFIG, "language", "en")+".json";
             DRIVER.createNewFile(LANG);
         }
         DRIVER.createNewFile(DEF_LANG);
+    }
+    public String getMethodDescription(Command command) {
+        return DRIVER.getProperty(LANG, EVENT.getMethodNameByCommand(command)+"_"+command.command(), command.description()).toString();
     }
 
     /**
@@ -73,6 +78,8 @@ public class LanguageLoader implements Fast{
 
         //Infos
         DRIVER.setProperty(DEF_LANG, "login_info", "Bot sign into the server. Please wait until the Bot is ready...");
+        DRIVER.setProperty(DEF_LANG, "command_success", "The command was successful!");
+        DRIVER.setProperty(DEF_LANG, "shutdowninfo", "The but will shutting down in 10 seconds! Bye bye");
 
         //Stats Command
         DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
@@ -108,8 +115,7 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "changeprop_error", "This option can't found in the config file!");
         DRIVER.setProperty(DEF_LANG, "notchanged_error", "The change Command does not provide resetting.");
         DRIVER.setProperty(DEF_LANG, "parse_error", "The Value cant parsed into a valid format.");
-
-
+        DRIVER.setProperty(DEF_LANG, "props", "Properties");
     }
 
 }

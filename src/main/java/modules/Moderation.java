@@ -3,6 +3,7 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import main.MoMuOSBMain;
 import main.Prefix;
 import util.Console;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -10,6 +11,7 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageHistory;
+import util.SMB;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -51,7 +53,7 @@ public class Moderation extends Module{
                         Console.debug(Console.sendprefix+"DM: "+total);
                         Thread.sleep(2000);
                         channel.changeTopic(origintopic);
-
+                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
                 } catch (Exception ex) {
                     BotUtils.sendMessage(event.getChannel(), LANG.ERROR+String.format(LANG.getTranslation("deletion_error"), total, total, ex.getMessage()), true);
                 }
@@ -100,12 +102,35 @@ public class Moderation extends Module{
                         Thread.sleep(1000);
                         channel.changeTopic(origintopic);
                         Console.debug(Console.sendprefix+"FDM: "+count+" of "+total);
+                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
                 } catch (Exception ex) {
                     BotUtils.sendMessage(event.getChannel(), LANG.ERROR+String.format(LANG.getTranslation("deletion_error"), count, total, ex.getMessage()), true);
                 }
             }
         }).start();
 
+        return true;
+    }
+    @Command(
+            command = "shutdown",
+            description = "Shutdown the bot",
+            alias = "die",
+            arguments = {},
+            permission = Permissions.MANAGE_MESSAGES,
+            prefix = Prefix.ADMIN_PREFIX
+    )
+    public boolean shutdownbot(MessageReceivedEvent event, String[] args) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("shutdowninfo")), true);
+                    Thread.sleep(10000);
+                    System.exit(0);
+                } catch (Exception ex) {
+                    Console.error("Error on shutdown: "+ex.getMessage());
+                }
+            }
+        }).start();
         return true;
     }
 }

@@ -1,6 +1,7 @@
 package storage;
 
 import main.MoMuOSBMain;
+import org.apache.commons.io.FileUtils;
 import util.Console;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -208,6 +209,21 @@ public class FileDriver {
             Console.error("Can not remove Property: ");
             ex.printStackTrace();
         }
+    }
+
+    public HashMap<String, Object> getAllKeysWithValues(String filename) {
+        HashMap<String, Object> objects = new HashMap<>();
+        try {
+            loadJson();
+            for (Object string: jsons.get(filename).keySet()) {
+                objects.put(string.toString(), jsons.get(filename).get(string));
+            }
+            saveJson();
+        } catch (Exception ex) {
+            Console.error("Can not list Property: ");
+            ex.printStackTrace();
+        }
+        return objects;
     }
 
 

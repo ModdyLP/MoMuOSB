@@ -7,10 +7,14 @@ import main.Prefix;
 import org.apache.commons.lang3.math.NumberUtils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.Image;
-import util.ShortMessageBuilder;
+import util.SMB;
+import util.Utils;
 
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -40,8 +44,9 @@ public class ChangeCommands extends Module {
             } else {
                 INIT.BOT.changeAvatar(Image.forUrl("png", args[0]));
             }
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         } else {
-            BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
         }
         return true;
     }
@@ -56,7 +61,7 @@ public class ChangeCommands extends Module {
             command = "setstream",
             description = "Change the Bot Stream",
             alias = "sst",
-            arguments = {"Game", "StreamUrl"},
+            arguments = {"StreamUrl", "Game []"},
             permission = Permissions.ADMINISTRATOR,
             prefix = Prefix.ADMIN_PREFIX
     )
@@ -65,10 +70,11 @@ public class ChangeCommands extends Module {
             if (args[0].equalsIgnoreCase("NA") || args[1].equalsIgnoreCase("NA")) {
                 INIT.BOT.streaming(null, null);
             } else {
-                INIT.BOT.streaming(args[0], args[1]);
+                INIT.BOT.streaming(Utils.makeArgsToString(args, new String[] {args[0]}), args[0]);
             }
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         } else {
-            BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
         }
         return true;
     }
@@ -81,7 +87,7 @@ public class ChangeCommands extends Module {
      */
     @Command(
             command = "setplaying",
-            arguments = {"Game"},
+            arguments = {"Game []"},
             description = "Change the Bot Game",
             alias = "sp",
             permission = Permissions.ADMINISTRATOR,
@@ -92,10 +98,11 @@ public class ChangeCommands extends Module {
             if (args[0].equalsIgnoreCase("NA")) {
                 INIT.BOT.changePlayingText(null);
             } else {
-                INIT.BOT.changePlayingText(args[0]);
+                INIT.BOT.changePlayingText(Utils.makeArgsToString(args, new String[] {}));
             }
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         } else {
-            BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
         }
         return true;
     }
@@ -107,7 +114,7 @@ public class ChangeCommands extends Module {
      */
     @Command(
             command = "setusername",
-            arguments = {"Name"},
+            arguments = {"Name []"},
             description = "Change the Bot Name",
             alias = "sun",
             permission = Permissions.ADMINISTRATOR,
@@ -118,10 +125,11 @@ public class ChangeCommands extends Module {
             if (args[0].equalsIgnoreCase("NA")) {
                 INIT.BOT.changeUsername(DRIVER.getProperty(DRIVER.CONFIG, "defaultUsername", "MoMuOSB").toString());
             } else {
-                INIT.BOT.changeUsername(args[0]);
+                INIT.BOT.changeUsername(Utils.makeArgsToString(args, new String[] {}));
             }
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         } else {
-            BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
         }
         return true;
     }
@@ -142,7 +150,7 @@ public class ChangeCommands extends Module {
     public boolean changeProperty(MessageReceivedEvent event, String[] args) {
         if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
             if (args[0].equalsIgnoreCase("NA") || args[1].equalsIgnoreCase("NA")) {
-                BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.ERROR+ LANG.getTranslation("notchanged_error")), true);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+ LANG.getTranslation("notchanged_error")), true);
             } else {
                 if (!DRIVER.getPropertyOnly(DRIVER.CONFIG, args[0]).equals("No Value")) {
                     Object value = args[1];
@@ -156,18 +164,64 @@ public class ChangeCommands extends Module {
                         }
 
                     } catch (Exception ex) {
-                        BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.ERROR + LANG.getTranslation("parse_error")), true);
+                        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("parse_error")), true);
                         error = true;
                     }
                     if (!error) {
                         DRIVER.setProperty(DRIVER.CONFIG, args[0], value);
+                        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
                     }
                 } else {
-                    BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.ERROR+ LANG.getTranslation("changeprop_error")), true);
+                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+ LANG.getTranslation("changeprop_error")), true);
                 }
             }
         } else {
-            BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
+        }
+        return true;
+    }
+
+    @Command(
+            command = "printprop",
+            arguments = {},
+            description = "Print the Property",
+            alias = "prp",
+            permission = Permissions.ADMINISTRATOR,
+            prefix = Prefix.ADMIN_PREFIX
+    )
+    public boolean printProperties(MessageReceivedEvent event, String[] args) {
+        if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+            EmbedBuilder builder = new EmbedBuilder();
+            HashMap<String, Object> objects = DRIVER.getAllKeysWithValues(DRIVER.CONFIG);
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String string: objects.keySet()) {
+                stringBuilder.append(string).append(" = ").append(objects.get(string)).append(" \n");
+            }
+            builder.appendField(LANG.getTranslation("props"), stringBuilder.toString(), false);
+
+            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+        } else {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
+        }
+        return true;
+    }
+
+    @Command(
+            command = "changelang",
+            arguments = {"Language Code"},
+            description = "Change the Language",
+            alias = "chlang",
+            permission = Permissions.ADMINISTRATOR,
+            prefix = Prefix.ADMIN_PREFIX
+    )
+    public boolean changeLang(MessageReceivedEvent event, String[] args) {
+        if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+            changeProperty(event, new String[] {"language", args[0]});
+            LANG.createTranslations();
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+        } else {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
         }
         return true;
     }

@@ -11,10 +11,10 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
 import util.Console;
-import util.ShortMessageBuilder;
+import util.SMB;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -30,7 +30,7 @@ public class SearchCommand extends Module{
             command = "search",
             description = "Search a Image",
             alias = "sq",
-            arguments = {"SearchEngine(Google)","Query Comma Seperated"},
+            arguments = {"SearchEngine(Google)","Query []"},
             permission = Permissions.EMBED_LINKS,
             prefix = Prefix.GAME_PREFIX
     )
@@ -41,7 +41,7 @@ public class SearchCommand extends Module{
                 request.setUrl("https://www.googleapis.com/customsearch/v1");
                 request.add("key", DRIVER.getProperty(DRIVER.CONFIG, "googleauthtoken", "AIzaSyBeBkYo8p8FvwweSOQcmco-jdnP6rFBPgE").toString());
                 request.add("cx", DRIVER.getProperty(DRIVER.CONFIG, "googlecustomsearchid","002710779101845872719:o_wp4w-dqqi").toString());
-                request.add("q", args[1].replace(",", "+"));
+                request.add("q", Arrays.toString(args).replace(args[0], ""));
                 request.add("searchType", "image");
                 JSONObject json = request.fetchJson();
                 JSONArray array = json.getJSONArray("items");
@@ -54,8 +54,9 @@ public class SearchCommand extends Module{
                 }
                 links.put(event.getGuild(), linkcache);
                 BotUtils.sendMessage(event.getChannel(), links.get(event.getGuild()).get(searchmarker.get(event.getGuild())), false);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
             } else {
-                BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.getTranslation("engine_unknown")), true);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("engine_unknown")), true);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -73,8 +74,9 @@ public class SearchCommand extends Module{
         searchmarker.put(event.getGuild(), searchmarker.get(event.getGuild())+1);
         if (links.get(event.getGuild()).size() > searchmarker.get(event.getGuild())) {
             BotUtils.sendMessage(event.getChannel(), links.get(event.getGuild()).get(searchmarker.get(event.getGuild())), false);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         } else {
-            BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.getTranslation("results_end")), true);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("results_end")), true);
             links.remove(event.getGuild());
             searchmarker.remove(event.getGuild());
         }
@@ -89,7 +91,7 @@ public class SearchCommand extends Module{
 
     )
     public void clearImages(MessageReceivedEvent event, String[] args) {
-        BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.getTranslation("results_cleared")), true);
+        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("results_cleared")), true);
         links.remove(event.getGuild());
         searchmarker.remove(event.getGuild());
     }
