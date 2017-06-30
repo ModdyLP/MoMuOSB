@@ -1,7 +1,9 @@
 package events;
 
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import discord.BotUtils;
 import main.Fast;
+import modules.music.MainMusic;
 import org.tritonus.share.ArraySet;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -162,6 +164,9 @@ public class EventListener implements Fast{
         for (Command command: getAllCommands()) {
             LANG.getMethodDescription(command);
         }
+        Console.println("Register Audioprovider");
+        AudioSourceManagers.registerRemoteSources(MainMusic.playerManager);
+        AudioSourceManagers.registerLocalSource(MainMusic.playerManager);
 
         Console.println("Bot Start completed");
     }

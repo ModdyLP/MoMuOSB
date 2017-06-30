@@ -24,9 +24,9 @@ import java.util.HashMap;
  */
 public class SearchCommand extends Module{
 
-    HashMap<IGuild, ArrayList<String>> links = new HashMap<>();
-    HashMap<IGuild, Integer> searchmarker = new HashMap<>();
-    HashMap<IGuild, String> search = new HashMap<>();
+    private HashMap<IGuild, ArrayList<String>> links = new HashMap<>();
+    private HashMap<IGuild, Integer> searchmarker = new HashMap<>();
+    private HashMap<IGuild, String> search = new HashMap<>();
 
 
     @Command(
@@ -77,7 +77,7 @@ public class SearchCommand extends Module{
     }
     @Command(
             command = "next",
-            description = "NextImage",
+            description = "Next Image in Resultlist",
             alias = "next",
             arguments = {},
             permission = Permissions.EMBED_LINKS,
@@ -100,7 +100,7 @@ public class SearchCommand extends Module{
     }
     @Command(
             command = "clear",
-            description = "ClearImages",
+            description = "Clear all Images",
             alias = "clear",
             arguments = {},
             permission = Permissions.EMBED_LINKS,
@@ -120,7 +120,7 @@ public class SearchCommand extends Module{
 
     @Command(
             command = "getImage",
-            description = "GetImage",
+            description = "Get Image from Web",
             alias = "getI",
             arguments = {"Number"},
             permission = Permissions.EMBED_LINKS,
@@ -142,9 +142,9 @@ public class SearchCommand extends Module{
 
     private void sendMessage(MessageReceivedEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.withTitle("Your search Result");
-        builder.withDescription("Search: "+search.get(event.getGuild())
-                +"\nResult "+searchmarker.get(event.getGuild())+" of "+links.get(event.getGuild()).size());
+        builder.withTitle(LANG.getTranslation("search_result"));
+        builder.withDescription(LANG.getTranslation("search_info")+search.get(event.getGuild())
+                +"\n"+String.format(LANG.getTranslation("search_count"),searchmarker.get(event.getGuild()),links.get(event.getGuild()).size()));
         builder.withColor(Color.cyan);
         builder.withImage(links.get(event.getGuild()).get(searchmarker.get(event.getGuild())));
         builder.withUrl(links.get(event.getGuild()).get(searchmarker.get(event.getGuild())));

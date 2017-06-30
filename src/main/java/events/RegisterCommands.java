@@ -5,6 +5,7 @@ import modules.ChangeCommands;
 import modules.InfoCommands;
 import modules.Moderation;
 import modules.SearchCommand;
+import modules.music.MainMusic;
 import util.Console;
 
 /**
@@ -22,6 +23,7 @@ class RegisterCommands implements Fast{
         EVENT.registerCommand(ChangeCommands.class, new ChangeCommands());
         EVENT.registerCommand(Moderation.class, new Moderation());
         EVENT.registerCommand(SearchCommand.class, new SearchCommand());
+        EVENT.registerCommand(MainMusic.class, new MainMusic());
 
         Console.println("All Commands("+EVENT.getAllCommands().size()+") added to Bot");
     }

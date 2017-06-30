@@ -62,7 +62,7 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "common_error", "There was an error!");
         DRIVER.setProperty(DEF_LANG, "commonmessage_error", "There was an error! Error: %1s");
         DRIVER.setProperty(DEF_LANG, "annotation_error", "Invalid Annotation in Module %1s Ex: %2s");
-        DRIVER.setProperty(DEF_LANG, "token_error", "Please provide a token inside of the config.yml");
+        DRIVER.setProperty(DEF_LANG, "token_error", "Please provide a token inside of the config.json");
         DRIVER.setProperty(DEF_LANG, "execution_error", "Error occurred on Command Execution: %1s");
 
         DRIVER.setProperty(DEF_LANG, "notsend_error", "Message could not be sent! Error: %1s");
@@ -96,12 +96,12 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "help_alias", "Alias");
         DRIVER.setProperty(DEF_LANG, "help_arguments", "Arguments");
         DRIVER.setProperty(DEF_LANG, "help_description", "Description");
-        DRIVER.setProperty(DEF_LANG, "help_noneinfo", "If you want to reset a Value, then type for each argument NA");
+        DRIVER.setProperty(DEF_LANG, "help_noneinfo", "If you want to reset a Value, then type for each argument NA.");
         DRIVER.setProperty(DEF_LANG, "help_prefixinfo", "\nThe Prefixes are \n" +
                 "Admin Prefix:   !   \n" +
                 "Info Prefix:    .   \n" +
                 "Game Prefix:    ~   \n" +
-                "Music Prefix:   $   \n");
+                "music Prefix:   $   \n");
 
         //Deletion
         DRIVER.setProperty(DEF_LANG, "del_topic", "Deletion %1s of %2s");
@@ -110,9 +110,22 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "engine_unknown", "The Search Engine is unknown!");
         DRIVER.setProperty(DEF_LANG, "results_end", "You reached the end of results.");
         DRIVER.setProperty(DEF_LANG, "results_cleared", "The results were cleared.");
-        DRIVER.setProperty(DEF_LANG, "searchtoken_google", "Please provide a google search api token");
+        DRIVER.setProperty(DEF_LANG, "searchtoken_google", "Please provide a google search api token.");
         DRIVER.setProperty(DEF_LANG, "result_out", "The Result is out of Range.");
-        DRIVER.setProperty(DEF_LANG, "no_search", "There is no search running");
+        DRIVER.setProperty(DEF_LANG, "no_search", "There is no search running.");
+        DRIVER.setProperty(DEF_LANG, "search_result", "Your search Result");
+        DRIVER.setProperty(DEF_LANG, "search_info", "Search Query");
+        DRIVER.setProperty(DEF_LANG, "search_count", "Result %1s of %2s");
+
+        //Music
+        DRIVER.setProperty(DEF_LANG, "music_notinchannel", "The Bot is not in a voice Channel.");
+        DRIVER.setProperty(DEF_LANG, "music_volumechange", "Volume changed from %1s to %2s");
+        DRIVER.setProperty(DEF_LANG, "music_volumechangeerror", "Can't change volume.");
+        DRIVER.setProperty(DEF_LANG, "music_add","Adding to queue: %1s");
+        DRIVER.setProperty(DEF_LANG, "music_add_queue", "Adding to queue %1s (first track of playlist %2s)");
+        DRIVER.setProperty(DEF_LANG, "music_notfound", "Nothing found by %1s");
+        DRIVER.setProperty(DEF_LANG, "music_notloaded", "Could not play.");
+        DRIVER.setProperty(DEF_LANG, "music_skip", "Skipped to next track.");
 
         //Changes
         DRIVER.setProperty(DEF_LANG, "changeprop_error", "This option can't found in the config file!");

@@ -15,6 +15,7 @@ public class ConfigLoader implements Fast {
         DRIVER.getProperty(DRIVER.CONFIG,"debug", false);
         DRIVER.getProperty(DRIVER.CONFIG,"defaultplaying", "TestBetrieb");
         DRIVER.getProperty(DRIVER.CONFIG,"defaultUsername", "MoMuOSB");
+        DRIVER.getProperty(DRIVER.CONFIG, "defaultvolume", 10);
         DRIVER.getProperty(DRIVER.CONFIG,"deleteBotAnswers", true);
         DRIVER.getProperty(DRIVER.CONFIG, "googleauthtoken", "");
         DRIVER.getProperty(DRIVER.CONFIG, "googlecustomsearchid","002710779101845872719:o_wp4w-dqqi");
