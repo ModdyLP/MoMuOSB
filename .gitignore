@@ -1,6 +1,5 @@
 /.idea/
 /target/
-config.properties
-/lang.properties
-*.yml
 /config.json
+*.log
+
