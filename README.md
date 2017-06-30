@@ -21,14 +21,14 @@ Help to translate the Bot in your language: https://poeditor.com/join/project/3l
 
 ***
 #### Current Features
-Help
-Stats
-Delete Messages
-Search on Google Images
-Music
-Properties Changing
-Multi Language
-Configure Bot
+- Help
+- Stats
+- Delete Messages
+- Search on Google Images
+- Music
+- Properties Changing
+- Multi Language
+- Configure Bot
 
 ***
 
