@@ -21,7 +21,6 @@ import java.util.List;
  * Copyright 2017
  */
 public class BotUtils implements Fast{
-    public static String BOT_PREFIX = DRIVER.getProperty(DRIVER.CONFIG, "prefix", ".").toString();
 
     /**
      * Creates a Bot Instance

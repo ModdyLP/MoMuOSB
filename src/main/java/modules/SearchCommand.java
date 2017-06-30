@@ -3,6 +3,7 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import main.Prefix;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import storage.RestRequest;
@@ -30,7 +31,8 @@ public class SearchCommand extends Module{
             description = "Search a Image",
             alias = "sq",
             arguments = {"SearchEngine(Google)","Query Comma Seperated"},
-            permission = Permissions.EMBED_LINKS
+            permission = Permissions.EMBED_LINKS,
+            prefix = Prefix.GAME_PREFIX
     )
     public void searchGoogleImage(MessageReceivedEvent event, String[] args) {
         try {
@@ -64,7 +66,8 @@ public class SearchCommand extends Module{
             description = "NextImage",
             alias = "next",
             arguments = {},
-            permission = Permissions.EMBED_LINKS
+            permission = Permissions.EMBED_LINKS,
+            prefix = Prefix.GAME_PREFIX
     )
     public void nextImage(MessageReceivedEvent event, String[] args) {
         searchmarker.put(event.getGuild(), searchmarker.get(event.getGuild())+1);
@@ -81,7 +84,9 @@ public class SearchCommand extends Module{
             description = "ClearImages",
             alias = "clear",
             arguments = {},
-            permission = Permissions.EMBED_LINKS
+            permission = Permissions.EMBED_LINKS,
+            prefix = Prefix.GAME_PREFIX
+
     )
     public void clearImages(MessageReceivedEvent event, String[] args) {
         BotUtils.sendEmbMessage(event.getChannel(), ShortMessageBuilder.shortMessage(LANG.getTranslation("results_cleared")), true);

@@ -1,10 +1,12 @@
 package storage;
 
+import main.MoMuOSBMain;
 import util.Console;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -37,6 +39,17 @@ public class FileDriver {
      */
     public void createNewFile(String filenamewithpath) {
         try {
+            String[] parts = filenamewithpath.split("/");
+            Console.debug(Arrays.toString(parts));
+            for (int i = 0; i < parts.length-1; i++) {
+                File file = new File(parts[i]);
+                if(!file.exists()) {
+                    if (!file.mkdir()) {
+                        Console.error("Cant create Folder: "+file.getAbsolutePath());
+                        MoMuOSBMain.shutdown();
+                    }
+                }
+            }
             File file = new File(filenamewithpath);
             files.put(filenamewithpath, file);
             if (!file.exists()) {
@@ -50,6 +63,7 @@ public class FileDriver {
         } catch (Exception ex) {
             Console.error("File can not be accessed: "+filenamewithpath);
             ex.printStackTrace();
+            MoMuOSBMain.shutdown();
         }
     }
 
@@ -91,6 +105,7 @@ public class FileDriver {
         } catch (Exception ex) {
             Console.error("File can not be loaded");
             ex.printStackTrace();
+            MoMuOSBMain.shutdown();
         }
     }
 
@@ -111,6 +126,7 @@ public class FileDriver {
         } catch (Exception ex) {
             Console.error("File can not be saved");
             ex.printStackTrace();
+            MoMuOSBMain.shutdown();
         }
     }
 
@@ -124,6 +140,9 @@ public class FileDriver {
         try {
             loadJson();
             if (jsons.get(filename) != null) {
+                if (jsons.get(filename).containsKey(option)) {
+                    removeProperty(filename, option);
+                }
                 jsons.get(filename).put(option, value);
             } else {
                 JSONObject json = new JSONObject();
@@ -147,7 +166,7 @@ public class FileDriver {
     public Object getProperty(String filename, String option, Object defaultvalue) {
         loadJson();
         try {
-            if (!jsons.get(filename).containsKey(option)) {
+            if (jsons.get(filename) == null || !jsons.get(filename).containsKey(option)) {
                 setProperty(filename, option, defaultvalue);
             }
         } catch (Exception ex) {
@@ -163,12 +182,12 @@ public class FileDriver {
      * @param option option
      * @return value
      */
-    public Object getLangProperty(String filename, String option) {
+    public Object getPropertyOnly(String filename, String option) {
         loadJson();
         if (jsons.get(filename).containsKey(option)) {
             return jsons.get(filename).get(option);
         } else {
-            return "No Translation.";
+            return "No Value";
         }
 
     }

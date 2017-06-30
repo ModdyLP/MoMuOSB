@@ -3,6 +3,7 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import main.Prefix;
 import util.Console;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
@@ -27,7 +28,8 @@ public class Moderation extends Module{
             description = "Deletion of Message Amount",
             alias = "dm",
             arguments = {"Count"},
-            permission = Permissions.MANAGE_MESSAGES
+            permission = Permissions.MANAGE_MESSAGES,
+            prefix = Prefix.ADMIN_PREFIX
     )
     public boolean deleteMessages(MessageReceivedEvent event, String[] args) {
         new Thread(new Runnable() {
@@ -69,7 +71,8 @@ public class Moderation extends Module{
             description = "Deletion of Message Amount",
             alias = "fdm",
             arguments = {"Count"},
-            permission = Permissions.MANAGE_MESSAGES
+            permission = Permissions.MANAGE_MESSAGES,
+            prefix = Prefix.ADMIN_PREFIX
     )
     public boolean forcedeleteMessages(MessageReceivedEvent event, String[] args) {
         new Thread(new Runnable() {

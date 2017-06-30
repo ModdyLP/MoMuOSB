@@ -10,7 +10,7 @@ import util.Console;
 public class LanguageLoader implements Fast{
 
     public String LANG;
-    private String DEF_LANG = "lang_en.json";
+    private String DEF_LANG = "lang/lang_en.json";
     public String ERROR = ":warning: ";
 
     private static LanguageLoader instance;
@@ -32,7 +32,7 @@ public class LanguageLoader implements Fast{
         if (DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")) {
             LANG = DEF_LANG;
         } else {
-            LANG = "lang_"+ DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")+".json";
+            LANG = "lang/lang_"+ DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")+".json";
             DRIVER.createNewFile(LANG);
         }
         DRIVER.createNewFile(DEF_LANG);
@@ -44,7 +44,7 @@ public class LanguageLoader implements Fast{
      * @return String
      */
     public String getTranslation(String option) {
-        return DRIVER.getProperty(LANG, option, DRIVER.getLangProperty(DEF_LANG, option).toString()).toString();
+        return DRIVER.getProperty(LANG, option, DRIVER.getPropertyOnly(DEF_LANG, option).toString()).toString();
     }
 
     /**
@@ -89,6 +89,12 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "help_alias", "Alias");
         DRIVER.setProperty(DEF_LANG, "help_arguments", "Arguments");
         DRIVER.setProperty(DEF_LANG, "help_description", "Description");
+        DRIVER.setProperty(DEF_LANG, "help_noneinfo", "If you want to reset a Value, then type for each argument NA");
+        DRIVER.setProperty(DEF_LANG, "help_prefixinfo", "\nThe Prefixes are \n" +
+                "Admin Prefix:   !   \n" +
+                "Info Prefix:    .   \n" +
+                "Game Prefix:    ~   \n" +
+                "Music Prefix:   $   \n");
 
         //Deletion
         DRIVER.setProperty(DEF_LANG, "del_topic", "Deletion %1s of %2s");
@@ -97,6 +103,11 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "engine_unknown", "The Search Engine is unknown!");
         DRIVER.setProperty(DEF_LANG, "results_end", "You reached the end of results.");
         DRIVER.setProperty(DEF_LANG, "results_cleared", "The results were cleared.");
+
+        //Changes
+        DRIVER.setProperty(DEF_LANG, "changeprop_error", "This option can't found in the config file!");
+        DRIVER.setProperty(DEF_LANG, "notchanged_error", "The change Command does not provide resetting.");
+        DRIVER.setProperty(DEF_LANG, "parse_error", "The Value cant parsed into a valid format.");
 
 
     }

@@ -12,6 +12,7 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -47,28 +48,28 @@ public class EventListener implements Fast{
                     //Check if Channel is Private (DM)
                     if (!event.getChannel().isPrivate()) {
                         String message = event.getMessage().getContent();
-                        //Check if Message contains Prefix
-                        if (message.startsWith(BotUtils.BOT_PREFIX)) {
-                            Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
-                            //Check if Invoke Messages should be deleted
-                            if (DRIVER.getProperty(DRIVER.CONFIG,"deleteinvokes", true).equals(true)) {
-                                if (INIT.BOT.getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
-                                    Console.debug(Console.sendprefix + "Message deleted: [" + event.getMessage().getContent() + "]");
-                                    event.getMessage().delete();
-                                } else {
-                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("nomanagepermission_error"), true);
-                                }
-                            }
-                        }
                         //Iterate commands
                         for (Command command : modules.keySet()) {
                             String[] args = new String[]{};
+                            //Check if Message contains Prefix
+                            if (message.startsWith(command.prefix() + command.command().toLowerCase()) || message.startsWith(command.prefix() + command.alias().toLowerCase())) {
+                                Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
+                                //Check if Invoke Messages should be deleted
+                                if (DRIVER.getProperty(DRIVER.CONFIG,"deleteinvokes", true).equals(true)) {
+                                    if (INIT.BOT.getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
+                                        Console.debug(Console.sendprefix + "Message deleted: [" + event.getMessage().getContent() + "]");
+                                        event.getMessage().delete();
+                                    } else {
+                                        BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("nomanagepermission_error"), true);
+                                    }
+                                }
+                            }
                             //Check each command if the command was called
-                            if (message.startsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase())) {
+                            if (message.startsWith(command.prefix() + command.command().toLowerCase())) {
                                 //Check Permissions
                                 if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
-                                    if (!message.endsWith(BotUtils.BOT_PREFIX + command.command().toLowerCase()) && !message.endsWith(" ")) {
-                                        args = message.substring((BotUtils.BOT_PREFIX + command.command()).length() + 1).split(" ");
+                                    if (!message.endsWith(command.prefix() + command.command().toLowerCase()) && !message.endsWith(" ")) {
+                                        args = message.substring((command.prefix() + command.command()).length() + 1).split(" ");
                                     }
                                     //Execute Command
                                     initiateCommand(args, command, event);
@@ -76,11 +77,11 @@ public class EventListener implements Fast{
                                     BotUtils.sendMessage(event.getChannel(), LANG.ERROR+LANG.getTranslation("nopermissions_error"), true);
                                 }
                             //Check each alias if the alias was called
-                            } else if (message.startsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
+                            } else if (message.startsWith(command.prefix() + command.alias().toLowerCase()) && !message.endsWith(" ")) {
                                 //Check Permissions
                                 if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
-                                    if (!message.endsWith(BotUtils.BOT_PREFIX + command.alias().toLowerCase()) && !message.endsWith(" ")) {
-                                        args = message.substring((BotUtils.BOT_PREFIX + command.alias()).length() + 1).split(" ");
+                                    if (!message.endsWith(command.prefix() + command.alias().toLowerCase()) && !message.endsWith(" ")) {
+                                        args = message.substring((command.prefix() + command.alias()).length() + 1).split(" ");
                                     }
                                     //Execute Command
                                     initiateCommand(args, command, event);
@@ -94,7 +95,8 @@ public class EventListener implements Fast{
                         BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR+LANG.getTranslation("private_error"));
                     }
                 } catch (Exception ex) {
-                    Console.error(String.format(LANG.getTranslation("commonmessage_error"),ex.getMessage()));
+                    Console.error(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace())));
+                    ex.printStackTrace();
                 }
             }
         }).start();
@@ -118,7 +120,7 @@ public class EventListener implements Fast{
                 }
             }
         } catch (Exception ex) {
-            Console.error(String.format(LANG.getTranslation("execution_error"), ex.getMessage()));
+            Console.error(String.format(LANG.getTranslation("execution_error"), Arrays.toString(ex.getStackTrace())));
         }
     }
 

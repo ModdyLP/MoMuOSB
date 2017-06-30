@@ -26,6 +26,8 @@ public class MoMuOSBMain implements Fast{
             LANG.createTranslations();
             LANG.setDefaultLanguage();
             Console.println("Language loading complete!");
+
+
             Runtime.getRuntime().addShutdownHook(new Thread() {
                     public void run() {
                         shutdown();
@@ -43,7 +45,7 @@ public class MoMuOSBMain implements Fast{
     /**
      * Shutdown Method
      */
-    private static void shutdown() {
+    public static void shutdown() {
         Console.println("Bot shutting down...");
         if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
             INIT.BOT.logout();
