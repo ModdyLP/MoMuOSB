@@ -37,7 +37,7 @@
      "help_command":"Commands",
      "changeProperty_changeprop":"Change the Property",
      "help_prefixinfo":"\nThe Prefixes are \nAdmin Prefix:   !   \nInfo Prefix:    .   \nGame Prefix:    ~   \nMusic Prefix:   $   \n",
-     "getImage_getImage":"GetImage",
+     "getImage_getImage":"Get a Image from web",
      "notdeleted_error":"Message could not be deleted! Error: %1s",
      "stats_servercount":"Server Count",
      "help_arguments":"Arguments",
@@ -56,7 +56,7 @@
      "shutdownbot_shutdown":"Shutdown the bot",
      "nopermissions_error":"You have no Permission to use this command.",
      "help_noneinfo":"If you want to reset a Value, then type for each argument NA",
-     "token_error":"Please provide a token inside of the config.yml",
+     "token_error":"Please provide a token inside of the config.json",
      "engine_unknown":"The Search Engine is unknown!",
      "botowner_error":"This command can only be used from Bot Owner."
 }
