@@ -118,7 +118,7 @@ public class FileDriver {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(files.get(filename)));
                 String json = jsons.get(filename).toJSONString();
                 json = json.replace("{\"", "{\n     \"")
-                        .replace(",", ",\n     ")
+                        .replace(",\"", ",\n     \"")
                         .replace("\"}", "\"\n}");
                 writer.write(json);
                 writer.close();
@@ -209,6 +209,7 @@ public class FileDriver {
             ex.printStackTrace();
         }
     }
+
 
 
 }

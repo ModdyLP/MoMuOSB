@@ -32,8 +32,7 @@
      "stats_shards":"Shards",
      "nopermissions_error":"You have no Permission to use this command.",
      "stats_user":"Users",
-     "help_noneinfo":"If you want to reset a Value,
-                                              then type for each argument NA",
+     "help_noneinfo":"If you want to reset a Value, then type for each argument NA",
      "token_error":"Please provide a token inside of the config.yml",
      "engine_unknown":"The Search Engine is unknown!",
      "botowner_error":"This command can only be used from Bot Owner."
