@@ -1,5 +1,6 @@
 package storage;
 
+import discord.BotUtils;
 import main.MoMuOSBMain;
 import org.apache.commons.io.FileUtils;
 import util.Console;
@@ -41,7 +42,6 @@ public class FileDriver {
     public void createNewFile(String filenamewithpath) {
         try {
             String[] parts = filenamewithpath.split("/");
-            Console.debug(Arrays.toString(parts));
             for (int i = 0; i < parts.length-1; i++) {
                 File file = new File(parts[i]);
                 if(!file.exists()) {

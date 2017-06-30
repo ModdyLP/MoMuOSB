@@ -123,7 +123,7 @@ public class ChangeCommands extends Module {
     public boolean setUsername(MessageReceivedEvent event, String[] args) {
         if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
             if (args[0].equalsIgnoreCase("NA")) {
-                INIT.BOT.changeUsername(DRIVER.getProperty(DRIVER.CONFIG, "defaultUsername", "MoMuOSB").toString());
+                INIT.BOT.changeUsername(DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultUsername").toString());
             } else {
                 INIT.BOT.changeUsername(Utils.makeArgsToString(args, new String[] {}));
             }

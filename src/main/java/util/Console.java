@@ -23,7 +23,7 @@ public class Console implements Fast{
      * @param message message
      */
     public static void debug(String message) {
-        if (DRIVER.getProperty(DRIVER.CONFIG,"debug", false).equals(true)) {
+        if (DRIVER.getPropertyOnly(DRIVER.CONFIG,"debug").equals(true)) {
             String debugprefix = "[DEBUG]";
             System.out.println(Utils.format(getTimeNow())+prefix + debugprefix + message);
             logger.info(prefix + debugprefix + message);

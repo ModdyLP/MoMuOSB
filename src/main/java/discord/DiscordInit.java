@@ -2,6 +2,7 @@ package discord;
 
 import events.EventListener;
 import main.Fast;
+import storage.ConfigLoader;
 import util.Console;
 import sx.blah.discord.api.IDiscordClient;
 
@@ -29,7 +30,7 @@ public class DiscordInit implements Fast{
      * Init the Bot
      */
     public void init() {
-        String token = DRIVER.getProperty(DRIVER.CONFIG,"token", "").toString();
+        String token = DRIVER.getPropertyOnly(DRIVER.CONFIG,"token").toString();
         if (token.equals("")) {
             Console.error(LANG.getTranslation("token_error"));
 

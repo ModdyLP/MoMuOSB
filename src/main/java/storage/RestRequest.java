@@ -52,14 +52,14 @@ public class RestRequest
     public String fetchResult()
     {
         
-        String Request = RequestUrl.toString() + "?";
+        StringBuilder Request = new StringBuilder(RequestUrl.toString() + "?");
         
         for ( String Key : Arguments.keySet() )
         {
-            Request += Key + "=" + Arguments.get( Key ) + "&";
+            Request.append(Key).append("=").append(Arguments.get(Key)).append("&");
         }
         
-        return WebClient.fetchUrl(Request);
+        return WebClient.fetchUrl(Request.toString());
     }
     
     /**

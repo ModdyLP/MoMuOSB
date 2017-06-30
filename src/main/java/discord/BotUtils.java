@@ -117,27 +117,25 @@ public class BotUtils implements Fast{
      * @param delete delete
      */
     private static void deleteMessageFromBot(IChannel channel, boolean delete) {
-        if (delete && DRIVER.getProperty(DRIVER.CONFIG,"deleteBotAnswers", true).equals(true)) {
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Thread.sleep(Integer.parseInt(DRIVER.getProperty(DRIVER.CONFIG,"botanswerdeletseconds", 5).toString()) * 1000);
-                        MessageHistory messages = channel.getMessageHistory(10);
-                        for (IMessage message: messages) {
-                            if (message.getAuthor().isBot()) {
-                                for (IEmbed obj: message.getEmbeds()) {
-                                    if (obj.getColor().equals(Color.green)) {
-                                        if (!message.isDeleted()) {
-                                            message.delete();
-                                        }
+        if (delete && DRIVER.getPropertyOnly(DRIVER.CONFIG,"deleteBotAnswers").equals(true)) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(Integer.parseInt(DRIVER.getPropertyOnly(DRIVER.CONFIG,"botanswerdeletseconds").toString()) * 1000);
+                    MessageHistory messages = channel.getMessageHistory(10);
+                    for (IMessage message: messages) {
+                        if (message.getAuthor().isBot()) {
+                            for (IEmbed obj: message.getEmbeds()) {
+                                if (obj.getColor().equals(Color.green)) {
+                                    if (!message.isDeleted()) {
+                                        message.delete();
                                     }
                                 }
-                                break;
                             }
+                            break;
                         }
-                    } catch (Exception ex) {
-                        Console.error(LANG.getTranslation("common_error"));
                     }
+                } catch (Exception ex) {
+                    Console.error(LANG.getTranslation("common_error"));
                 }
             }).start();
         }

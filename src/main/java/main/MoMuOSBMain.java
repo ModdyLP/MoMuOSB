@@ -1,6 +1,7 @@
 package main;
 
 import discord.DiscordInit;
+import storage.ConfigLoader;
 import util.Console;
 
 import java.sql.Date;
@@ -21,7 +22,7 @@ public class MoMuOSBMain implements Fast{
         try {
             Console.println("Bot starting...");
             Console.println("Bot was created by ModdyLP - Niklas H. https://moddylp.de.");
-            DRIVER.createNewFile(DRIVER.CONFIG);
+            ConfigLoader.loadConfigOptions();
             Console.println("Loading Language....");
             LANG.createTranslations();
             LANG.setDefaultLanguage();

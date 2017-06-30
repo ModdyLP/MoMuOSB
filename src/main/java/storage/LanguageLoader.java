@@ -31,10 +31,10 @@ public class LanguageLoader implements Fast{
      * Create Language Files
      */
     public void createTranslations() {
-        if (DRIVER.getProperty(DRIVER.CONFIG, "language", "en").equals("en")) {
+        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "language").equals("en")) {
             LANG = DEF_LANG;
         } else {
-            LANG = "lang/lang_"+ DRIVER.getProperty(DRIVER.CONFIG, "language", "en")+".json";
+            LANG = "lang/lang_"+ DRIVER.getPropertyOnly(DRIVER.CONFIG, "language")+".json";
             DRIVER.createNewFile(LANG);
         }
         DRIVER.createNewFile(DEF_LANG);
@@ -79,7 +79,7 @@ public class LanguageLoader implements Fast{
         //Infos
         DRIVER.setProperty(DEF_LANG, "login_info", "Bot sign into the server. Please wait until the Bot is ready...");
         DRIVER.setProperty(DEF_LANG, "command_success", "The command was successful!");
-        DRIVER.setProperty(DEF_LANG, "shutdowninfo", "The but will shutting down in 10 seconds! Bye bye");
+        DRIVER.setProperty(DEF_LANG, "shutdowninfo", "The Bot will shutting down in 10 seconds! Bye bye");
 
         //Stats Command
         DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
@@ -110,6 +110,9 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "engine_unknown", "The Search Engine is unknown!");
         DRIVER.setProperty(DEF_LANG, "results_end", "You reached the end of results.");
         DRIVER.setProperty(DEF_LANG, "results_cleared", "The results were cleared.");
+        DRIVER.setProperty(DEF_LANG, "searchtoken_google", "Please provide a google search api token");
+        DRIVER.setProperty(DEF_LANG, "result_out", "The Result is out of Range.");
+        DRIVER.setProperty(DEF_LANG, "no_search", "There is no search running");
 
         //Changes
         DRIVER.setProperty(DEF_LANG, "changeprop_error", "This option can't found in the config file!");
