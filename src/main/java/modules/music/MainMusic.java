@@ -98,7 +98,7 @@ public class MainMusic extends Module{
             command = "skip",
             alias = "skip",
             description = "The Bot skips a song.",
-            arguments = {"Url or Path"},
+            arguments = {},
             permission = Permissions.MANAGE_CHANNEL,
             prefix = Prefix.MUSIC_PREFIX
     )
