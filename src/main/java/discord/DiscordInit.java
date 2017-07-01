@@ -1,7 +1,7 @@
 package discord;
 
 import events.EventListener;
-import main.Fast;
+import util.Fast;
 import sx.blah.discord.api.IDiscordClient;
 import util.Console;
 

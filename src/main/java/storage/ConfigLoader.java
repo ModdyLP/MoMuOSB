@@ -1,6 +1,6 @@
 package storage;
 
-import main.Fast;
+import util.Fast;
 import util.Console;
 
 /**

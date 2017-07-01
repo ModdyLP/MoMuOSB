@@ -1,10 +1,7 @@
 package events;
 
-import main.Fast;
-import modules.ChangeCommands;
-import modules.InfoCommands;
-import modules.Moderation;
-import modules.SearchCommand;
+import modules.*;
+import util.Fast;
 import modules.music.MainMusic;
 import util.Console;
 
@@ -19,12 +16,13 @@ class RegisterCommands implements Fast{
     static void registerAll() {
         Console.println("Command scanning...");
         //register commands
-        EVENT.registerCommand(InfoCommands.class, new InfoCommands());
-        EVENT.registerCommand(ChangeCommands.class, new ChangeCommands());
-        EVENT.registerCommand(Moderation.class, new Moderation());
-        EVENT.registerCommand(SearchCommand.class, new SearchCommand());
-        EVENT.registerCommand(MainMusic.class, new MainMusic());
+        COMMAND.registerCommand(InfoCommands.class, new InfoCommands());
+        COMMAND.registerCommand(ChangeCommands.class, new ChangeCommands());
+        COMMAND.registerCommand(Moderation.class, new Moderation());
+        COMMAND.registerCommand(SearchCommand.class, new SearchCommand());
+        COMMAND.registerCommand(MainMusic.class, new MainMusic());
+        COMMAND.registerCommand(Permission.class, new Permission());
 
-        Console.println("All Commands("+EVENT.getAllCommands().size()+") added to Bot");
+        Console.println("All Commands("+COMMAND.getAllCommands().size()+") added to Bot");
     }
 }

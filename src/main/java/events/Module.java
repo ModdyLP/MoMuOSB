@@ -1,6 +1,6 @@
 package events;
 
-import main.Fast;
+import util.Fast;
 
 /**
  * Created by N.Hartmann on 28.06.2017.

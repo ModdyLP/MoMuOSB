@@ -3,6 +3,7 @@ package main;
 import discord.DiscordInit;
 import storage.ConfigLoader;
 import util.Console;
+import util.Fast;
 
 import java.sql.Date;
 
@@ -10,7 +11,7 @@ import java.sql.Date;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class MoMuOSBMain implements Fast{
+public class MoMuOSBMain implements Fast {
 
     public static Date starttime = new Date(System.currentTimeMillis());
 

@@ -3,7 +3,7 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
-import main.Prefix;
+import util.Prefix;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import storage.RestRequest;
@@ -34,7 +34,7 @@ public class SearchCommand extends Module{
             description = "Search a Image",
             alias = "sq",
             arguments = {"SearchEngine(Google)","Query []"},
-            permission = Permissions.EMBED_LINKS,
+            permission = "searchcommand",
             prefix = Prefix.GAME_PREFIX
     )
     public void searchGoogleImage(MessageReceivedEvent event, String[] args) {
@@ -80,7 +80,7 @@ public class SearchCommand extends Module{
             description = "Next Image in Resultlist",
             alias = "next",
             arguments = {},
-            permission = Permissions.EMBED_LINKS,
+            permission = "searchcommand",
             prefix = Prefix.GAME_PREFIX
     )
     public void nextImage(MessageReceivedEvent event, String[] args) {
@@ -103,7 +103,7 @@ public class SearchCommand extends Module{
             description = "Clear all Images",
             alias = "clear",
             arguments = {},
-            permission = Permissions.EMBED_LINKS,
+            permission = "searchcommand",
             prefix = Prefix.GAME_PREFIX
 
     )
@@ -123,7 +123,7 @@ public class SearchCommand extends Module{
             description = "Get Image from Web",
             alias = "getI",
             arguments = {"Number"},
-            permission = Permissions.EMBED_LINKS,
+            permission = "searchcommand",
             prefix = Prefix.GAME_PREFIX
 
     )

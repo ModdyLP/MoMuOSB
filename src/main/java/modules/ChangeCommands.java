@@ -3,7 +3,7 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
-import main.Prefix;
+import util.Prefix;
 import org.apache.commons.lang3.math.NumberUtils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
@@ -32,7 +32,7 @@ public class ChangeCommands extends Module {
             description = "Change the Bot Avatar",
             alias = "sa",
             arguments = {"ImageLink"},
-            permission = Permissions.ADMINISTRATOR,
+            permission = "bot_manage",
             prefix = Prefix.ADMIN_PREFIX
     )
     public boolean changeAvatar(MessageReceivedEvent event, String[] args) {
@@ -61,7 +61,7 @@ public class ChangeCommands extends Module {
             description = "Change the Bot Stream",
             alias = "sst",
             arguments = {"StreamUrl", "Game []"},
-            permission = Permissions.ADMINISTRATOR,
+            permission = "bot_manage",
             prefix = Prefix.ADMIN_PREFIX
     )
     public boolean setStream(MessageReceivedEvent event, String[] args) {
@@ -89,7 +89,7 @@ public class ChangeCommands extends Module {
             arguments = {"Game []"},
             description = "Change the Bot Game",
             alias = "sp",
-            permission = Permissions.ADMINISTRATOR,
+            permission = "bot_manage",
             prefix = Prefix.ADMIN_PREFIX
     )
     public boolean setplaying(MessageReceivedEvent event, String[] args) {
@@ -116,7 +116,7 @@ public class ChangeCommands extends Module {
             arguments = {"Name []"},
             description = "Change the Bot Name",
             alias = "sun",
-            permission = Permissions.ADMINISTRATOR,
+            permission = "bot_manage",
             prefix = Prefix.ADMIN_PREFIX
     )
     public boolean setUsername(MessageReceivedEvent event, String[] args) {
@@ -143,7 +143,7 @@ public class ChangeCommands extends Module {
             arguments = {"Option", "Value"},
             description = "Change the Property",
             alias = "chp",
-            permission = Permissions.ADMINISTRATOR,
+            permission = "bot_manage",
             prefix = Prefix.ADMIN_PREFIX
     )
     public boolean changeProperty(MessageReceivedEvent event, String[] args) {
@@ -185,7 +185,7 @@ public class ChangeCommands extends Module {
             arguments = {},
             description = "Print the Property",
             alias = "prp",
-            permission = Permissions.ADMINISTRATOR,
+            permission = "bot_manage",
             prefix = Prefix.ADMIN_PREFIX
     )
     public boolean printProperties(MessageReceivedEvent event, String[] args) {
@@ -211,7 +211,7 @@ public class ChangeCommands extends Module {
             arguments = {"Language Code"},
             description = "Change the Language",
             alias = "chlang",
-            permission = Permissions.ADMINISTRATOR,
+            permission = "bot_manage",
             prefix = Prefix.ADMIN_PREFIX
     )
     public boolean changeLang(MessageReceivedEvent event, String[] args) {

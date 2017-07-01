@@ -4,9 +4,9 @@ import discord.BotUtils;
 import discord.DiscordInit;
 import events.Command;
 import events.Module;
-import main.Fast;
+import util.Fast;
 import main.MoMuOSBMain;
-import main.Prefix;
+import util.Prefix;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
@@ -40,14 +40,16 @@ public class InfoCommands extends Module implements Fast {
             description = "Display the help",
             alias = "h",
             arguments = {},
-            permission = Permissions.READ_MESSAGES,
+            permission = "showhelp",
             prefix = Prefix.INFO_PREFIX
     )
     public boolean help(MessageReceivedEvent event, String[] args) {
-        for (EmbedBuilder builder : genbuildHelp(event)) {
-            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
+        new Thread(() -> {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
-        }
+            for (EmbedBuilder builder : genbuildHelp(event)) {
+                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
+            }
+        }).start();
         return true;
     }
 
@@ -63,7 +65,7 @@ public class InfoCommands extends Module implements Fast {
             description = "Invites the bot",
             alias = "ib",
             arguments = {},
-            permission = Permissions.ADMINISTRATOR,
+            permission = "createinvite",
             prefix = Prefix.INFO_PREFIX
     )
     public boolean inviteBot(MessageReceivedEvent event, String[] args) {
@@ -91,7 +93,7 @@ public class InfoCommands extends Module implements Fast {
             description = "Display the stats",
             alias = "st",
             arguments = {},
-            permission = Permissions.READ_MESSAGES,
+            permission = "showstats",
             prefix = Prefix.INFO_PREFIX
     )
     public boolean stats(MessageReceivedEvent event, String[] args) {
@@ -116,7 +118,7 @@ public class InfoCommands extends Module implements Fast {
                 "\n" + LANG.getTranslation("stats_user") + ": " + statusTypes.size() + " / " + INIT.BOT.getUsers().size() +
                 "\n" + LANG.getTranslation("stats_uptime") + ": " + Utils.calculateAndFormatTimeDiff(MoMuOSBMain.starttime, now) +
                 "\n" + LANG.getTranslation("stats_owner") + ": " + INIT.BOT.getApplicationOwner().getName() +
-                "\n" + LANG.getTranslation("stats_commands") + ": " + EVENT.getAllCommands().size();
+                "\n" + LANG.getTranslation("stats_commands") + ": " + COMMAND.getAllCommands().size();
 
         builder.appendField(":information_source: " + LANG.getTranslation("stats_title") + " :information_source:", stringBuilder, false);
         return builder;
@@ -127,15 +129,16 @@ public class InfoCommands extends Module implements Fast {
         int page = 1;
         EmbedBuilder builder = new EmbedBuilder();
         builders.add(page - 1, builder);
-        builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") + " (" + EVENT.getAllCommands().size() + ") Page: " + page + " :information_source:");
+        builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
         builders.get(page - 1).withColor(Color.CYAN);
         builders.get(page - 1).withDescription(LANG.getTranslation("help_noneinfo"));
         builders.get(page - 1).appendDescription(LANG.getTranslation("help_prefixinfo"));
-        for (Command command : EVENT.getAllCommands()) {
-            if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
+        for (Command command : COMMAND.getAllCommands()) {
+            if (event.getAuthor().getRolesForGuild(event.getGuild()).contains(PERM.groupPermission(command.permission())) || event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                 String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + command.prefix() + command.alias() +
                         "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
-                        "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) + "\n";
+                        "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command)+
+                        "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
                 builders.get(page - 1).appendField(LANG.getTranslation("help_command") + "       | " + command.prefix() + command.command(), string, false);
             }
             if (builders.get(page - 1).getFieldCount() == EmbedBuilder.FIELD_COUNT_LIMIT) {

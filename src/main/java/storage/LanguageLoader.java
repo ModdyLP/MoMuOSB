@@ -1,7 +1,7 @@
 package storage;
 
 import events.Command;
-import main.Fast;
+import util.Fast;
 import util.Console;
 
 /**
@@ -40,7 +40,7 @@ public class LanguageLoader implements Fast{
         DRIVER.createNewFile(DEF_LANG);
     }
     public String getMethodDescription(Command command) {
-        return DRIVER.getProperty(LANG, EVENT.getMethodNameByCommand(command)+"_"+command.command(), command.description()).toString();
+        return DRIVER.getProperty(LANG, COMMAND.getMethodNameByCommand(command)+"_"+command.command(), command.description()).toString();
     }
 
     /**
@@ -102,6 +102,7 @@ public class LanguageLoader implements Fast{
                 "Info Prefix:    .   \n" +
                 "Game Prefix:    ~   \n" +
                 "music Prefix:   $   \n");
+        DRIVER.setProperty(DEF_LANG, "help_permission", "Permission");
 
         //Deletion
         DRIVER.setProperty(DEF_LANG, "del_topic", "Deletion %1s of %2s");
@@ -132,6 +133,10 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "notchanged_error", "The change Command does not provide resetting.");
         DRIVER.setProperty(DEF_LANG, "parse_error", "The Value cant parsed into a valid format.");
         DRIVER.setProperty(DEF_LANG, "props", "Properties");
+
+        //Permission
+        DRIVER.setProperty(DEF_LANG, "perm_success", "Permission added successful");
+        DRIVER.setProperty(DEF_LANG, "perm_failed", "Failed to add Permission to group");
     }
 
 }

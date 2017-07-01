@@ -35,7 +35,7 @@ public class Utils {
                 diff[3] > 1 ? "s" : "");
     }
     public static String format(Date date){
-        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-d:HH-mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-d:HH-mm:ss");
         return sdf.format(date);
     }
     public static String makeArgsToString(String[] args, String[] replace) {
