@@ -111,7 +111,7 @@ public class Moderation extends Module{
             description = "Shutdown the bot",
             alias = "die",
             arguments = {},
-            permission = "botshutdown",
+            permission = Prefix.BOT_MANAGE,
             prefix = Prefix.ADMIN_PREFIX
     )
     public boolean shutdownbot(MessageReceivedEvent event, String[] args) {

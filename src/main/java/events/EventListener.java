@@ -155,9 +155,10 @@ public class EventListener implements Fast{
             count++;
         }
         Console.println("Servers: "+serverstr);
+        RegisterCommands.registerAll();
         Console.println("Loading Permissions from SaveFile");
         PERM.loadPermissions(INIT.BOT.getGuilds());
-        RegisterCommands.registerAll();
+        PERM.setDefaultPermissions(INIT.BOT.getGuilds());
         INIT.BOT.changePlayingText(DRIVER.getPropertyOnly(DRIVER.CONFIG,"defaultplaying").toString());
         INIT.BOT.changeUsername(DRIVER.getPropertyOnly(DRIVER.CONFIG,"defaultUsername").toString());
         Console.println("Loading Command Descriptions");

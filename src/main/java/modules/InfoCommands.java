@@ -4,6 +4,7 @@ import discord.BotUtils;
 import discord.DiscordInit;
 import events.Command;
 import events.Module;
+import permission.PermissionController;
 import util.Fast;
 import main.MoMuOSBMain;
 import util.Prefix;
@@ -40,7 +41,7 @@ public class InfoCommands extends Module implements Fast {
             description = "Display the help",
             alias = "h",
             arguments = {},
-            permission = "showhelp",
+            permission = Prefix.BOT_INFO,
             prefix = Prefix.INFO_PREFIX
     )
     public boolean help(MessageReceivedEvent event, String[] args) {
@@ -65,7 +66,7 @@ public class InfoCommands extends Module implements Fast {
             description = "Invites the bot",
             alias = "ib",
             arguments = {},
-            permission = "createinvite",
+            permission = Prefix.BOT_MANAGE,
             prefix = Prefix.INFO_PREFIX
     )
     public boolean inviteBot(MessageReceivedEvent event, String[] args) {
@@ -93,7 +94,7 @@ public class InfoCommands extends Module implements Fast {
             description = "Display the stats",
             alias = "st",
             arguments = {},
-            permission = "showstats",
+            permission = Prefix.BOT_INFO,
             prefix = Prefix.INFO_PREFIX
     )
     public boolean stats(MessageReceivedEvent event, String[] args) {
@@ -129,12 +130,12 @@ public class InfoCommands extends Module implements Fast {
         int page = 1;
         EmbedBuilder builder = new EmbedBuilder();
         builders.add(page - 1, builder);
-        builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
         builders.get(page - 1).withColor(Color.CYAN);
         builders.get(page - 1).withDescription(LANG.getTranslation("help_noneinfo"));
         builders.get(page - 1).appendDescription(LANG.getTranslation("help_prefixinfo"));
+        int count = 0;
         for (Command command : COMMAND.getAllCommands()) {
-            if (event.getAuthor().getRolesForGuild(event.getGuild()).contains(PERM.groupPermission(command.permission())) || event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+            if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
                 String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + command.prefix() + command.alias() +
                         "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
                         "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command)+
@@ -146,8 +147,9 @@ public class InfoCommands extends Module implements Fast {
                 builders.add(page - 1, buildertemp);
                 page++;
             }
+            count++;
         }
-
+        builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") +"("+count+")"+ " Page: " + page + " :information_source:");
         return builders;
     }
 

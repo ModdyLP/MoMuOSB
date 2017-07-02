@@ -9,4 +9,8 @@ public interface Prefix {
     String INFO_PREFIX = ".";
     String GAME_PREFIX = "~";
     String MUSIC_PREFIX = "$";
+    String BOT_OWNER = "bot_owner";
+    String BOT_MANAGE = "bot_manage";
+    String BOT_INFO = "bot_info";
+    String BOT_PERM = "bot_permissions";
 }

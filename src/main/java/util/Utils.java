@@ -43,6 +43,6 @@ public class Utils {
         for (String arg: replace) {
             string = string.replace(arg, "");
         }
-        return string;
+        return string.trim();
     }
 }

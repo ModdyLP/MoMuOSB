@@ -57,6 +57,7 @@ public class LanguageLoader implements Fast{
      */
     public void setDefaultLanguage() {
         Console.debug("DefaultLanguage Loading for Fallback");
+        DRIVER.loadJson();
 
         //Errors
         DRIVER.setProperty(DEF_LANG, "common_error", "There was an error!");
@@ -135,8 +136,10 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "props", "Properties");
 
         //Permission
-        DRIVER.setProperty(DEF_LANG, "perm_success", "Permission added successful");
-        DRIVER.setProperty(DEF_LANG, "perm_failed", "Failed to add Permission to group");
+        DRIVER.setProperty(DEF_LANG, "perm_success", "Permission Command successful");
+        DRIVER.setProperty(DEF_LANG, "perm_failed", "Failed to manage Permission to group");
+
+        DRIVER.saveJson();
     }
 
 }

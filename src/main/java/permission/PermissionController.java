@@ -1,17 +1,17 @@
 package permission;
 
 import events.Command;
+import org.json.simple.JSONArray;
 import org.omg.CORBA.IRObject;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Permissions;
 import util.Console;
 import util.Fast;
+import util.Prefix;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ModdyLP on 01.07.2017. Website: https://moddylp.de/
@@ -33,14 +33,17 @@ public class PermissionController implements Fast {
 
     public void addPermission(Command command) {
         permissions.put(command, command.permission());
-        Console.debug("Permissions added for Command: " + command.permission());
     }
 
-    public boolean hasPermission(List<IRole> roles, String permission) {
+    public boolean hasPermission(IUser user, IGuild server, String permission) {
         boolean check = false;
-        for (IRole role : roles) {
-            if (grouppermissions.get(role) != null && grouppermissions.get(role).contains(permission)) {
-                check = true;
+        if (permission.equalsIgnoreCase(Prefix.BOT_OWNER)) {
+            return user.equals(INIT.BOT.getApplicationOwner());
+        } else {
+            for (IRole role : user.getRolesForGuild(server)) {
+                if (grouppermissions.get(role) != null && grouppermissions.get(role).contains(permission)) {
+                    check = true;
+                }
             }
         }
         return check;
@@ -48,17 +51,19 @@ public class PermissionController implements Fast {
 
     public IRole groupPermission(String permission) {
         for (IRole role : grouppermissions.keySet()) {
-            if (grouppermissions.get(role).contains(permission)) {
-                return role;
+            if (!role.isDeleted()) {
+                if (grouppermissions.get(role).contains(permission)) {
+                    return role;
+                }
             }
         }
         return null;
     }
 
-    public int getAccessAmount(List<IRole> role, IUser user) {
+    public int getAccessAmount(IUser user, IGuild server) {
         int count = 0;
         for (Command command : COMMAND.getAllCommands()) {
-            if (hasPermission(role, command.permission()) || user.equals(INIT.BOT.getApplicationOwner())) {
+            if (hasPermission(user, server, command.permission())) {
                 count++;
             }
         }
@@ -76,6 +81,26 @@ public class PermissionController implements Fast {
         } else {
             Console.debug("This permission doesnt exist: "+permission);
         }
+        savePermissions();
+    }
+    public void removePermissionToGroup(IRole role, String permission) {
+        if (permissions.containsValue(permission)) {
+            ArrayList<String> grouppermission = grouppermissions.get(role);
+            if (grouppermission == null) {
+                return;
+            }
+            grouppermission.remove(permission);
+        } else {
+            Console.debug("This permission doesnt exist: "+permission);
+        }
+        savePermissions();
+    }
+    public void removePermissionToGroup(IRole role, Command command) {
+        ArrayList<String> grouppermission = grouppermissions.get(role);
+        if (grouppermission == null) {
+            return;
+        }
+        grouppermission.remove(command.permission());
         savePermissions();
     }
 
@@ -110,6 +135,7 @@ public class PermissionController implements Fast {
                 ArrayList<String> permissions = grouppermissions.get(role);
                 DRIVER.setProperty(PERMFILE, String.valueOf(role.getLongID()), permissions);
             }
+            DRIVER.saveJson();
         } catch (Exception ex) {
             Console.error("Saving of Permissions failed");
             ex.printStackTrace();
@@ -123,19 +149,51 @@ public class PermissionController implements Fast {
             for (String roleid : values.keySet()) {
                 for (IGuild serverinstance : server) {
                     IRole role = serverinstance.getRoleByID(Long.valueOf(roleid));
-                    ArrayList<String> permission = (ArrayList<String>) values.get(roleid);
-                    if (permission != null) {
+                    if (role != null) {
+                        ArrayList<String> permission = new ArrayList<String>();
+                        JSONArray jArray = (JSONArray) values.get(roleid);
+                        if (jArray != null) {
+                            for (Object aJArray : jArray) {
+                                permission.add(aJArray.toString());
+                            }
+                        }
                         grouppermissions.put(role, permission);
+                        Console.debug(role.getLongID() + " " + role.getName() + " " + permission.size()+"   "+grouppermissions.size());
                         for (String perm : permission) {
+                            Console.debug("Permission: " + perm);
                             permissions.put(COMMAND.getCommandByPermission(perm), perm);
                         }
                     }
-
                 }
             }
         } catch (Exception ex) {
             Console.error("Failed to load Permissions");
             ex.printStackTrace();
+        }
+    }
+
+
+    public void setDefaultPermissions(List<IGuild> server) {
+        Console.debug("Load default permissions...");
+        if (!DRIVER.checkIfFileExists(PERMFILE) && DRIVER.checkIfFileisEmpty(PERMFILE)) {
+            List<IRole> adminroles = new ArrayList<>();
+            List<IRole> everyoneroles = new ArrayList<>();
+            for (IGuild serverinst : server) {
+                for (IRole role : serverinst.getRoles()) {
+                    if (role.getPermissions().contains(Permissions.ADMINISTRATOR)) {
+                        adminroles.add(role);
+                    }
+                }
+                everyoneroles.add(serverinst.getEveryoneRole());
+            }
+            for (IRole role : adminroles) {
+                PERM.addPermissionToGroup(role, Prefix.BOT_MANAGE);
+            }
+            for (IRole role : everyoneroles) {
+                PERM.addPermissionToGroup(role, Prefix.BOT_INFO);
+            }
+            DRIVER.saveJson();
+            Console.debug("Permission loaded: Admin:" + adminroles.size() + " Info: " + everyoneroles.size());
         }
     }
 }
