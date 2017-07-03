@@ -1,5 +1,6 @@
 /.idea/
 /target/
 /config.json
+/permission.json
 *.log
 
