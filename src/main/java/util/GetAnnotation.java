@@ -1,10 +1,10 @@
 package util;
 
 import events.Command;
-import main.Fast;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -28,6 +28,7 @@ public class GetAnnotation implements Fast{
                             if (method.getParameters()[0].getParameterizedType().equals(MessageReceivedEvent.class) && method.getParameters()[1].getParameterizedType().equals(String[].class)) {
                                 Console.debug("Method added as Command: " + method.getName());
                                 allannotation.put(annotation, method);
+                                PERM.addPermission(annotation);
                             } else {
                                 Console.error("Method has no valid Parameters: "+method.getName());
                             }

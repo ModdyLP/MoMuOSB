@@ -1,7 +1,9 @@
-package main;
+package util;
 
 import discord.DiscordInit;
+import events.CommandManager;
 import events.EventListener;
+import permission.PermissionController;
 import storage.FileDriver;
 import storage.LanguageLoader;
 
@@ -14,4 +16,6 @@ public interface Fast {
     DiscordInit INIT = DiscordInit.getInstance();
     EventListener EVENT = EventListener.getInstance();
     LanguageLoader LANG = LanguageLoader.getInstance();
+    PermissionController PERM = PermissionController.getInstance();
+    CommandManager COMMAND = CommandManager.getInstance();
 }

@@ -31,6 +31,13 @@ public class FileDriver {
         }
         return instance;
     }
+    public boolean checkIfFileExists(String filename) {
+        return files.get(filename) != null && files.get(filename).exists();
+    }
+    public boolean checkIfFileisEmpty(String filename) {
+        loadJson();
+        return jsons.get(filename).isEmpty();
+    }
 
     /**
      * Create new File
@@ -87,7 +94,7 @@ public class FileDriver {
     /**
      * Load Json from File
      */
-    private void loadJson() {
+    public void loadJson() {
         try {
             for (String filename: files.keySet()) {
                 BufferedReader reader = new BufferedReader(new FileReader(files.get(filename)));
@@ -110,7 +117,7 @@ public class FileDriver {
     /**
      * Save Json to File
      */
-    private void saveJson() {
+    public void saveJson() {
         try {
             for (String filename: files.keySet()) {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(files.get(filename)));
@@ -136,7 +143,6 @@ public class FileDriver {
      */
     public void setProperty(String filename, String option, Object value) {
         try {
-            loadJson();
             if (jsons.get(filename) != null) {
                 if (jsons.get(filename).containsKey(option)) {
                     removeProperty(filename, option);
@@ -147,7 +153,6 @@ public class FileDriver {
                 json.put(option, value);
                 jsons.put(filename, json);
             }
-            saveJson();
         } catch (Exception ex) {
             Console.error("Can not set Property: ");
             ex.printStackTrace();
@@ -162,7 +167,6 @@ public class FileDriver {
      * @return value
      */
     public Object getProperty(String filename, String option, Object defaultvalue) {
-        loadJson();
         try {
             if (jsons.get(filename) == null || !jsons.get(filename).containsKey(option)) {
                 setProperty(filename, option, defaultvalue);
@@ -181,7 +185,6 @@ public class FileDriver {
      * @return value
      */
     public Object getPropertyOnly(String filename, String option) {
-        loadJson();
         if (jsons.get(filename).containsKey(option)) {
             return jsons.get(filename).get(option);
         } else {
@@ -197,11 +200,9 @@ public class FileDriver {
      */
     public void removeProperty(String filename, String option) {
         try {
-            loadJson();
             if (jsons.get(filename).containsKey(option)) {
                 jsons.get(filename).remove(option);
             }
-            saveJson();
         } catch (Exception ex) {
             Console.error("Can not remove Property: ");
             ex.printStackTrace();
@@ -211,11 +212,9 @@ public class FileDriver {
     public HashMap<String, Object> getAllKeysWithValues(String filename) {
         HashMap<String, Object> objects = new HashMap<>();
         try {
-            loadJson();
             for (Object string: jsons.get(filename).keySet()) {
                 objects.put(string.toString(), jsons.get(filename).get(string));
             }
-            saveJson();
         } catch (Exception ex) {
             Console.error("Can not list Property: ");
             ex.printStackTrace();

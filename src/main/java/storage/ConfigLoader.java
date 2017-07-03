@@ -1,6 +1,6 @@
 package storage;
 
-import main.Fast;
+import util.Fast;
 import util.Console;
 
 /**
@@ -21,5 +21,7 @@ public class ConfigLoader implements Fast {
         DRIVER.getProperty(DRIVER.CONFIG, "googlecustomsearchid","002710779101845872719:o_wp4w-dqqi");
         DRIVER.getProperty(DRIVER.CONFIG, "language", "en");
         DRIVER.getProperty(DRIVER.CONFIG,"token", "");
+        DRIVER.getProperty(DRIVER.CONFIG, "ownerbypass", true);
+        DRIVER.saveJson();
     }
 }

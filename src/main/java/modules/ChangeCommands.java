@@ -3,10 +3,9 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
-import main.Prefix;
+import util.Globals;
 import org.apache.commons.lang3.math.NumberUtils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.Image;
 import util.SMB;
@@ -32,11 +31,10 @@ public class ChangeCommands extends Module {
             description = "Change the Bot Avatar",
             alias = "sa",
             arguments = {"ImageLink"},
-            permission = Permissions.ADMINISTRATOR,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean changeAvatar(MessageReceivedEvent event, String[] args) {
-        if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
             if (args[0].equalsIgnoreCase("NA")) {
                 INIT.BOT.changeAvatar(Image.defaultAvatar());
 
@@ -44,9 +42,6 @@ public class ChangeCommands extends Module {
                 INIT.BOT.changeAvatar(Image.forUrl("png", args[0]));
             }
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
-        } else {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
-        }
         return true;
     }
 
@@ -61,20 +56,16 @@ public class ChangeCommands extends Module {
             description = "Change the Bot Stream",
             alias = "sst",
             arguments = {"StreamUrl", "Game []"},
-            permission = Permissions.ADMINISTRATOR,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean setStream(MessageReceivedEvent event, String[] args) {
-        if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
             if (args[0].equalsIgnoreCase("NA") || args[1].equalsIgnoreCase("NA")) {
                 INIT.BOT.streaming(null, null);
             } else {
                 INIT.BOT.streaming(Utils.makeArgsToString(args, new String[] {args[0]}), args[0]);
             }
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
-        } else {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
-        }
         return true;
     }
 
@@ -89,20 +80,16 @@ public class ChangeCommands extends Module {
             arguments = {"Game []"},
             description = "Change the Bot Game",
             alias = "sp",
-            permission = Permissions.ADMINISTRATOR,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean setplaying(MessageReceivedEvent event, String[] args) {
-        if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
             if (args[0].equalsIgnoreCase("NA")) {
                 INIT.BOT.changePlayingText(null);
             } else {
                 INIT.BOT.changePlayingText(Utils.makeArgsToString(args, new String[] {}));
             }
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
-        } else {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
-        }
         return true;
     }
     /**
@@ -116,20 +103,16 @@ public class ChangeCommands extends Module {
             arguments = {"Name []"},
             description = "Change the Bot Name",
             alias = "sun",
-            permission = Permissions.ADMINISTRATOR,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean setUsername(MessageReceivedEvent event, String[] args) {
-        if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
             if (args[0].equalsIgnoreCase("NA")) {
                 INIT.BOT.changeUsername(DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultUsername").toString());
             } else {
                 INIT.BOT.changeUsername(Utils.makeArgsToString(args, new String[] {}));
             }
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
-        } else {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
-        }
         return true;
     }
     /**
@@ -143,11 +126,10 @@ public class ChangeCommands extends Module {
             arguments = {"Option", "Value"},
             description = "Change the Property",
             alias = "chp",
-            permission = Permissions.ADMINISTRATOR,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean changeProperty(MessageReceivedEvent event, String[] args) {
-        if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
             if (args[0].equalsIgnoreCase("NA") || args[1].equalsIgnoreCase("NA")) {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+ LANG.getTranslation("notchanged_error")), true);
             } else {
@@ -170,13 +152,11 @@ public class ChangeCommands extends Module {
                         DRIVER.setProperty(DRIVER.CONFIG, args[0], value);
                         BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
                     }
+                    DRIVER.saveJson();
                 } else {
                     BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+ LANG.getTranslation("changeprop_error")), true);
                 }
             }
-        } else {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
-        }
         return true;
     }
 
@@ -185,11 +165,11 @@ public class ChangeCommands extends Module {
             arguments = {},
             description = "Print the Property",
             alias = "prp",
-            permission = Permissions.ADMINISTRATOR,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean printProperties(MessageReceivedEvent event, String[] args) {
-        if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+            DRIVER.loadJson();
             EmbedBuilder builder = new EmbedBuilder();
             HashMap<String, Object> objects = DRIVER.getAllKeysWithValues(DRIVER.CONFIG);
             StringBuilder stringBuilder = new StringBuilder();
@@ -200,9 +180,6 @@ public class ChangeCommands extends Module {
 
             BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
-        } else {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
-        }
         return true;
     }
 
@@ -211,17 +188,30 @@ public class ChangeCommands extends Module {
             arguments = {"Language Code"},
             description = "Change the Language",
             alias = "chlang",
-            permission = Permissions.ADMINISTRATOR,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean changeLang(MessageReceivedEvent event, String[] args) {
-        if (event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
             changeProperty(event, new String[] {"language", args[0]});
             LANG.createTranslations();
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+        return true;
+    }
+    @Command(
+            command = "changestatus",
+            arguments = {"Status"},
+            description = "Change the Status",
+            alias = "chst",
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean changeStatus(MessageReceivedEvent event, String[] args) {
+        if (args[0].equalsIgnoreCase("idle")) {
+            INIT.BOT.idle();
         } else {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("botowner_error")), true);
+            INIT.BOT.online();
         }
+        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         return true;
     }
 

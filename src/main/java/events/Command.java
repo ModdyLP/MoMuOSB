@@ -15,6 +15,6 @@ public @interface Command {
     String[] arguments();
     String description();
     String alias();
-    Permissions permission();
+    String permission();
     String prefix();
 }

@@ -2,7 +2,7 @@ package events;
 
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import discord.BotUtils;
-import main.Fast;
+import util.Fast;
 import modules.music.MainMusic;
 import org.tritonus.share.ArraySet;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -24,8 +24,6 @@ import java.util.Set;
  * Copyright 2017
  */
 public class EventListener implements Fast{
-    private HashMap<Command, Method> modules = new HashMap<>();
-    private HashMap<Command, Module> instances = new HashMap<>();
     private static EventListener instance;
 
     /**
@@ -53,7 +51,7 @@ public class EventListener implements Fast{
                     String[] messageparts = message.split(" ");
                     if (messageparts.length > 0) {
                         //Iterate commands
-                        for (Command command : modules.keySet()) {
+                        for (Command command : COMMAND.getModules().keySet()) {
                             String[] args = new String[]{};
                             //Check if Message contains Prefix
                             if (messageparts[0].equalsIgnoreCase(command.prefix() + command.command().toLowerCase()) || messageparts[0].equalsIgnoreCase(command.prefix() + command.alias().toLowerCase())) {
@@ -64,33 +62,33 @@ public class EventListener implements Fast{
                                         Console.debug(Console.sendprefix + "Message deleted: [" + message + "]");
                                         event.getMessage().delete();
                                     } else {
-                                        BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("nomanagepermission_error"), true);
+                                        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
                                     }
                                 }
                             }
                             //Check each command if the command was called
                             if (messageparts[0].equalsIgnoreCase(command.prefix() + command.command().toLowerCase())) {
                                 //Check Permissions
-                                if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
+                                if (event.getAuthor().getRolesForGuild(event.getGuild()).contains(PERM.groupPermission(command.permission())) || event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                                     if (!message.endsWith(command.prefix() + command.command().toLowerCase()) && !message.endsWith(" ")) {
                                         args = message.substring((command.prefix() + command.command()).length() + 1).split(" ");
                                     }
                                     //Execute Command
                                     initiateCommand(args, command, event);
                                 } else {
-                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("nopermissions_error"), true);
+                                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nopermissions_error")), true);
                                 }
                                 //Check each alias if the alias was called
                             } else if (messageparts[0].equalsIgnoreCase(command.prefix() + command.alias().toLowerCase()) && !message.endsWith(" ")) {
                                 //Check Permissions
-                                if (event.getAuthor().getPermissionsForGuild(event.getGuild()).contains(command.permission())) {
+                                if (event.getAuthor().getRolesForGuild(event.getGuild()).contains(PERM.groupPermission(command.permission())) || event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                                     if (!message.endsWith(command.prefix() + command.alias().toLowerCase()) && !message.endsWith(" ")) {
                                         args = message.substring((command.prefix() + command.alias()).length() + 1).split(" ");
                                     }
                                     //Execute Command
                                     initiateCommand(args, command, event);
                                 } else {
-                                    BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("nopermissions_error"), true);
+                                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nopermissions_error")), true);
                                 }
                             }
                         }
@@ -115,13 +113,13 @@ public class EventListener implements Fast{
     private void initiateCommand(String[] args, Command command, MessageReceivedEvent event) {
         try {
             for (String string: command.arguments()) {
-                if (string.contains("[]")) {
-                    modules.get(command).invoke(instances.get(command), event, args);
+                if (string.contains("[]") && args.length > 0) {
+                    COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, args);
                     return;
                 }
             }
                 if (args.length == command.arguments().length) {
-                    modules.get(command).invoke(instances.get(command), event, args);
+                    COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, args);
                 } else {
                     if (args.length < command.arguments().length) {
                         BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+String.format(LANG.getTranslation("tofewarguments_error"), args.length, command.arguments().length)), true);
@@ -142,7 +140,7 @@ public class EventListener implements Fast{
      */
     @EventSubscriber
     public void onReadyEvent(ReadyEvent event) { // This method is called when the ReadyEvent is dispatched
-        Console.println("Bot is ready");
+        Console.println("Bot login success");
         Console.println("Shards: "+INIT.BOT.getShardCount());
         StringBuilder serverstr = new StringBuilder();
         int count = 1;
@@ -158,55 +156,19 @@ public class EventListener implements Fast{
         }
         Console.println("Servers: "+serverstr);
         RegisterCommands.registerAll();
+        Console.println("Loading Permissions from SaveFile");
+        PERM.loadPermissions(INIT.BOT.getGuilds());
+        PERM.setDefaultPermissions(INIT.BOT.getGuilds());
         INIT.BOT.changePlayingText(DRIVER.getPropertyOnly(DRIVER.CONFIG,"defaultplaying").toString());
         INIT.BOT.changeUsername(DRIVER.getPropertyOnly(DRIVER.CONFIG,"defaultUsername").toString());
         Console.println("Loading Command Descriptions");
-        for (Command command: getAllCommands()) {
+        for (Command command: COMMAND.getAllCommands()) {
             LANG.getMethodDescription(command);
         }
         Console.println("Register Audioprovider");
         AudioSourceManagers.registerRemoteSources(MainMusic.playerManager);
         AudioSourceManagers.registerLocalSource(MainMusic.playerManager);
 
-        Console.println("Bot Start completed");
-    }
-    void registerCommand(Class module, Module instance) {
-        HashMap<Command, Method> annotations = GetAnnotation.getCommandAnnotation(module);
-        for (Command anno : annotations.keySet()) {
-            if (!getAllCommandsAsString().contains(anno.command())) {
-                if (!getAllAliasAsString().contains(anno.alias())) {
-                    modules.put(anno, annotations.get(anno));
-                    instances.put(anno, instance);
-                } else {
-                    Console.error("Duplicate Alias: "+anno.alias());
-                }
-            } else {
-                Console.error("Duplicate Command: "+anno.command());
-            }
-        }
-
-    }
-    public Set<Command> getAllCommands() {
-        return modules.keySet();
-    }
-    public Set<String> getAllCommandsAsString() {
-        Set<String> commandsAsString = new ArraySet<>();
-        for (Command element: getAllCommands()) {
-            commandsAsString.add(element.command());
-        }
-        return commandsAsString;
-    }
-    public Set<String> getAllAliasAsString() {
-        Set<String> commandsAsString = new ArraySet<>();
-        for (Command element: getAllCommands()) {
-            commandsAsString.add(element.alias());
-        }
-        return commandsAsString;
-    }
-    public String getMethodNameByCommand(Command command) {
-        return modules.get(command).getName();
-    }
-    public HashMap<Command, Method> getAllModules() {
-        return modules;
+        Console.println("====================================Bot Start completed===============================");
     }
 }

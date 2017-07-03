@@ -3,13 +3,12 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
-import main.Prefix;
+import util.Globals;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import storage.RestRequest;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.EmbedBuilder;
 import util.Console;
 import util.SMB;
@@ -34,10 +33,10 @@ public class SearchCommand extends Module{
             description = "Search a Image",
             alias = "sq",
             arguments = {"SearchEngine(Google)","Query []"},
-            permission = Permissions.EMBED_LINKS,
-            prefix = Prefix.GAME_PREFIX
+            permission = "searchcommand",
+            prefix = Globals.GAME_PREFIX
     )
-    public void searchGoogleImage(MessageReceivedEvent event, String[] args) {
+    public void searchImage(MessageReceivedEvent event, String[] args) {
         new Thread(() -> {
             try {
                 links.remove(event.getGuild());
@@ -80,8 +79,8 @@ public class SearchCommand extends Module{
             description = "Next Image in Resultlist",
             alias = "next",
             arguments = {},
-            permission = Permissions.EMBED_LINKS,
-            prefix = Prefix.GAME_PREFIX
+            permission = "searchcommand",
+            prefix = Globals.GAME_PREFIX
     )
     public void nextImage(MessageReceivedEvent event, String[] args) {
         if (searchmarker.get(event.getGuild()) != null) {
@@ -103,8 +102,8 @@ public class SearchCommand extends Module{
             description = "Clear all Images",
             alias = "clear",
             arguments = {},
-            permission = Permissions.EMBED_LINKS,
-            prefix = Prefix.GAME_PREFIX
+            permission = "searchcommand",
+            prefix = Globals.GAME_PREFIX
 
     )
     public void clearImages(MessageReceivedEvent event, String[] args) {
@@ -123,8 +122,8 @@ public class SearchCommand extends Module{
             description = "Get Image from Web",
             alias = "getI",
             arguments = {"Number"},
-            permission = Permissions.EMBED_LINKS,
-            prefix = Prefix.GAME_PREFIX
+            permission = "searchcommand",
+            prefix = Globals.GAME_PREFIX
 
     )
     public void getImage(MessageReceivedEvent event, String[] args) {
