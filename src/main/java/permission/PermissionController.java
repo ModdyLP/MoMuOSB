@@ -2,14 +2,13 @@ package permission;
 
 import events.Command;
 import org.json.simple.JSONArray;
-import org.omg.CORBA.IRObject;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 import util.Console;
 import util.Fast;
-import util.Prefix;
+import util.Globals;
 
 import java.util.*;
 
@@ -37,14 +36,19 @@ public class PermissionController implements Fast {
 
     public boolean hasPermission(IUser user, IGuild server, String permission) {
         boolean check = false;
-        if (permission.equalsIgnoreCase(Prefix.BOT_OWNER)) {
-            return user.equals(INIT.BOT.getApplicationOwner());
+        if (permission.equalsIgnoreCase(Globals.BOT_OWNER)) {
+            if (user.equals(INIT.BOT.getApplicationOwner())) {
+                check = true;
+            }
         } else {
             for (IRole role : user.getRolesForGuild(server)) {
                 if (grouppermissions.get(role) != null && grouppermissions.get(role).contains(permission)) {
                     check = true;
                 }
             }
+        }
+        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "ownerbypass").equals(true) && user.equals(INIT.BOT.getApplicationOwner())) {
+            check = true;
         }
         return check;
     }
@@ -158,10 +162,11 @@ public class PermissionController implements Fast {
                             }
                         }
                         grouppermissions.put(role, permission);
-                        Console.debug(role.getLongID() + " " + role.getName() + " " + permission.size()+"   "+grouppermissions.size());
                         for (String perm : permission) {
                             Console.debug("Permission: " + perm);
-                            permissions.put(COMMAND.getCommandByPermission(perm), perm);
+                            for (Command command: COMMAND.getCommandByPermission(perm)) {
+                                permissions.put(command, perm);
+                            }
                         }
                     }
                 }
@@ -174,8 +179,8 @@ public class PermissionController implements Fast {
 
 
     public void setDefaultPermissions(List<IGuild> server) {
-        Console.debug("Load default permissions...");
         if (!DRIVER.checkIfFileExists(PERMFILE) && DRIVER.checkIfFileisEmpty(PERMFILE)) {
+            Console.debug("Load default permissions...");
             List<IRole> adminroles = new ArrayList<>();
             List<IRole> everyoneroles = new ArrayList<>();
             for (IGuild serverinst : server) {
@@ -187,10 +192,10 @@ public class PermissionController implements Fast {
                 everyoneroles.add(serverinst.getEveryoneRole());
             }
             for (IRole role : adminroles) {
-                PERM.addPermissionToGroup(role, Prefix.BOT_MANAGE);
+                PERM.addPermissionToGroup(role, Globals.BOT_MANAGE);
             }
             for (IRole role : everyoneroles) {
-                PERM.addPermissionToGroup(role, Prefix.BOT_INFO);
+                PERM.addPermissionToGroup(role, Globals.BOT_INFO);
             }
             DRIVER.saveJson();
             Console.debug("Permission loaded: Admin:" + adminroles.size() + " Info: " + everyoneroles.size());

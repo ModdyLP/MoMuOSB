@@ -4,18 +4,14 @@ import discord.BotUtils;
 import discord.DiscordInit;
 import events.Command;
 import events.Module;
-import permission.PermissionController;
-import util.Fast;
+import util.*;
 import main.MoMuOSBMain;
-import util.Prefix;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.handle.obj.StatusType;
 import sx.blah.discord.util.BotInviteBuilder;
 import sx.blah.discord.util.EmbedBuilder;
-import util.SMB;
-import util.Utils;
 
 import java.awt.*;
 import java.sql.Date;
@@ -41,12 +37,12 @@ public class InfoCommands extends Module implements Fast {
             description = "Display the help",
             alias = "h",
             arguments = {},
-            permission = Prefix.BOT_INFO,
-            prefix = Prefix.INFO_PREFIX
+            permission = Globals.BOT_INFO,
+            prefix = Globals.INFO_PREFIX
     )
     public boolean help(MessageReceivedEvent event, String[] args) {
         new Thread(() -> {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success_wait")), true);
             for (EmbedBuilder builder : genbuildHelp(event)) {
                 BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
             }
@@ -66,8 +62,8 @@ public class InfoCommands extends Module implements Fast {
             description = "Invites the bot",
             alias = "ib",
             arguments = {},
-            permission = Prefix.BOT_MANAGE,
-            prefix = Prefix.INFO_PREFIX
+            permission = Globals.BOT_MANAGE,
+            prefix = Globals.INFO_PREFIX
     )
     public boolean inviteBot(MessageReceivedEvent event, String[] args) {
         if (event.getAuthor().equals(DiscordInit.getInstance().getDiscordClient().getApplicationOwner())) {
@@ -94,8 +90,8 @@ public class InfoCommands extends Module implements Fast {
             description = "Display the stats",
             alias = "st",
             arguments = {},
-            permission = Prefix.BOT_INFO,
-            prefix = Prefix.INFO_PREFIX
+            permission = Globals.BOT_INFO,
+            prefix = Globals.INFO_PREFIX
     )
     public boolean stats(MessageReceivedEvent event, String[] args) {
         BotUtils.sendEmbMessage(event.getChannel(), genbuildStats(event), false);
@@ -128,9 +124,9 @@ public class InfoCommands extends Module implements Fast {
     private ArrayList<EmbedBuilder> genbuildHelp(MessageReceivedEvent event) {
         ArrayList<EmbedBuilder> builders = new ArrayList<>();
         int page = 1;
+        int pagelenght = 0;
         EmbedBuilder builder = new EmbedBuilder();
         builders.add(page - 1, builder);
-        builders.get(page - 1).withColor(Color.CYAN);
         builders.get(page - 1).withDescription(LANG.getTranslation("help_noneinfo"));
         builders.get(page - 1).appendDescription(LANG.getTranslation("help_prefixinfo"));
         int count = 0;
@@ -142,14 +138,16 @@ public class InfoCommands extends Module implements Fast {
                         "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
                 builders.get(page - 1).appendField(LANG.getTranslation("help_command") + "       | " + command.prefix() + command.command(), string, false);
             }
-            if (builders.get(page - 1).getFieldCount() == EmbedBuilder.FIELD_COUNT_LIMIT) {
+            if (builders.get(page - 1).getFieldCount() >= EmbedBuilder.FIELD_COUNT_LIMIT || builders.get(page-1).getTotalVisibleCharacters() >= (EmbedBuilder.MAX_CHAR_LIMIT-1000)) {
+                page++;
                 EmbedBuilder buildertemp = new EmbedBuilder();
                 builders.add(page - 1, buildertemp);
-                page++;
             }
             count++;
+            builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
+            builders.get(page - 1).withColor(Color.CYAN);
         }
-        builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") +"("+count+")"+ " Page: " + page + " :information_source:");
+        builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") +"("+count+")"+ " Page: " + 1 + " :information_source:");
         return builders;
     }
 

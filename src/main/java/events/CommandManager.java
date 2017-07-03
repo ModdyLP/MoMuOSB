@@ -5,7 +5,9 @@ import util.Console;
 import util.GetAnnotation;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -71,13 +73,14 @@ public class CommandManager {
         }
         return null;
     }
-    public Command getCommandByPermission(String permission) {
+    public List<Command> getCommandByPermission(String permission) {
+        List<Command> commands = new ArrayList<>();
         for (Command command: modules.keySet()) {
             if (command.permission().equals(permission)) {
-                return command;
+                commands.add(command);
             }
         }
-        return null;
+        return commands;
     }
     public String getMethodNameByCommand(Command command) {
         return modules.get(command).getName();

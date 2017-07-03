@@ -3,10 +3,9 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
-import util.Prefix;
+import util.Globals;
 import org.apache.commons.lang3.math.NumberUtils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.Image;
 import util.SMB;
@@ -32,8 +31,8 @@ public class ChangeCommands extends Module {
             description = "Change the Bot Avatar",
             alias = "sa",
             arguments = {"ImageLink"},
-            permission = Prefix.BOT_OWNER,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean changeAvatar(MessageReceivedEvent event, String[] args) {
             if (args[0].equalsIgnoreCase("NA")) {
@@ -57,8 +56,8 @@ public class ChangeCommands extends Module {
             description = "Change the Bot Stream",
             alias = "sst",
             arguments = {"StreamUrl", "Game []"},
-            permission = Prefix.BOT_OWNER,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean setStream(MessageReceivedEvent event, String[] args) {
             if (args[0].equalsIgnoreCase("NA") || args[1].equalsIgnoreCase("NA")) {
@@ -81,8 +80,8 @@ public class ChangeCommands extends Module {
             arguments = {"Game []"},
             description = "Change the Bot Game",
             alias = "sp",
-            permission = Prefix.BOT_OWNER,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean setplaying(MessageReceivedEvent event, String[] args) {
             if (args[0].equalsIgnoreCase("NA")) {
@@ -104,8 +103,8 @@ public class ChangeCommands extends Module {
             arguments = {"Name []"},
             description = "Change the Bot Name",
             alias = "sun",
-            permission = Prefix.BOT_OWNER,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean setUsername(MessageReceivedEvent event, String[] args) {
             if (args[0].equalsIgnoreCase("NA")) {
@@ -127,8 +126,8 @@ public class ChangeCommands extends Module {
             arguments = {"Option", "Value"},
             description = "Change the Property",
             alias = "chp",
-            permission = Prefix.BOT_OWNER,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean changeProperty(MessageReceivedEvent event, String[] args) {
             if (args[0].equalsIgnoreCase("NA") || args[1].equalsIgnoreCase("NA")) {
@@ -166,8 +165,8 @@ public class ChangeCommands extends Module {
             arguments = {},
             description = "Print the Property",
             alias = "prp",
-            permission = Prefix.BOT_OWNER,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean printProperties(MessageReceivedEvent event, String[] args) {
             DRIVER.loadJson();
@@ -189,13 +188,30 @@ public class ChangeCommands extends Module {
             arguments = {"Language Code"},
             description = "Change the Language",
             alias = "chlang",
-            permission = Prefix.BOT_OWNER,
-            prefix = Prefix.ADMIN_PREFIX
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
     )
     public boolean changeLang(MessageReceivedEvent event, String[] args) {
             changeProperty(event, new String[] {"language", args[0]});
             LANG.createTranslations();
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+        return true;
+    }
+    @Command(
+            command = "changestatus",
+            arguments = {"Status"},
+            description = "Change the Status",
+            alias = "chst",
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean changeStatus(MessageReceivedEvent event, String[] args) {
+        if (args[0].equalsIgnoreCase("idle")) {
+            INIT.BOT.idle();
+        } else {
+            INIT.BOT.online();
+        }
+        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         return true;
     }
 

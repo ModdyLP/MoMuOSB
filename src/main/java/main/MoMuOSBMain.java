@@ -21,7 +21,7 @@ public class MoMuOSBMain implements Fast {
      */
     public static void main(String[] args) {
         try {
-            Console.println("Bot starting...");
+            Console.println("=================================Bot starting...======================================");
             Console.println("Bot was created by ModdyLP - Niklas H. https://moddylp.de.");
             ConfigLoader.loadConfigOptions();
             Console.println("Loading Language....");
@@ -48,7 +48,7 @@ public class MoMuOSBMain implements Fast {
      * Shutdown Method
      */
     public static void shutdown() {
-        Console.println("Bot shutting down...");
+        Console.println("=====================================Bot shutting down...==================================");
         if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
             INIT.BOT.logout();
         }

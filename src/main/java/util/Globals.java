@@ -4,7 +4,7 @@ package util;
  * Created by N.Hartmann on 30.06.2017.
  * Copyright 2017
  */
-public interface Prefix {
+public interface Globals {
     String ADMIN_PREFIX = "!";
     String INFO_PREFIX = ".";
     String GAME_PREFIX = "~";

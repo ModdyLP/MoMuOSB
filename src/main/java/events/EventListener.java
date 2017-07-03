@@ -113,7 +113,7 @@ public class EventListener implements Fast{
     private void initiateCommand(String[] args, Command command, MessageReceivedEvent event) {
         try {
             for (String string: command.arguments()) {
-                if (string.contains("[]")) {
+                if (string.contains("[]") && args.length > 0) {
                     COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, args);
                     return;
                 }
@@ -140,7 +140,7 @@ public class EventListener implements Fast{
      */
     @EventSubscriber
     public void onReadyEvent(ReadyEvent event) { // This method is called when the ReadyEvent is dispatched
-        Console.println("Bot is ready");
+        Console.println("Bot login success");
         Console.println("Shards: "+INIT.BOT.getShardCount());
         StringBuilder serverstr = new StringBuilder();
         int count = 1;
@@ -169,6 +169,6 @@ public class EventListener implements Fast{
         AudioSourceManagers.registerRemoteSources(MainMusic.playerManager);
         AudioSourceManagers.registerLocalSource(MainMusic.playerManager);
 
-        Console.println("Bot Start completed");
+        Console.println("====================================Bot Start completed===============================");
     }
 }

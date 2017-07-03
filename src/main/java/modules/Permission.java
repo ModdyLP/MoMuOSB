@@ -5,11 +5,15 @@ import events.Command;
 import events.Module;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.util.EmbedBuilder;
 import util.Console;
-import util.Prefix;
+import util.Globals;
 import util.SMB;
 import util.Utils;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,15 +25,14 @@ public class Permission extends Module {
             command = "addperm",
             arguments = {"Permission or Command", "Group"},
             description = "Add Permission to Group",
-            permission = Prefix.BOT_PERM,
-            prefix = Prefix.ADMIN_PREFIX,
+            permission = Globals.BOT_PERM,
+            prefix = Globals.ADMIN_PREFIX,
             alias = "addp"
     )
     public void addPermToGroup(MessageReceivedEvent event, String[] args) {
         try {
             boolean success = false;
-            Console.debug("Arguments:"+Utils.makeArgsToString(args, new String[] {args[0]}));
-            List<IRole> roles = event.getGuild().getRolesByName(Utils.makeArgsToString(args, new String[] {args[0]}));
+            List<IRole> roles = event.getGuild().getRolesByName(Utils.makeArgsToString(args, new String[]{args[0]}));
             if (roles.size() > 0 || checkIfEverone(args)) {
                 if (checkIfEverone(args)) {
                     roles.add(event.getGuild().getEveryoneRole());
@@ -39,7 +42,7 @@ public class Permission extends Module {
                         PERM.addPermissionToGroup(role, args[0]);
                         success = true;
                     }
-                    if (COMMAND.getAllCommandsAsString().contains(args[0])) {
+                    if (COMMAND.getAllCommandsAsString().contains(args[0]) || COMMAND.getAllAliasAsString().contains(args[0])) {
                         Command command = COMMAND.getCommandByName(args[0]);
                         if (command != null) {
                             PERM.addPermissionToGroup(role, command);
@@ -51,29 +54,29 @@ public class Permission extends Module {
                 Console.debug("Role size 0");
             }
             if (success) {
-                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_success")), true);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_add_success")), true);
             } else {
-                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_failed")), true);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_add_failed")), true);
             }
         } catch (Exception ex) {
-            Console.error("Error on adding Permission"+ex.getMessage());
+            Console.error("Error on adding Permission" + ex.getMessage());
             ex.printStackTrace();
         }
 
     }
+
     @Command(
             command = "removeperm",
-            arguments = {"Permission or Command","Group []"},
+            arguments = {"Permission or Command", "Group []"},
             description = "Remove Permission to Group",
-            permission = Prefix.BOT_PERM,
-            prefix = Prefix.ADMIN_PREFIX,
+            permission = Globals.BOT_PERM,
+            prefix = Globals.ADMIN_PREFIX,
             alias = "remp"
     )
     public void removePermToGroup(MessageReceivedEvent event, String[] args) {
         try {
-            Console.debug("Arguments:"+Utils.makeArgsToString(args, new String[] {args[0]}));
             boolean success = false;
-            List<IRole> roles = event.getGuild().getRolesByName(Utils.makeArgsToString(args, new String[] {args[0]}));
+            List<IRole> roles = event.getGuild().getRolesByName(Utils.makeArgsToString(args, new String[]{args[0]}));
             if (roles.size() > 0 || checkIfEverone(args)) {
                 if (checkIfEverone(args)) {
                     roles.add(event.getGuild().getEveryoneRole());
@@ -83,7 +86,7 @@ public class Permission extends Module {
                         PERM.removePermissionToGroup(role, args[0]);
                         success = true;
                     }
-                    if (COMMAND.getAllCommandsAsString().contains(args[0])) {
+                    if (COMMAND.getAllCommandsAsString().contains(args[0]) || COMMAND.getAllAliasAsString().contains(args[0])) {
                         Command command = COMMAND.getCommandByName(args[0]);
                         if (command != null) {
                             PERM.removePermissionToGroup(role, command);
@@ -95,12 +98,62 @@ public class Permission extends Module {
                 Console.debug("Role size 0");
             }
             if (success) {
-                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_success")), true);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_rem_success")), true);
             } else {
-                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_failed")), true);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_rem_failed")), true);
             }
         } catch (Exception ex) {
-            Console.error("Error on adding Permission"+ex.getMessage());
+            Console.error("Error on adding Permission" + ex.getMessage());
+            ex.printStackTrace();
+        }
+
+    }
+
+    @Command(
+            command = "listperm",
+            arguments = {"Group []"},
+            description = "List Permission to Group",
+            permission = Globals.BOT_PERM,
+            prefix = Globals.ADMIN_PREFIX,
+            alias = "listp"
+    )
+    public void listPermToGroup(MessageReceivedEvent event, String[] args) {
+        try {
+            List<IRole> roles = event.getGuild().getRolesByName(Utils.makeArgsToString(args, new String[]{}));
+            if (roles.size() > 0 || checkIfEveroneZwei(args)) {
+                if (checkIfEveroneZwei(args)) {
+                    roles.add(event.getGuild().getEveryoneRole());
+                }
+                ArrayList<EmbedBuilder> builders = new ArrayList<>();
+                int page = 1;
+                EmbedBuilder builder = new EmbedBuilder();
+                builders.add(page - 1, builder);
+                builders.get(page - 1).withColor(Color.CYAN);
+                for (IRole role : roles) {
+                    ArrayList<String> permissions = PERM.getGrouppermissions().get(role);
+                    builders.get(page - 1).withTitle(String.format(LANG.getTranslation("permlist_title"),
+                            role.getName()));
+                    for (String permission: permissions) {
+                        for (Command command: COMMAND.getCommandByPermission(permission)) {
+                            builders.get(page - 1).appendField(LANG.getTranslation("help_command")+
+                                    ": "+command.command(),
+                                    LANG.getTranslation("help_permission")+": "+permission, false);
+                            if (builders.get(page - 1).getFieldCount() == EmbedBuilder.FIELD_COUNT_LIMIT) {
+                                EmbedBuilder buildertemp = new EmbedBuilder();
+                                builders.add(page - 1, buildertemp);
+                                page++;
+                            }
+                        }
+                    }
+                }
+                for (EmbedBuilder builderinst: builders) {
+                    BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builderinst);
+                }
+            } else {
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("norolefound")), true);
+            }
+        } catch (Exception ex) {
+            Console.error("Error on adding Permission" + ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -108,5 +161,8 @@ public class Permission extends Module {
 
     public boolean checkIfEverone(String[] args) {
         return Utils.makeArgsToString(args, new String[]{args[0]}).equalsIgnoreCase("everyone");
+    }
+    public boolean checkIfEveroneZwei(String[] args) {
+        return Utils.makeArgsToString(args, new String[]{}).equalsIgnoreCase("everyone");
     }
 }

@@ -80,6 +80,7 @@ public class LanguageLoader implements Fast{
         //Infos
         DRIVER.setProperty(DEF_LANG, "login_info", "Bot sign into the server. Please wait until the Bot is ready...");
         DRIVER.setProperty(DEF_LANG, "command_success", "The command was successful!");
+        DRIVER.setProperty(DEF_LANG, "command_success_wait", "The command was successful. Please wait... Result is generating...");
         DRIVER.setProperty(DEF_LANG, "shutdowninfo", "The Bot will shutting down in 10 seconds! Bye bye");
 
         //Stats Command
@@ -93,7 +94,7 @@ public class LanguageLoader implements Fast{
 
         //Help Command
         DRIVER.setProperty(DEF_LANG, "help_title", "All Commands");
-        DRIVER.setProperty(DEF_LANG, "help_command", "Commands");
+        DRIVER.setProperty(DEF_LANG, "help_command", "Command");
         DRIVER.setProperty(DEF_LANG, "help_alias", "Alias");
         DRIVER.setProperty(DEF_LANG, "help_arguments", "Arguments");
         DRIVER.setProperty(DEF_LANG, "help_description", "Description");
@@ -136,8 +137,12 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "props", "Properties");
 
         //Permission
-        DRIVER.setProperty(DEF_LANG, "perm_success", "Permission Command successful");
-        DRIVER.setProperty(DEF_LANG, "perm_failed", "Failed to manage Permission to group");
+        DRIVER.setProperty(DEF_LANG, "perm_add_success", "Permission added successful");
+        DRIVER.setProperty(DEF_LANG, "perm_add_failed", "Failed to add Permission to group");
+        DRIVER.setProperty(DEF_LANG, "perm_rem_success", "Permission removed successful");
+        DRIVER.setProperty(DEF_LANG, "perm_rem_failed", "Failed to remove Permission to group");
+        DRIVER.setProperty(DEF_LANG, "permlist_title", "Permission List for Group %1s");
+        DRIVER.setProperty(DEF_LANG, "norolefound", "The Role was not found");
 
         DRIVER.saveJson();
     }

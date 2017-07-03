@@ -9,12 +9,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
-import util.Prefix;
+import util.Globals;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IVoiceChannel;
-import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.audio.AudioPlayer;
 import util.SMB;
 
@@ -35,7 +34,7 @@ public class MainMusic extends Module{
             description = "The Bot joins voice Server",
             arguments = {},
             permission = "music_control",
-            prefix = Prefix.MUSIC_PREFIX
+            prefix = Globals.MUSIC_PREFIX
     )
     public boolean joinCommand(MessageReceivedEvent event, String[] args) {
         IVoiceChannel userVoiceChannel = event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel();
@@ -54,7 +53,7 @@ public class MainMusic extends Module{
             description = "The Bot leaves voice Server",
             arguments = {},
             permission = "music_control",
-            prefix = Prefix.MUSIC_PREFIX
+            prefix = Globals.MUSIC_PREFIX
     )
     public boolean leaveCommand(MessageReceivedEvent event, String[] args) {
         IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
@@ -76,7 +75,7 @@ public class MainMusic extends Module{
             description = "The Bot plays the first song.",
             arguments = {"Url or Path"},
             permission = "music_control",
-            prefix = Prefix.MUSIC_PREFIX
+            prefix = Globals.MUSIC_PREFIX
     )
     public boolean playCommand(MessageReceivedEvent event, String[] args) {
         IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
@@ -99,7 +98,7 @@ public class MainMusic extends Module{
             description = "The Bot skips a song.",
             arguments = {},
             permission = "music_control",
-            prefix = Prefix.MUSIC_PREFIX
+            prefix = Globals.MUSIC_PREFIX
     )
     public boolean skipCommand(MessageReceivedEvent event, String[] args) {
         skipTrack(event.getChannel());
@@ -112,7 +111,7 @@ public class MainMusic extends Module{
             description = "The Bot volume.",
             arguments = {"Volume"},
             permission = "music_control",
-            prefix = Prefix.MUSIC_PREFIX
+            prefix = Globals.MUSIC_PREFIX
     )
     public boolean volumeCommand(MessageReceivedEvent event, String[] args) {
         try {
