@@ -20,6 +20,17 @@ Help to translate the Bot in your language: https://poeditor.com/join/project/3l
 - [ ] more ?
 
 ***
+#### Current Features
+- Help
+- Stats
+- Delete Messages
+- Search on Google Images
+- Music
+- Properties Changing
+- Multi Language
+- Configure Bot
+
+***
 
 Help me to add new Features:
 1. Fork this Repo
