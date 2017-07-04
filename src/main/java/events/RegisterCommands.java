@@ -22,6 +22,7 @@ class RegisterCommands implements Fast{
         COMMAND.registerCommand(SearchCommand.class, new SearchCommand());
         COMMAND.registerCommand(MainMusic.class, new MainMusic());
         COMMAND.registerCommand(Permission.class, new Permission());
+        COMMAND.registerCommand(Gamestats.class, new Gamestats());
 
 
         Console.println("All Commands("+COMMAND.getAllCommands().size()+") added to Bot");

@@ -15,6 +15,7 @@ import util.GetAnnotation;
 import util.SMB;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
@@ -50,50 +51,31 @@ public class EventListener implements Fast{
                     String message = event.getMessage().getContent();
                     String[] messageparts = message.split(" ");
                     if (messageparts.length > 0) {
-                        //Iterate commands
-                        for (Command command : COMMAND.getModules().keySet()) {
-                            String[] args = new String[]{};
-                            //Check if Message contains Prefix
-                            if (messageparts[0].equalsIgnoreCase(command.prefix() + command.command().toLowerCase()) || messageparts[0].equalsIgnoreCase(command.prefix() + command.alias().toLowerCase())) {
-                                Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
-                                //Check if Invoke Messages should be deleted
-                                if (DRIVER.getProperty(DRIVER.CONFIG, "deleteinvokes", true).equals(true)) {
-                                    if (INIT.BOT.getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
-                                        Console.debug(Console.sendprefix + "Message deleted: [" + message + "]");
-                                        event.getMessage().delete();
-                                    } else {
-                                        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
-                                    }
+                        String prefix = messageparts[0].substring(0, 1).trim();
+                        String[] args = new String[]{};
+                        Command command = COMMAND.getCommandByName(messageparts[0].replace(prefix, ""));
+                        Console.debug("Command: "+command);
+                        if (command != null && command.prefix().equalsIgnoreCase(prefix)) {
+                            Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
+                            //Check if Invoke Messages should be deleted
+                            if (DRIVER.getProperty(DRIVER.CONFIG, "deleteinvokes", true).equals(true)) {
+                                if (INIT.BOT.getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
+                                    Console.debug(Console.sendprefix + "Message deleted: [" + message + "]");
+                                    event.getMessage().delete();
+                                } else {
+                                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
                                 }
                             }
-                            //Check each command if the command was called
-                            if (messageparts[0].equalsIgnoreCase(command.prefix() + command.command().toLowerCase())) {
-                                //Check Permissions
-                                if (event.getAuthor().getRolesForGuild(event.getGuild()).contains(PERM.groupPermission(command.permission())) || event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
-                                    if (!message.endsWith(command.prefix() + command.command().toLowerCase()) && !message.endsWith(" ")) {
-                                        args = message.substring((command.prefix() + command.command()).length() + 1).split(" ");
-                                    }
-                                    //Execute Command
-                                    initiateCommand(args, command, event);
-                                } else {
-                                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nopermissions_error")), true);
+                            if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
+                                if (messageparts.length > 1) {
+                                    args = message.replace(messageparts[0], "").trim().split(" ");
                                 }
-                                //Check each alias if the alias was called
-                            } else if (messageparts[0].equalsIgnoreCase(command.prefix() + command.alias().toLowerCase()) && !message.endsWith(" ")) {
-                                //Check Permissions
-                                if (event.getAuthor().getRolesForGuild(event.getGuild()).contains(PERM.groupPermission(command.permission())) || event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
-                                    if (!message.endsWith(command.prefix() + command.alias().toLowerCase()) && !message.endsWith(" ")) {
-                                        args = message.substring((command.prefix() + command.alias()).length() + 1).split(" ");
-                                    }
-                                    //Execute Command
-                                    initiateCommand(args, command, event);
-                                } else {
-                                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nopermissions_error")), true);
-                                }
+                                initiateCommand(args, command, event);
+                            } else {
+                                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
                             }
                         }
                     }
-
                 } else {
                     BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR+LANG.getTranslation("private_error"));
                 }
@@ -112,21 +94,25 @@ public class EventListener implements Fast{
      */
     private void initiateCommand(String[] args, Command command, MessageReceivedEvent event) {
         try {
-            for (String string: command.arguments()) {
-                if (string.contains("[]") && args.length > 0) {
-                    COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, args);
-                    return;
-                }
-            }
-                if (args.length == command.arguments().length) {
-                    COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, args);
-                } else {
-                    if (args.length < command.arguments().length) {
-                        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+String.format(LANG.getTranslation("tofewarguments_error"), args.length, command.arguments().length)), true);
+            ArrayList<String> newargs = new ArrayList<>();
+            if (args.length >= command.arguments().length) {
+                for (int i = 0; i < command.arguments().length; i++) {
+                    if (command.arguments()[i].contains("[]")) {
+                        newargs.addAll(Arrays.asList(args).subList(i, args.length));
                     } else {
-                        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+String.format(LANG.getTranslation("tomanyarguments_error"), args.length, command.arguments().length)), true);
+                        newargs.add(args[i]);
                     }
+
                 }
+                if(newargs.size() < args.length) {
+                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+String.format(LANG.getTranslation("tomanyarguments_error"), args.length, command.arguments().length)), true);
+                } else {
+                    String[] printargs = newargs.toArray(new String[]{});
+                    COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, printargs);
+                }
+            } else {
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+String.format(LANG.getTranslation("tofewarguments_error"), args.length, command.arguments().length)), true);
+            }
 
         } catch (Exception ex) {
             Console.error(String.format(LANG.getTranslation("execution_error"), ex.getCause()));

@@ -67,7 +67,7 @@ public class CommandManager {
     }
     public Command getCommandByName(String name) {
         for (Command command: modules.keySet()) {
-            if (command.command().equals(name) || command.alias().equals(name)) {
+            if (command.command().equalsIgnoreCase(name) || command.alias().equalsIgnoreCase(name)) {
                 return command;
             }
         }

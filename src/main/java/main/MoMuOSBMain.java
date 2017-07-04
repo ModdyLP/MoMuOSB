@@ -48,7 +48,7 @@ public class MoMuOSBMain implements Fast {
      * Shutdown Method
      */
     public static void shutdown() {
-        Console.println("=====================================Bot shutting down...==================================");
+        Console.println("====================================Bot shutting down...==============================");
         if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
             INIT.BOT.logout();
         }

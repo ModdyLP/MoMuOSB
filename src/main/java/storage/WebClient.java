@@ -1,12 +1,23 @@
 package storage;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpServerConnection;
+import sun.misc.BASE64Encoder;
+import sun.net.www.protocol.https.HttpsURLConnectionImpl;
 import util.Console;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
 /**
  * A collection of useful methods.
  *
@@ -25,36 +36,40 @@ public class WebClient
     {
         try
         {
-                               
-            //Output
-            StringBuilder Output = new StringBuilder();
-            
-            //The download url.
-            URL VersionUrl = new URL( url );
-            
-            //The downloader.
-            BufferedReader VersionUrlDownloader = new BufferedReader( new InputStreamReader( VersionUrl.openStream() ) );
+            StringBuilder output = new StringBuilder();
+            URL httpsurl = new URL(url);
 
-            //Loop through lines.
-            String Line;
-            while ( ( Line = VersionUrlDownloader.readLine() ) != null )
-            {
-                Output.append(Line);
+            HttpURLConnection connection = null;
+            connection = (HttpsURLConnection)httpsurl.openConnection();
+            connection.setRequestProperty("Content-Type", "text/plain; charset=\"utf8\"");
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("User-Agent",
+                    "Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0");
+            int returnCode = connection.getResponseCode();
+            InputStream connectionIn = null;
+            if (returnCode==200) {
+                connectionIn = connection.getInputStream();
+            } else {
+                connectionIn = connection.getErrorStream();
             }
-            
-            //Return the current downloader.
-            return Output.toString();
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(connectionIn));
+            String inputLine;
+            while ((inputLine = buffer.readLine()) != null) {
+                output.append(inputLine);
+            }
+            buffer.close();
+
+            return output.toString();
             
         }
         catch ( Exception ex )
         {
-            
+            ex.printStackTrace();
             //If something went wrong.
-            return null;
+            return "{'error' : '"+ex.getMessage()+"'}";
             
         }
     }
-    
     /**
      * Download file from url.
      * 

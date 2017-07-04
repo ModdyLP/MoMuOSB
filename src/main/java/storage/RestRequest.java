@@ -1,6 +1,7 @@
 package storage;
 
 import org.json.JSONObject;
+import util.Console;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,13 +57,21 @@ public class RestRequest
     public String fetchResult()
     {
         
-        StringBuilder Request = new StringBuilder(RequestUrl.toString() + "?");
-        
-        for ( String Key : Arguments.keySet() )
-        {
-            Request.append(Key).append("=").append(Arguments.get(Key)).append("&");
+        StringBuilder Request = new StringBuilder();
+        Request.append(RequestUrl.toString());
+        int count = 0;
+        if (Arguments.size() > 0) {
+            Request.append("?");
+            for ( String Key : Arguments.keySet() )
+            {
+                Request.append(Key).append("=").append(Arguments.get(Key));
+                count++;
+                if(count < Arguments.size()) {
+                    Request.append("&");
+                }
+            }
         }
-        
+        Console.debug(Request.toString());
         return WebClient.fetchUrl(Request.toString());
     }
     
@@ -73,7 +82,7 @@ public class RestRequest
      */
     public JSONObject fetchJson()
     {
-        
+
         return new JSONObject( fetchResult() );
         
     }
