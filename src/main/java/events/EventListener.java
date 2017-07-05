@@ -2,7 +2,7 @@ package events;
 
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import discord.BotUtils;
-import util.Fast;
+import util.*;
 import modules.music.MainMusic;
 import org.tritonus.share.ArraySet;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -10,9 +10,6 @@ import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
-import util.Console;
-import util.GetAnnotation;
-import util.SMB;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -51,11 +48,15 @@ public class EventListener implements Fast{
                     String message = event.getMessage().getContent();
                     String[] messageparts = message.split(" ");
                     if (messageparts.length > 0) {
-                        String prefix = messageparts[0].substring(0, 1).trim();
+                        String botprefix = DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString();
+                        String commandstring = messageparts[0].replace(botprefix, "");
+                        for (String prefixs: COMMAND.getAllPrefixe()) {
+                            commandstring = commandstring.replace(prefixs, "");
+                        }
+                        String prefix = messageparts[0].replace(commandstring, "");
                         String[] args = new String[]{};
-                        Command command = COMMAND.getCommandByName(messageparts[0].replace(prefix, ""));
-                        Console.debug("Command: "+command);
-                        if (command != null && command.prefix().equalsIgnoreCase(prefix)) {
+                        Command command = COMMAND.getCommandByName(commandstring);
+                        if (command != null && (botprefix+command.prefix()).equalsIgnoreCase(prefix)) {
                             Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
                             //Check if Invoke Messages should be deleted
                             if (DRIVER.getProperty(DRIVER.CONFIG, "deleteinvokes", true).equals(true)) {

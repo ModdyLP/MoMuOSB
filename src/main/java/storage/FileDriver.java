@@ -1,12 +1,18 @@
 package storage;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import main.MoMuOSBMain;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.json.JSONObject;
 import util.Console;
+import util.Utils;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -36,7 +42,7 @@ public class FileDriver {
     }
     public boolean checkIfFileisEmpty(String filename) {
         loadJson();
-        return jsons.get(filename).isEmpty();
+        return jsons.get(filename).keySet().size() == 0;
     }
 
     /**
@@ -81,8 +87,8 @@ public class FileDriver {
         JSONObject json = new JSONObject();
         try {
             if (!string.equals("")) {
-                JSONParser jsonParser = new JSONParser();
-                json = (JSONObject) jsonParser.parse(string);
+                JsonParser jsonParser = new JsonParser();
+                json = new JSONObject(jsonParser.parse(string).getAsJsonObject().toString());
             }
         } catch (Exception ex) {
             Console.error("Parsing error");
@@ -121,10 +127,8 @@ public class FileDriver {
         try {
             for (String filename: files.keySet()) {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(files.get(filename)));
-                String json = jsons.get(filename).toJSONString();
-                json = json.replace("{\"", "{\n     \"")
-                        .replace(",\"", ",\n     \"")
-                        .replace("\"}", "\"\n}");
+                String json = jsons.get(filename).toString();
+                json = Utils.crunchifyPrettyJSONUtility(json);
                 writer.write(json);
                 writer.close();
             }
@@ -144,7 +148,7 @@ public class FileDriver {
     public void setProperty(String filename, String option, Object value) {
         try {
             if (jsons.get(filename) != null) {
-                if (jsons.get(filename).containsKey(option)) {
+                if (jsons.get(filename).has(option)) {
                     removeProperty(filename, option);
                 }
                 jsons.get(filename).put(option, value);
@@ -168,7 +172,7 @@ public class FileDriver {
      */
     public Object getProperty(String filename, String option, Object defaultvalue) {
         try {
-            if (jsons.get(filename) == null || !jsons.get(filename).containsKey(option)) {
+            if (jsons.get(filename) == null || !jsons.get(filename).has(option)) {
                 setProperty(filename, option, defaultvalue);
             }
         } catch (Exception ex) {
@@ -185,7 +189,7 @@ public class FileDriver {
      * @return value
      */
     public Object getPropertyOnly(String filename, String option) {
-        if (jsons.get(filename).containsKey(option)) {
+        if (jsons.get(filename).has(option)) {
             return jsons.get(filename).get(option);
         } else {
             return "No Value";
@@ -200,7 +204,7 @@ public class FileDriver {
      */
     public void removeProperty(String filename, String option) {
         try {
-            if (jsons.get(filename).containsKey(option)) {
+            if (jsons.get(filename).has(option)) {
                 jsons.get(filename).remove(option);
             }
         } catch (Exception ex) {
@@ -212,8 +216,8 @@ public class FileDriver {
     public HashMap<String, Object> getAllKeysWithValues(String filename) {
         HashMap<String, Object> objects = new HashMap<>();
         try {
-            for (Object string: jsons.get(filename).keySet()) {
-                objects.put(string.toString(), jsons.get(filename).get(string));
+            for (Object key: jsons.get(filename).keySet()) {
+                objects.put(key.toString(), jsons.get(filename).get(key.toString()));
             }
         } catch (Exception ex) {
             Console.error("Can not list Property: ");

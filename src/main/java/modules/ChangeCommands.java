@@ -3,16 +3,20 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import sx.blah.discord.handle.obj.IGuild;
 import util.Globals;
 import org.apache.commons.lang3.math.NumberUtils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.Image;
+import util.Markdown;
 import util.SMB;
 import util.Utils;
 
+import java.awt.*;
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -212,6 +216,69 @@ public class ChangeCommands extends Module {
             INIT.BOT.online();
         }
         BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+        return true;
+    }
+
+    @Command(
+            command = "leaveserver",
+            arguments = {"ServerID"},
+            description = "Leaves a specific Server",
+            alias = "leaves",
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean leaveServer(MessageReceivedEvent event, String[] args) {
+        try {
+            IGuild guild = INIT.BOT.getGuildByID(Long.valueOf(args[0]));
+            guild.leave();
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+        } catch (Exception ex) {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.SUCCESS+LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
+        }
+        return true;
+    }
+
+    @Command(
+            command = "muteserver",
+            arguments = {"ServerID", "true or false"},
+            description = "Mutes a specific Server",
+            alias = "mutes",
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean muteServer(MessageReceivedEvent event, String[] args) {
+        try {
+            IGuild guild = INIT.BOT.getGuildByID(Long.valueOf(args[0]));
+            INIT.BOT.mute(guild, Boolean.valueOf(args[1]));
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+        } catch (Exception ex) {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.SUCCESS+LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
+        }
+        return true;
+    }
+
+    @Command(
+            command = "getserver",
+            arguments = {},
+            description = "Get Servers",
+            alias = "gets",
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean getServer(MessageReceivedEvent event, String[] args) {
+        try {
+            List<IGuild> server = INIT.BOT.getGuilds();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.withTitle("ServerList");
+            builder.withDescription(Markdown.bold("Size: "+server.size())+" \n");
+            for (IGuild serverinst: server) {
+                builder.appendDesc(Markdown.bold(serverinst.getName())+": "+serverinst.getStringID()+" \n");
+            }
+            builder.withColor(Color.green);
+            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
+        } catch (Exception ex) {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.SUCCESS+LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
+        }
         return true;
     }
 

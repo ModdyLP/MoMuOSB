@@ -1,5 +1,11 @@
 package util;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -44,5 +50,13 @@ public class Utils {
             string = string.replace(arg, "");
         }
         return string.trim();
+    }
+    public static String crunchifyPrettyJSONUtility(String simpleJSON) {
+        JsonParser crunhifyParser = new JsonParser();
+        JsonObject json = crunhifyParser.parse(simpleJSON).getAsJsonObject();
+
+        Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+
+        return prettyGson.toJson(json);
     }
 }

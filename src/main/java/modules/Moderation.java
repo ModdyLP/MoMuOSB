@@ -3,6 +3,7 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import sx.blah.discord.handle.obj.IPrivateChannel;
 import util.Globals;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
@@ -10,6 +11,8 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.util.MessageHistory;
 import util.Console;
 import util.SMB;
+
+import java.util.List;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -114,15 +117,38 @@ public class Moderation extends Module{
             prefix = Globals.ADMIN_PREFIX
     )
     public boolean shutdownbot(MessageReceivedEvent event, String[] args) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("shutdowninfo")), true);
-                    Thread.sleep(10000);
-                    System.exit(0);
-                } catch (Exception ex) {
-                    Console.error("Error on shutdown: "+ex.getMessage());
+        new Thread(() -> {
+            try {
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("shutdowninfo")), true);
+                Thread.sleep(10000);
+                System.exit(0);
+            } catch (Exception ex) {
+                Console.error("Error on shutdown: "+ex.getMessage());
+            }
+        }).start();
+        return true;
+    }
+    @Command(
+            command = "deleteprivmsg",
+            description = "Shutdown the bot",
+            alias = "dpm",
+            arguments = {"Count"},
+            permission = Globals.BOT_MANAGE,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean deleteprivateMessages(MessageReceivedEvent event, String[] args) {
+        new Thread(() -> {
+            try {
+                IPrivateChannel privateChannel = event.getAuthor().getOrCreatePMChannel();
+                List<IMessage> messageList = privateChannel.getMessageHistory(Integer.parseInt(args[0]));
+                for (IMessage message: messageList) {
+                    if (message.getAuthor().isBot()) {
+                        BotUtils.deleteMessageOne(message);
+                    }
                 }
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("deleteprivinfo")), true);
+            } catch (Exception ex) {
+                Console.error(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage()));
             }
         }).start();
         return true;

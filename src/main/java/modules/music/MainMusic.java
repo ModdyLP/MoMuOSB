@@ -43,7 +43,7 @@ public class MainMusic extends Module{
             return false;
 
         userVoiceChannel.join();
-        this.volumeCommand(event, new String[] {DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultvolume").toString()});
+        this.volumeMusic(event, new String[] {DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultvolume").toString()});
         return true;
     }
 
@@ -55,7 +55,7 @@ public class MainMusic extends Module{
             permission = "music_control",
             prefix = Globals.MUSIC_PREFIX
     )
-    public boolean leaveCommand(MessageReceivedEvent event, String[] args) {
+    public boolean leaveMusic(MessageReceivedEvent event, String[] args) {
         IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
 
         if(botVoiceChannel == null)
@@ -77,7 +77,7 @@ public class MainMusic extends Module{
             permission = "music_control",
             prefix = Globals.MUSIC_PREFIX
     )
-    public boolean playCommand(MessageReceivedEvent event, String[] args) {
+    public boolean playMusic(MessageReceivedEvent event, String[] args) {
         IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
 
         if(botVoiceChannel == null) {
@@ -100,7 +100,7 @@ public class MainMusic extends Module{
             permission = "music_control",
             prefix = Globals.MUSIC_PREFIX
     )
-    public boolean skipCommand(MessageReceivedEvent event, String[] args) {
+    public boolean skipTrack(MessageReceivedEvent event, String[] args) {
         skipTrack(event.getChannel());
         return true;
     }
@@ -113,7 +113,7 @@ public class MainMusic extends Module{
             permission = "music_control",
             prefix = Globals.MUSIC_PREFIX
     )
-    public boolean volumeCommand(MessageReceivedEvent event, String[] args) {
+    public boolean volumeMusic(MessageReceivedEvent event, String[] args) {
         try {
             int volumebefore = getGuildAudioPlayer(event.getGuild()).player.getVolume();
             getGuildAudioPlayer(event.getGuild()).player.setVolume(Integer.parseInt(args[0]));

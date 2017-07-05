@@ -16,6 +16,7 @@ import java.util.Set;
 public class CommandManager {
     private HashMap<Command, Method> modules = new HashMap<>();
     private HashMap<Command, Module> instances = new HashMap<>();
+    private ArrayList<String> prefixe = new ArrayList<>();
 
     private static CommandManager instance;
 
@@ -84,5 +85,11 @@ public class CommandManager {
     }
     public String getMethodNameByCommand(Command command) {
         return modules.get(command).getName();
+    }
+    public ArrayList<String> getAllPrefixe() {
+        for (Command command: getAllCommands()) {
+            prefixe.add(command.prefix());
+        }
+        return prefixe;
     }
 }

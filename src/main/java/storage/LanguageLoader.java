@@ -71,17 +71,18 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "notsendpermission_error", "Message could not be send! The Bot has not enough Permissions for [%1s] - #%2s Error: %3s");
         DRIVER.setProperty(DEF_LANG, "private_error", "You can not use commands in direct messages");
         DRIVER.setProperty(DEF_LANG, "nopermissions_error", "You have no Permission to use this command.");
-        DRIVER.setProperty(DEF_LANG, "nomanagepermission_error", "The Bot has no Permission to Manage Messages");
+        DRIVER.setProperty(DEF_LANG, "nomanagepermission_error", "The Bot has no Permission to Manage Messages.");
         DRIVER.setProperty(DEF_LANG, "tofewarguments_error", "You have provided to few arguments. %1s of %2s");
         DRIVER.setProperty(DEF_LANG, "tomanyarguments_error", "You have provided to many arguments. %1s of %2s");
         DRIVER.setProperty(DEF_LANG, "botowner_error", "This command can only be used from Bot Owner.");
         DRIVER.setProperty(DEF_LANG, "deletion_error", "Deletion of Messages failed (%1s of %2s) Error: %3s");
+        DRIVER.setProperty(DEF_LANG, "deleteprivinfo", "Deletion was successfull.");
 
         //Infos
         DRIVER.setProperty(DEF_LANG, "login_info", "Bot sign into the server. Please wait until the Bot is ready...");
         DRIVER.setProperty(DEF_LANG, "command_success", "The command was successful!");
         DRIVER.setProperty(DEF_LANG, "command_success_wait", "The command was successful. Please wait... Result is generating...");
-        DRIVER.setProperty(DEF_LANG, "shutdowninfo", "The Bot will shutting down in 10 seconds! Bye bye");
+        DRIVER.setProperty(DEF_LANG, "shutdowninfo", "The Bot will shutting down in 10 seconds! Bye bye.");
 
         //Stats Command
         DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
@@ -122,12 +123,12 @@ public class LanguageLoader implements Fast{
 
         //Music
         DRIVER.setProperty(DEF_LANG, "music_notinchannel", "The Bot is not in a voice Channel.");
-        DRIVER.setProperty(DEF_LANG, "music_volumechange", "Volume changed from %1s to %2s");
+        DRIVER.setProperty(DEF_LANG, "music_volumechange", "Volume changed from %1s to %2s.");
         DRIVER.setProperty(DEF_LANG, "music_volumechangeerror", "Can't change volume.");
-        DRIVER.setProperty(DEF_LANG, "music_add","Adding to queue: %1s");
-        DRIVER.setProperty(DEF_LANG, "music_add_queue", "Adding to queue %1s (first track of playlist %2s)");
-        DRIVER.setProperty(DEF_LANG, "music_notfound", "Nothing found by %1s");
-        DRIVER.setProperty(DEF_LANG, "music_notloaded", "Could not play.");
+        DRIVER.setProperty(DEF_LANG, "music_add","Adding to queue: %1s.");
+        DRIVER.setProperty(DEF_LANG, "music_add_queue", "Adding to queue %1s (first track of playlist %2s).");
+        DRIVER.setProperty(DEF_LANG, "music_notfound", "Nothing found by %1s.");
+        DRIVER.setProperty(DEF_LANG, "music_notloaded", "Could not play the choosen song.");
         DRIVER.setProperty(DEF_LANG, "music_skip", "Skipped to next track.");
 
         //Changes
@@ -137,12 +138,12 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "props", "Properties");
 
         //Permission
-        DRIVER.setProperty(DEF_LANG, "perm_add_success", "Permission added successful");
-        DRIVER.setProperty(DEF_LANG, "perm_add_failed", "Failed to add Permission to group");
-        DRIVER.setProperty(DEF_LANG, "perm_rem_success", "Permission removed successful");
-        DRIVER.setProperty(DEF_LANG, "perm_rem_failed", "Failed to remove Permission to group");
+        DRIVER.setProperty(DEF_LANG, "perm_add_success", "Permission added successful.");
+        DRIVER.setProperty(DEF_LANG, "perm_add_failed", "Failed to add Permission to group.");
+        DRIVER.setProperty(DEF_LANG, "perm_rem_success", "Permission removed successful.");
+        DRIVER.setProperty(DEF_LANG, "perm_rem_failed", "Failed to remove Permission to group.");
         DRIVER.setProperty(DEF_LANG, "permlist_title", "Permission List for Group %1s");
-        DRIVER.setProperty(DEF_LANG, "norolefound", "The Role was not found");
+        DRIVER.setProperty(DEF_LANG, "norolefound", "The Role was not found.");
 
         DRIVER.saveJson();
     }

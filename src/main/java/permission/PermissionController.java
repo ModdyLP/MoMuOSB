@@ -1,7 +1,8 @@
 package permission;
 
+import com.google.gson.JsonArray;
 import events.Command;
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
@@ -83,10 +84,11 @@ public class PermissionController implements Fast {
             grouppermission.add(permission);
             grouppermissions.put(role, grouppermission);
         } else {
-            Console.debug("This permission doesnt exist: "+permission);
+            Console.debug("This permission doesnt exist: " + permission);
         }
         savePermissions();
     }
+
     public void removePermissionToGroup(IRole role, String permission) {
         if (permissions.containsValue(permission)) {
             ArrayList<String> grouppermission = grouppermissions.get(role);
@@ -95,10 +97,11 @@ public class PermissionController implements Fast {
             }
             grouppermission.remove(permission);
         } else {
-            Console.debug("This permission doesnt exist: "+permission);
+            Console.debug("This permission doesnt exist: " + permission);
         }
         savePermissions();
     }
+
     public void removePermissionToGroup(IRole role, Command command) {
         ArrayList<String> grouppermission = grouppermissions.get(role);
         if (grouppermission == null) {
@@ -157,14 +160,14 @@ public class PermissionController implements Fast {
                         ArrayList<String> permission = new ArrayList<String>();
                         JSONArray jArray = (JSONArray) values.get(roleid);
                         if (jArray != null) {
-                            for (Object aJArray : jArray) {
-                                permission.add(aJArray.toString());
+                            for (int i = 0; i < jArray.length(); i++) {
+                                permission.add(jArray.get(i).toString());
                             }
                         }
                         grouppermissions.put(role, permission);
                         for (String perm : permission) {
                             Console.debug("Permission: " + perm);
-                            for (Command command: COMMAND.getCommandByPermission(perm)) {
+                            for (Command command : COMMAND.getCommandByPermission(perm)) {
                                 permissions.put(command, perm);
                             }
                         }
@@ -179,7 +182,7 @@ public class PermissionController implements Fast {
 
 
     public void setDefaultPermissions(List<IGuild> server) {
-        if (!DRIVER.checkIfFileExists(PERMFILE) && DRIVER.checkIfFileisEmpty(PERMFILE)) {
+        if (!DRIVER.checkIfFileExists(PERMFILE) || DRIVER.checkIfFileisEmpty(PERMFILE)) {
             Console.debug("Load default permissions...");
             List<IRole> adminroles = new ArrayList<>();
             List<IRole> everyoneroles = new ArrayList<>();

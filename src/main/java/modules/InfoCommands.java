@@ -42,7 +42,7 @@ public class InfoCommands extends Module implements Fast {
     )
     public boolean help(MessageReceivedEvent event, String[] args) {
         new Thread(() -> {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success_wait")), true);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success_wait")), true);
             for (EmbedBuilder builder : genbuildHelp(event)) {
                 BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
             }
@@ -70,7 +70,7 @@ public class InfoCommands extends Module implements Fast {
             EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
             BotInviteBuilder builder = new BotInviteBuilder(INIT.BOT).withPermissions(permissions);
             BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build());
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } else {
             BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("botowner_error"), true);
         }
@@ -104,11 +104,11 @@ public class InfoCommands extends Module implements Fast {
         builder.withColor(Color.CYAN);
 
         ArrayList<IUser> statusTypes = new ArrayList<>();
-        event.getGuild().getUsers().forEach(iUser -> {
+        INIT.BOT.getGuilds().forEach(iGuild -> iGuild.getUsers().forEach(iUser -> {
             if (iUser.getPresence().getStatus() != StatusType.OFFLINE) {
                 statusTypes.add(iUser);
             }
-        });
+        }));
 
         String stringBuilder = LANG.getTranslation("stats_servercount") + ": " + INIT.BOT.getGuilds().size() +
                 "\n" + LANG.getTranslation("stats_shards") + ": " + event.getGuild().getShard().getInfo()[0] + " / " + INIT.BOT.getShardCount() +
@@ -124,7 +124,7 @@ public class InfoCommands extends Module implements Fast {
     private ArrayList<EmbedBuilder> genbuildHelp(MessageReceivedEvent event) {
         ArrayList<EmbedBuilder> builders = new ArrayList<>();
         int page = 1;
-        int pagelenght = 0;
+        String botprefix = DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString();
         EmbedBuilder builder = new EmbedBuilder();
         builders.add(page - 1, builder);
         builders.get(page - 1).withDescription(LANG.getTranslation("help_noneinfo"));
@@ -132,13 +132,13 @@ public class InfoCommands extends Module implements Fast {
         int count = 0;
         for (Command command : COMMAND.getAllCommands()) {
             if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
-                String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + command.prefix() + command.alias() +
+                String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + botprefix + command.prefix() + command.alias() +
                         "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
-                        "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command)+
+                        "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) +
                         "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
-                builders.get(page - 1).appendField(LANG.getTranslation("help_command") + "       | " + command.prefix() + command.command(), string, false);
+                builders.get(page - 1).appendField(count+". "+LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
             }
-            if (builders.get(page - 1).getFieldCount() >= EmbedBuilder.FIELD_COUNT_LIMIT || builders.get(page-1).getTotalVisibleCharacters() >= (EmbedBuilder.MAX_CHAR_LIMIT-1000)) {
+            if (builders.get(page - 1).getFieldCount() >= EmbedBuilder.FIELD_COUNT_LIMIT || builders.get(page - 1).getTotalVisibleCharacters() >= (EmbedBuilder.MAX_CHAR_LIMIT - 1000)) {
                 page++;
                 EmbedBuilder buildertemp = new EmbedBuilder();
                 builders.add(page - 1, buildertemp);
@@ -147,7 +147,7 @@ public class InfoCommands extends Module implements Fast {
             builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
             builders.get(page - 1).withColor(Color.CYAN);
         }
-        builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") +"("+count+")"+ " Page: " + 1 + " :information_source:");
+        builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + ")" + " Page: " + 1 + " :information_source:");
         return builders;
     }
 

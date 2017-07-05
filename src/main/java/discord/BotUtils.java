@@ -1,5 +1,6 @@
 package discord;
 
+import sx.blah.discord.handle.impl.obj.Message;
 import util.Fast;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -12,6 +13,8 @@ import util.Console;
 import util.Footer;
 
 import java.awt.*;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,6 +28,7 @@ public class BotUtils implements Fast{
      * @param token the Auth Token
      * @return the BotInstance
      */
+
     static IDiscordClient getBuiltDiscordClient(String token){
         // The ClientBuilder object is where you will attach your params for configuring the instance of your bot.
         // Such as withToken, setDaemon etc
@@ -41,34 +45,39 @@ public class BotUtils implements Fast{
      * @param message Message
      * @param delete deletion after time
      */
-    public static void sendMessage(IChannel channel, String message, boolean delete){
-        RequestBuffer.request(() -> {
+    public static IMessage sendMessage(IChannel channel, String message, boolean delete){
+        RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
             try{
                 if (channel.getModifiedPermissions(INIT.BOT.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
-                    channel.sendMessage(message);
-                    deleteMessageFromBot(channel, delete);
+                    IMessage messageinst = channel.sendMessage(message);
+                    deleteMessageFromBot(messageinst, delete);
+                    return messageinst;
                 } else {
                     Console.error(String.format(LANG.getTranslation("notsendpermission_error"), channel.getGuild().getName(), channel.getName()));
+                    return null;
                 }
             } catch (DiscordException e){
                 Console.error(String.format(LANG.getTranslation("notsend_error"), e.getMessage()));
+                return null;
             }
         });
-
+        return feature.get();
     }
     /**
      * Send a Message in Private Channel
      * @param userchannel Channel
      * @param message Message
      */
-    public static void sendPrivMessage(IPrivateChannel userchannel, String message){
-        RequestBuffer.request(() -> {
+    public static IMessage sendPrivMessage(IPrivateChannel userchannel, String message){
+        RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
             try{
-                userchannel.sendMessage(message);
+                return userchannel.sendMessage(message);
             } catch (DiscordException e){
                 Console.error(String.format(LANG.getTranslation("notsend_error"), e.getMessage()));
+                return null;
             }
         });
+        return feature.get();
 
     }
     /**
@@ -77,62 +86,55 @@ public class BotUtils implements Fast{
      * @param builder Message as Embeded Builder Instance
      * @param delete deletion after time
      */
-    public static void sendEmbMessage(IChannel channel, EmbedBuilder builder, boolean delete){
-        RequestBuffer.request(() -> {
+    public static IMessage sendEmbMessage(IChannel channel, EmbedBuilder builder, boolean delete){
+        RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
             try{
                 if (channel.getModifiedPermissions(INIT.BOT.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
                     Footer.addFooter(builder);
-                    channel.sendMessage(builder.build());
-                    deleteMessageFromBot(channel, delete);
+                    IMessage message = channel.sendMessage(builder.build());
+                    deleteMessageFromBot(message, delete);
+                    return message;
                 } else {
                     Console.error(String.format(LANG.getTranslation("notsendpermission_error"), channel.getGuild().getName(), channel.getName()));
+                    return null;
                 }
             } catch (DiscordException e){
                 Console.error(String.format(LANG.getTranslation("notsend_error"), e.getMessage()));
+                return null;
             }
         });
-
+        return feature.get();
     }
     /**
      * Send a Message in Channel
      * @param channel Channel
      * @param builder Message as Embeded Builder Instance
      */
-    public static void sendPrivEmbMessage(IPrivateChannel channel, EmbedBuilder builder){
-        RequestBuffer.request(() -> {
+    public static IMessage sendPrivEmbMessage(IPrivateChannel channel, EmbedBuilder builder){
+        RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
             try{
                 Footer.addFooter(builder);
-                channel.sendMessage(builder.build());
+                return channel.sendMessage(builder.build());
             } catch (DiscordException e){
                 Console.error(String.format(LANG.getTranslation("notsend_error"), e.getMessage()));
+                return null;
             }
         });
+        return feature.get();
 
     }
 
     /**
      * Delte the Message of the Bot after time
-     * @param channel Channel
+     * @param message Channel
      * @param delete delete
      */
-    private static void deleteMessageFromBot(IChannel channel, boolean delete) {
+    private static void deleteMessageFromBot(IMessage message, boolean delete) {
         if (delete && DRIVER.getPropertyOnly(DRIVER.CONFIG,"deleteBotAnswers").equals(true)) {
             new Thread(() -> {
                 try {
                     Thread.sleep(Integer.parseInt(DRIVER.getPropertyOnly(DRIVER.CONFIG,"botanswerdeletseconds").toString()) * 1000);
-                    MessageHistory messages = channel.getMessageHistory(10);
-                    for (IMessage message: messages) {
-                        if (message.getAuthor().isBot()) {
-                            for (IEmbed obj: message.getEmbeds()) {
-                                if (obj.getColor().equals(Color.green)) {
-                                    if (!message.isDeleted()) {
-                                        message.delete();
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                    }
+                    message.delete();
                 } catch (Exception ex) {
                     Console.error(LANG.getTranslation("common_error"));
                 }
