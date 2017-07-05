@@ -182,6 +182,15 @@ public class FileDriver {
         return jsons.get(filename).get(option);
     }
 
+    public boolean hasKey(String filename, String option) {
+        try {
+            return jsons.get(filename).has(option);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     /**
      * Get Property of File but without a Default Value
      * @param filename filename
