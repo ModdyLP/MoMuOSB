@@ -167,7 +167,11 @@ public class EventListener implements Fast{
     public void onGuildCreate(GuildCreateEvent event) {
         Console.println("==================NEW SERVER |"+event.getGuild().getName()+"| "+event.getGuild().getStringID());
         if(DRIVER.getPropertyOnly(DRIVER.CONFIG, "music_disabled_default").equals(true)) {
-            ServerControl.addDisabledServer(event.getGuild(), running);
+            if (DRIVER.hasKey(DRIVER.CONFIG, "music_disabled_servers")) {
+                ServerControl.addDisabledServer(event.getGuild(), running);
+            } else {
+                ServerControl.addDisabledServer(event.getGuild(), true);
+            }
         }
     }
 }
