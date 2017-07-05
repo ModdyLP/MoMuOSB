@@ -1,22 +1,15 @@
 package storage;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpServerConnection;
-import sun.misc.BASE64Encoder;
-import sun.net.www.protocol.https.HttpsURLConnectionImpl;
 import util.Console;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 /**
  * A collection of useful methods.
