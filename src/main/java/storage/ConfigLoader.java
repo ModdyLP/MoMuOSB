@@ -23,6 +23,7 @@ public class ConfigLoader implements Fast {
         DRIVER.getProperty(DRIVER.CONFIG,"token", "");
         DRIVER.getProperty(DRIVER.CONFIG, "ownerbypass", true);
         DRIVER.getProperty(DRIVER.CONFIG, "botprefix", "");
+        DRIVER.getProperty(DRIVER.CONFIG, "music_disabled_default", true);
         DRIVER.saveJson();
     }
 }

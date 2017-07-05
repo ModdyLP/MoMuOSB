@@ -7,14 +7,15 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import discord.BotUtils;
+import discord.ServerControl;
 import events.Command;
 import events.Module;
-import util.Globals;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.audio.AudioPlayer;
+import util.Globals;
 import util.SMB;
 
 import java.util.HashMap;
@@ -23,10 +24,29 @@ import java.util.Map;
 /**
  * Created by ModdyLP on 30.06.2017. Website: https://moddylp.de/
  */
-public class MainMusic extends Module{
+public class MainMusic extends Module {
 
     public static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
-    private static final Map<Long, GuildMusicManager> musicManagers  = new HashMap<>();
+    private static final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
+
+    @Command(
+            command = "setenabledmusic",
+            alias = "sem",
+            description = "Removes a Server from List",
+            arguments = {"ServerID"},
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.MUSIC_PREFIX
+    )
+    public boolean removeDisabledServer(MessageReceivedEvent event, String[] args) {
+        try {
+            ServerControl.removeDisabledServer(INIT.BOT.getGuildByID(Long.valueOf(args[0])));
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
+        } catch (Exception ex) {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
+            ex.printStackTrace();
+        }
+        return true;
+    }
 
     @Command(
             command = "join",
@@ -37,14 +57,19 @@ public class MainMusic extends Module{
             prefix = Globals.MUSIC_PREFIX
     )
     public boolean joinCommand(MessageReceivedEvent event, String[] args) {
-        IVoiceChannel userVoiceChannel = event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel();
+        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "music_disabled_default").equals(false) || !ServerControl.getDisabledserverslist().contains(event.getGuild().getStringID())) {
+            IVoiceChannel userVoiceChannel = event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel();
 
-        if(userVoiceChannel == null)
+            if (userVoiceChannel == null)
+                return false;
+
+            userVoiceChannel.join();
+            this.volumeMusic(event, new String[]{DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultvolume").toString()});
+            return true;
+        } else {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("disabledserver")), true);
             return false;
-
-        userVoiceChannel.join();
-        this.volumeMusic(event, new String[] {DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultvolume").toString()});
-        return true;
+        }
     }
 
     @Command(
@@ -58,8 +83,10 @@ public class MainMusic extends Module{
     public boolean leaveMusic(MessageReceivedEvent event, String[] args) {
         IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
 
-        if(botVoiceChannel == null)
+        if (botVoiceChannel == null) {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("music_notinchannel_user")), true);
             return false;
+        }
 
         AudioPlayer audioP = AudioPlayer.getAudioPlayerForGuild(event.getGuild());
 
@@ -80,7 +107,7 @@ public class MainMusic extends Module{
     public boolean playMusic(MessageReceivedEvent event, String[] args) {
         IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
 
-        if(botVoiceChannel == null) {
+        if (botVoiceChannel == null) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("music_notinchannel")), true);
             return false;
         }
@@ -125,9 +152,6 @@ public class MainMusic extends Module{
     }
 
 
-
-
-
     private static synchronized GuildMusicManager getGuildAudioPlayer(IGuild guild) {
         long guildId = guild.getLongID();
         GuildMusicManager musicManager = musicManagers.computeIfAbsent(guildId, k -> new GuildMusicManager(playerManager));
@@ -156,7 +180,7 @@ public class MainMusic extends Module{
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add_queue"),firstTrack.getInfo().title,playlist.getName())), true);
+                BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add_queue"), firstTrack.getInfo().title, playlist.getName())), true);
 
                 play(musicManager, firstTrack);
             }
@@ -168,7 +192,7 @@ public class MainMusic extends Module{
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                BotUtils.sendEmbMessage(channel, SMB.shortMessage(LANG.getTranslation("music_notloaded")+exception.getMessage()), true);
+                BotUtils.sendEmbMessage(channel, SMB.shortMessage(LANG.getTranslation("music_notloaded") + exception.getMessage()), true);
             }
         });
     }

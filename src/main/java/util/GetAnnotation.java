@@ -19,6 +19,7 @@ public class GetAnnotation implements Fast{
      */
     public static HashMap<Command, Method> getCommandAnnotation(Class clazz){
         HashMap<Command, Method> allannotation = new HashMap<>();
+        Console.debug("----------------Module: "+clazz.getName()+"----------------");
         try {
                 Method[] methods = clazz.getDeclaredMethods();
                 for (Method method : methods) {

@@ -2,6 +2,8 @@ package events;
 
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import discord.BotUtils;
+import discord.ServerControl;
+import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 import util.*;
 import modules.music.MainMusic;
 import org.tritonus.share.ArraySet;
@@ -23,6 +25,7 @@ import java.util.Set;
  */
 public class EventListener implements Fast{
     private static EventListener instance;
+    private static boolean running = false;
 
     /**
      * Get Instance
@@ -157,5 +160,14 @@ public class EventListener implements Fast{
         AudioSourceManagers.registerLocalSource(MainMusic.playerManager);
 
         Console.println("====================================Bot Start completed===============================");
+        running = true;
+    }
+
+    @EventSubscriber
+    public void onGuildCreate(GuildCreateEvent event) {
+        Console.println("==================NEW SERVER |"+event.getGuild().getName()+"| "+event.getGuild().getStringID());
+        if(DRIVER.getPropertyOnly(DRIVER.CONFIG, "music_disabled_default").equals(true)) {
+            ServerControl.addDisabledServer(event.getGuild(), running);
+        }
     }
 }

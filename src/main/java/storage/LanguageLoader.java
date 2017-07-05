@@ -123,6 +123,7 @@ public class LanguageLoader implements Fast{
 
         //Music
         DRIVER.setProperty(DEF_LANG, "music_notinchannel", "The Bot is not in a voice Channel.");
+        DRIVER.setProperty(DEF_LANG, "music_notinchannel_user", "You are not in a Voice Channel.");
         DRIVER.setProperty(DEF_LANG, "music_volumechange", "Volume changed from %1s to %2s.");
         DRIVER.setProperty(DEF_LANG, "music_volumechangeerror", "Can't change volume.");
         DRIVER.setProperty(DEF_LANG, "music_add","Adding to queue: %1s.");
@@ -130,6 +131,7 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "music_notfound", "Nothing found by %1s.");
         DRIVER.setProperty(DEF_LANG, "music_notloaded", "Could not play the choosen song.");
         DRIVER.setProperty(DEF_LANG, "music_skip", "Skipped to next track.");
+        DRIVER.setProperty(DEF_LANG, "disabledserver", "This server is disabled for using the Music Module");
 
         //Changes
         DRIVER.setProperty(DEF_LANG, "changeprop_error", "This option can't found in the config file!");

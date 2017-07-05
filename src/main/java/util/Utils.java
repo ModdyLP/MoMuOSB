@@ -5,6 +5,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONTokener;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -58,5 +61,18 @@ public class Utils {
         Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
 
         return prettyGson.toJson(json);
+    }
+    public static JSONArray objectToJSONArray(Object object){
+        Object json = null;
+        JSONArray jsonArray = null;
+        try {
+            json = new JSONTokener(object.toString()).nextValue();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (json instanceof JSONArray) {
+            jsonArray = (JSONArray) json;
+        }
+        return jsonArray;
     }
 }

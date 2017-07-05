@@ -282,4 +282,22 @@ public class ChangeCommands extends Module {
         return true;
     }
 
+    @Command(
+            command = "reloadconfig",
+            arguments = {},
+            description = "Reload the Config",
+            alias = "relcon",
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean reloadConfig(MessageReceivedEvent event, String[] args) {
+        try {
+            DRIVER.loadJson();
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+        } catch (Exception ex) {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.SUCCESS+LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
+        }
+        return true;
+    }
+
 }
