@@ -133,8 +133,8 @@ public class Moderation extends Module{
             description = "Shutdown the bot",
             alias = "dpm",
             arguments = {"Count"},
-            permission = Globals.BOT_MANAGE,
-            prefix = Globals.ADMIN_PREFIX
+            permission = Globals.BOT_INFO,
+            prefix = Globals.INFO_PREFIX
     )
     public boolean deleteprivateMessages(MessageReceivedEvent event, String[] args) {
         new Thread(() -> {
