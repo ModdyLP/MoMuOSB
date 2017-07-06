@@ -176,7 +176,12 @@ public class EventListener implements Fast {
         RoleManagement.loadGenders();
 
         saveGuilds();
-
+        Console.println("====================================Bot Status========================================");
+        INIT.BOT.getShards().forEach(iShard -> {
+            Console.println("Shard "+iShard.getInfo()[0]+": "+iShard.isReady());
+        });
+        Command helpcommand = COMMAND.getCommandByName("help");
+        Console.println("Type "+ DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString()+helpcommand.prefix()+helpcommand.command()+" for getting help.");
         Console.println("====================================Bot Start completed===============================");
         running = true;
     }
