@@ -16,7 +16,7 @@ import java.util.Set;
 public class CommandManager {
     private HashMap<Command, Method> modules = new HashMap<>();
     private HashMap<Command, Module> instances = new HashMap<>();
-    private ArrayList<String> prefixe = new ArrayList<>();
+    private static ArrayList<String> prefixe = new ArrayList<>();
 
     private static CommandManager instance;
 
@@ -34,6 +34,7 @@ public class CommandManager {
                 if (!getAllAliasAsString().contains(anno.alias())) {
                     modules.put(anno, annotations.get(anno));
                     instances.put(anno, instance);
+                    prefixe.add(anno.prefix());
                 } else {
                     Console.error("Duplicate Alias: "+anno.alias());
                 }
@@ -87,9 +88,6 @@ public class CommandManager {
         return modules.get(command).getName();
     }
     public ArrayList<String> getAllPrefixe() {
-        for (Command command: getAllCommands()) {
-            prefixe.add(command.prefix());
-        }
         return prefixe;
     }
 }
