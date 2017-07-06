@@ -50,8 +50,9 @@ public class EventListener implements Fast{
                     if (messageparts.length > 0) {
                         String botprefix = DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString();
                         String commandstring = messageparts[0].replace(botprefix, "");
-                        for (String prefixs: COMMAND.getAllPrefixe()) {
-                            commandstring = commandstring.replace(prefixs, "");
+                        Iterator<String> iterator = COMMAND.getAllPrefixe().iterator();
+                        while(iterator.hasNext()) {
+                            commandstring = commandstring.replace(iterator.next(), "");
                         }
                         String prefix = messageparts[0].replace(commandstring, "");
                         String[] args = new String[]{};
@@ -64,7 +65,8 @@ public class EventListener implements Fast{
                                     Console.debug(Console.sendprefix + "Message deleted: [" + message + "]");
                                     event.getMessage().delete();
                                 } else {
-                                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
+                                    Console.debug(Console.sendprefix + "Message not deleted: [" + message + "] -- nopermissions");
+                                    BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")));
                                 }
                             }
                             if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
