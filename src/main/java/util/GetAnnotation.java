@@ -27,7 +27,7 @@ public class GetAnnotation implements Fast{
                     if (annotation != null) {
                         if (method.getParameters().length == 2) {
                             if (method.getParameters()[0].getParameterizedType().equals(MessageReceivedEvent.class) && method.getParameters()[1].getParameterizedType().equals(String[].class)) {
-                                Console.debug("Method added as Command: " + method.getName());
+                                Console.debug("Command: " + annotation.prefix()+annotation.command()+" in "+method.getName());
                                 allannotation.put(annotation, method);
                                 PERM.addPermission(annotation);
                             } else {

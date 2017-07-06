@@ -14,10 +14,7 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -169,6 +166,11 @@ public class EventListener implements Fast{
         if(DRIVER.getPropertyOnly(DRIVER.CONFIG, "music_disabled_default").equals(true)) {
             if (DRIVER.hasKey(DRIVER.CONFIG, "music_disabled_servers")) {
                 ServerControl.addDisabledServer(event.getGuild(), running);
+                if (running) {
+                    List<IGuild> server = new ArrayList<>();
+                    server.add(event.getGuild());
+                    PERM.setDefaultPermissions(server);
+                }
             } else {
                 ServerControl.addDisabledServer(event.getGuild(), true);
             }
