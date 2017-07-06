@@ -3,6 +3,7 @@ package events;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import discord.BotUtils;
 import discord.ServerControl;
+import discord.SystemInfo;
 import modules.RoleManagement;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 import util.*;
@@ -49,11 +50,12 @@ public class EventListener implements Fast {
         new Thread(() -> {
             try {
                 //Check if Channel is Private (DM)
+                //Console.debug("MI: "+event.getGuild().getStringID()+"   "+event.getChannel().getName()+"   "+event.getAuthor().getName());
                 if (!event.getChannel().isPrivate()) {
                     String message = event.getMessage().getContent();
                     String[] messageparts = message.split(" ");
                     if (messageparts.length > 0) {
-
+                        setArgsAndPrefix(messageparts, message);
                         Command command = COMMAND.getCommandByName(commandstring);
                         if (command != null && (botprefix + command.prefix()).equalsIgnoreCase(prefix)) {
                             Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
@@ -76,6 +78,7 @@ public class EventListener implements Fast {
                     }
                 } else {
                     if (event.getMessage().getMentions().contains(INIT.BOT.getOurUser())) {
+                        setArgsAndPrefix(event.getMessage().getContent().split(" "), event.getMessage().getContent());
                         UserEvents.getInstance().setGenderRole(event, args[0]);
                     } else {
                         BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR + LANG.getTranslation("private_error"));
@@ -90,7 +93,7 @@ public class EventListener implements Fast {
 
     public void setArgsAndPrefix(String[] messageparts, String message) {
         botprefix = DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString();
-        commandstring = messageparts[0].replace(botprefix, "");
+        commandstring = messageparts[0].replaceFirst(botprefix, "");
         Iterator<String> iterator = COMMAND.getAllPrefixe().iterator();
         while (iterator.hasNext()) {
             commandstring = commandstring.replace(iterator.next(), "");
@@ -127,6 +130,7 @@ public class EventListener implements Fast {
                     String[] printargs = newargs.toArray(new String[]{});
                     COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, printargs);
                 }
+                Console.debug(Console.sendprefix+"New Args: "+newargs);
             } else {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + String.format(LANG.getTranslation("tofewarguments_error"), args.length, command.arguments().length)), true);
             }
@@ -178,8 +182,14 @@ public class EventListener implements Fast {
         saveGuilds();
         Console.println("====================================Bot Status========================================");
         INIT.BOT.getShards().forEach(iShard -> {
-            Console.println("Shard "+iShard.getInfo()[0]+": "+iShard.isReady());
+            Console.println("Shard "+iShard.getInfo()[0]+": "+iShard.isReady()+" Servers: "+iShard.getGuilds().size()+"  Ping: "+iShard.getResponseTime());
         });
+        Console.println("Username: "+INIT.BOT.getOurUser().getName());
+        Console.println("PlayText: "+INIT.BOT.getOurUser().getPresence().getPlayingText().get());
+        Console.println("Status: "+INIT.BOT.getOurUser().getPresence().getStatus());
+        Console.println("Streaming: "+INIT.BOT.getOurUser().getPresence().getStreamingUrl());
+        SystemInfo info = new SystemInfo();
+        Console.println("SystemInfo: "+info.Info()+"\n");
         Command helpcommand = COMMAND.getCommandByName("help");
         Console.println("Type "+ DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString()+helpcommand.prefix()+helpcommand.command()+" for getting help.");
         Console.println("====================================Bot Start completed===============================");

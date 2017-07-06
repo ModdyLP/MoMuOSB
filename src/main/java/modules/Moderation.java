@@ -31,7 +31,7 @@ public class Moderation extends Module{
             description = "Deletion of Message Amount",
             alias = "dm",
             arguments = {"Count"},
-            permission = "deletemsg",
+            permission = Globals.BOT_MANAGE,
             prefix = Globals.ADMIN_PREFIX
     )
     public boolean deleteMessages(MessageReceivedEvent event, String[] args) {
@@ -72,7 +72,7 @@ public class Moderation extends Module{
             description = "Deletion of Message Amount",
             alias = "fdm",
             arguments = {"Count"},
-            permission = "deletemsg",
+            permission = Globals.BOT_MANAGE,
             prefix = Globals.ADMIN_PREFIX
     )
     public boolean forcedeleteMessages(MessageReceivedEvent event, String[] args) {

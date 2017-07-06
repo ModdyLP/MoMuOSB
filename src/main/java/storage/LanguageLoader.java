@@ -87,6 +87,8 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
         DRIVER.setProperty(DEF_LANG, "stats_servercount", "Server Count");
         DRIVER.setProperty(DEF_LANG, "stats_shards", "Shards");
+        DRIVER.setProperty(DEF_LANG, "stats_shard_ping", "Ping for Shard");
+        DRIVER.setProperty(DEF_LANG, "stats_ram", "Ram Usage");
         DRIVER.setProperty(DEF_LANG, "stats_owner", "Bot Owner");
         DRIVER.setProperty(DEF_LANG, "stats_user", "Users");
         DRIVER.setProperty(DEF_LANG, "stats_commands", "Commands");

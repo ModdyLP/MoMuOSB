@@ -2,6 +2,7 @@ package modules;
 
 import discord.BotUtils;
 import discord.DiscordInit;
+import discord.SystemInfo;
 import events.Command;
 import events.Module;
 import util.*;
@@ -109,9 +110,11 @@ public class InfoCommands extends Module implements Fast {
                 statusTypes.add(iUser);
             }
         }));
-
+        SystemInfo info = new SystemInfo();
         String stringBuilder = LANG.getTranslation("stats_servercount") + ": " + INIT.BOT.getGuilds().size() +
                 "\n" + LANG.getTranslation("stats_shards") + ": " + event.getGuild().getShard().getInfo()[0] + " / " + INIT.BOT.getShardCount() +
+                "\n" + LANG.getTranslation("stats_shard_ping") + ": " + event.getGuild().getShard().getResponseTime() +
+                "\n" + LANG.getTranslation("stats_ram") + ": " + info.getUsedMem() +
                 "\n" + LANG.getTranslation("stats_user") + ": " + statusTypes.size() + " / " + INIT.BOT.getUsers().size() +
                 "\n" + LANG.getTranslation("stats_uptime") + ": " + Utils.calculateAndFormatTimeDiff(MoMuOSBMain.starttime, now) +
                 "\n" + LANG.getTranslation("stats_owner") + ": " + INIT.BOT.getApplicationOwner().getName() +
@@ -136,7 +139,7 @@ public class InfoCommands extends Module implements Fast {
                         "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
                         "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) +
                         "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
-                builders.get(page - 1).appendField(count+". "+LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
+                builders.get(page - 1).appendField((count+1)+". "+LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
             }
             if (builders.get(page - 1).getFieldCount() >= EmbedBuilder.FIELD_COUNT_LIMIT || builders.get(page - 1).getTotalVisibleCharacters() >= (EmbedBuilder.MAX_CHAR_LIMIT - 1000)) {
                 page++;
