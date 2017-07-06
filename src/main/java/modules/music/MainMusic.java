@@ -10,6 +10,7 @@ import discord.BotUtils;
 import discord.ServerControl;
 import events.Command;
 import events.Module;
+import events.UserEvents;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -39,7 +40,7 @@ public class MainMusic extends Module {
     )
     public boolean removeDisabledServer(MessageReceivedEvent event, String[] args) {
         try {
-            ServerControl.removeDisabledServer(INIT.BOT.getGuildByID(Long.valueOf(args[0])));
+            SERVER_CONTROL.removeDisabledServer(INIT.BOT.getGuildByID(Long.valueOf(args[0])), SERVER_CONTROL.MUSIC_MODULE);
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
@@ -57,7 +58,7 @@ public class MainMusic extends Module {
             prefix = Globals.MUSIC_PREFIX
     )
     public boolean joinCommand(MessageReceivedEvent event, String[] args) {
-        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "music_disabled_default").equals(false) || !ServerControl.getDisabledserverslist().contains(event.getGuild().getStringID())) {
+        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "music_disabled_default").equals(false) || !SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.MUSIC_MODULE).contains(event.getGuild().getStringID())) {
             IVoiceChannel userVoiceChannel = event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel();
 
             if (userVoiceChannel == null)

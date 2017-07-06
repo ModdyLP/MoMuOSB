@@ -57,7 +57,6 @@ public class LanguageLoader implements Fast{
      */
     public void setDefaultLanguage() {
         Console.debug("DefaultLanguage Loading for Fallback");
-        DRIVER.loadJson();
 
         //Errors
         DRIVER.setProperty(DEF_LANG, "common_error", "There was an error!");
@@ -146,6 +145,14 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "perm_rem_failed", "Failed to remove Permission to group.");
         DRIVER.setProperty(DEF_LANG, "permlist_title", "Permission List for Group %1s");
         DRIVER.setProperty(DEF_LANG, "norolefound", "The Role was not found.");
+
+        //Role Manager
+        DRIVER.setProperty(DEF_LANG, "role_add", "Role %1s added successful to User %2s");
+        DRIVER.setProperty(DEF_LANG, "role_remove", "Role %1s removed successful to User %2s");
+        DRIVER.setProperty(DEF_LANG, "role_gender_add", "Role %1s was added as Gender %2s");
+        DRIVER.setProperty(DEF_LANG, "role_gender_notfound", "This Gender is not defined.");
+        DRIVER.setProperty(DEF_LANG, "female_ask", "Are you Male or Female? Answer with the Gender like this: @Botname w ");
+        DRIVER.setProperty(DEF_LANG, "gender_role_added", "You get the Role specified for your Gender.");
 
         DRIVER.saveJson();
     }

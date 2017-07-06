@@ -1,6 +1,7 @@
 package main;
 
 import discord.DiscordInit;
+import modules.RoleManagement;
 import storage.ConfigLoader;
 import util.Console;
 import util.Fast;
@@ -28,6 +29,10 @@ public class MoMuOSBMain implements Fast {
             LANG.createTranslations();
             LANG.setDefaultLanguage();
             Console.println("Language loading complete!");
+
+            SERVER_CONTROL.loadSavedServer(SERVER_CONTROL.MUSIC_MODULE);
+            SERVER_CONTROL.loadSavedServer(SERVER_CONTROL.JOIN_MODULE);
+
             Runtime.getRuntime().addShutdownHook(new Thread() {
                         public void run() {
                             shutdown();
@@ -47,6 +52,9 @@ public class MoMuOSBMain implements Fast {
      */
     public static void shutdown() {
         Console.println("====================================Bot shutting down...==============================");
+
+        RoleManagement.saveGenders();
+
         if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
             INIT.BOT.logout();
         }

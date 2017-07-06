@@ -157,11 +157,13 @@ public class PermissionController implements Fast {
                 for (IGuild serverinstance : server) {
                     IRole role = serverinstance.getRoleByID(Long.valueOf(roleid));
                     if (role != null) {
-                        ArrayList<String> permission = new ArrayList<String>();
+                        ArrayList<String> permission = new ArrayList<>();
                         JSONArray jArray = (JSONArray) values.get(roleid);
                         if (jArray != null) {
                             for (int i = 0; i < jArray.length(); i++) {
-                                permission.add(jArray.get(i).toString());
+                                if (!jArray.get(i).toString().equalsIgnoreCase("null")) {
+                                    permission.add(jArray.get(i).toString());
+                                }
                             }
                         }
                         grouppermissions.put(role, permission);
@@ -181,26 +183,27 @@ public class PermissionController implements Fast {
     }
 
 
-    public void setDefaultPermissions(List<IGuild> server) {
-        if (!DRIVER.checkIfFileExists(PERMFILE) || DRIVER.checkIfFileisEmpty(PERMFILE)) {
+    public void setDefaultPermissions(List<IGuild> server, boolean override) {
+        if (override || !DRIVER.checkIfFileExists(PERMFILE) || DRIVER.checkIfFileisEmpty(PERMFILE)) {
             Console.debug("Load default permissions...");
             List<IRole> adminroles = new ArrayList<>();
             List<IRole> everyoneroles = new ArrayList<>();
             for (IGuild serverinst : server) {
+                loadPermissions(server);
                 for (IRole role : serverinst.getRoles()) {
-                    if (role.getPermissions().contains(Permissions.ADMINISTRATOR)) {
+                    if (role.getPermissions().contains(Permissions.ADMINISTRATOR) && !grouppermissions.containsKey(role)) {
                         adminroles.add(role);
                     }
                 }
-                everyoneroles.add(serverinst.getEveryoneRole());
+                if (!grouppermissions.containsKey(serverinst.getEveryoneRole())) {
+                    Console.debug("Add: " + serverinst.getEveryoneRole().getStringID() + " " + serverinst.getEveryoneRole().getGuild().getName());
+                    PERM.addPermissionToGroup(serverinst.getEveryoneRole(), Globals.BOT_INFO);
+                }
             }
             for (IRole role : adminroles) {
+                Console.debug("Add: "+role.getStringID()+" "+role.getGuild().getName());
                 PERM.addPermissionToGroup(role, Globals.BOT_MANAGE);
             }
-            for (IRole role : everyoneroles) {
-                PERM.addPermissionToGroup(role, Globals.BOT_INFO);
-            }
-            DRIVER.saveJson();
             Console.debug("Permission loaded: Admin:" + adminroles.size() + " Info: " + everyoneroles.size());
         }
     }
