@@ -57,7 +57,6 @@ public class LanguageLoader implements Fast{
      */
     public void setDefaultLanguage() {
         Console.debug("DefaultLanguage Loading for Fallback");
-        DRIVER.loadJson();
 
         //Errors
         DRIVER.setProperty(DEF_LANG, "common_error", "There was an error!");
@@ -83,69 +82,6 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "command_success", "The command was successful!");
         DRIVER.setProperty(DEF_LANG, "command_success_wait", "The command was successful. Please wait... Result is generating...");
         DRIVER.setProperty(DEF_LANG, "shutdowninfo", "The Bot will shutting down in 10 seconds! Bye bye.");
-
-        //Stats Command
-        DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
-        DRIVER.setProperty(DEF_LANG, "stats_servercount", "Server Count");
-        DRIVER.setProperty(DEF_LANG, "stats_shards", "Shards");
-        DRIVER.setProperty(DEF_LANG, "stats_owner", "Bot Owner");
-        DRIVER.setProperty(DEF_LANG, "stats_user", "Users");
-        DRIVER.setProperty(DEF_LANG, "stats_commands", "Commands");
-        DRIVER.setProperty(DEF_LANG, "stats_uptime", "Uptime");
-
-        //Help Command
-        DRIVER.setProperty(DEF_LANG, "help_title", "All Commands");
-        DRIVER.setProperty(DEF_LANG, "help_command", "Command");
-        DRIVER.setProperty(DEF_LANG, "help_alias", "Alias");
-        DRIVER.setProperty(DEF_LANG, "help_arguments", "Arguments");
-        DRIVER.setProperty(DEF_LANG, "help_description", "Description");
-        DRIVER.setProperty(DEF_LANG, "help_noneinfo", "If you want to reset a Value, then type for each argument NA.");
-        DRIVER.setProperty(DEF_LANG, "help_prefixinfo", "\nThe Prefixes are \n" +
-                "Admin Prefix:   !   \n" +
-                "Info Prefix:    .   \n" +
-                "Game Prefix:    ~   \n" +
-                "music Prefix:   $   \n");
-        DRIVER.setProperty(DEF_LANG, "help_permission", "Permission");
-
-        //Deletion
-        DRIVER.setProperty(DEF_LANG, "del_topic", "Deletion %1s of %2s");
-
-        //Search
-        DRIVER.setProperty(DEF_LANG, "engine_unknown", "The Search Engine is unknown!");
-        DRIVER.setProperty(DEF_LANG, "results_end", "You reached the end of results.");
-        DRIVER.setProperty(DEF_LANG, "results_cleared", "The results were cleared.");
-        DRIVER.setProperty(DEF_LANG, "searchtoken_google", "Please provide a google search api token.");
-        DRIVER.setProperty(DEF_LANG, "result_out", "The Result is out of Range.");
-        DRIVER.setProperty(DEF_LANG, "no_search", "There is no search running.");
-        DRIVER.setProperty(DEF_LANG, "search_result", "Your search Result");
-        DRIVER.setProperty(DEF_LANG, "search_info", "Search Query");
-        DRIVER.setProperty(DEF_LANG, "search_count", "Result %1s of %2s");
-
-        //Music
-        DRIVER.setProperty(DEF_LANG, "music_notinchannel", "The Bot is not in a voice Channel.");
-        DRIVER.setProperty(DEF_LANG, "music_notinchannel_user", "You are not in a Voice Channel.");
-        DRIVER.setProperty(DEF_LANG, "music_volumechange", "Volume changed from %1s to %2s.");
-        DRIVER.setProperty(DEF_LANG, "music_volumechangeerror", "Can't change volume.");
-        DRIVER.setProperty(DEF_LANG, "music_add","Adding to queue: %1s.");
-        DRIVER.setProperty(DEF_LANG, "music_add_queue", "Adding to queue %1s (first track of playlist %2s).");
-        DRIVER.setProperty(DEF_LANG, "music_notfound", "Nothing found by %1s.");
-        DRIVER.setProperty(DEF_LANG, "music_notloaded", "Could not play the choosen song.");
-        DRIVER.setProperty(DEF_LANG, "music_skip", "Skipped to next track.");
-        DRIVER.setProperty(DEF_LANG, "disabledserver", "This server is disabled for using the Music Module");
-
-        //Changes
-        DRIVER.setProperty(DEF_LANG, "changeprop_error", "This option can't found in the config file!");
-        DRIVER.setProperty(DEF_LANG, "notchanged_error", "The change Command does not provide resetting.");
-        DRIVER.setProperty(DEF_LANG, "parse_error", "The Value cant parsed into a valid format.");
-        DRIVER.setProperty(DEF_LANG, "props", "Properties");
-
-        //Permission
-        DRIVER.setProperty(DEF_LANG, "perm_add_success", "Permission added successful.");
-        DRIVER.setProperty(DEF_LANG, "perm_add_failed", "Failed to add Permission to group.");
-        DRIVER.setProperty(DEF_LANG, "perm_rem_success", "Permission removed successful.");
-        DRIVER.setProperty(DEF_LANG, "perm_rem_failed", "Failed to remove Permission to group.");
-        DRIVER.setProperty(DEF_LANG, "permlist_title", "Permission List for Group %1s");
-        DRIVER.setProperty(DEF_LANG, "norolefound", "The Role was not found.");
 
         DRIVER.saveJson();
     }

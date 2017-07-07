@@ -3,16 +3,15 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
-import util.Globals;
+import storage.LanguageInterface;
+import storage.LanguageMethod;
+import util.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import storage.RestRequest;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.EmbedBuilder;
-import util.Console;
-import util.SMB;
-import util.Utils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.HashMap;
 /**
  * Created by ModdyLP on 29.06.2017. Website: https://moddylp.de/
  */
-public class SearchCommand extends Module{
+public class SearchCommand extends Module implements Fast{
 
     private HashMap<IGuild, ArrayList<String>> links = new HashMap<>();
     private HashMap<IGuild, Integer> searchmarker = new HashMap<>();
@@ -148,5 +147,22 @@ public class SearchCommand extends Module{
         builder.withImage(links.get(event.getGuild()).get(searchmarker.get(event.getGuild())));
         builder.withUrl(links.get(event.getGuild()).get(searchmarker.get(event.getGuild())));
         BotUtils.sendEmbMessage(event.getChannel(), builder, false);
+    }
+
+    @LanguageMethod(
+            languagestringcount = 9
+    )
+    @Override
+    public void setdefaultLanguage() {
+        //Search
+        DRIVER.setProperty(DEF_LANG, "engine_unknown", "The Search Engine is unknown!");
+        DRIVER.setProperty(DEF_LANG, "results_end", "You reached the end of results.");
+        DRIVER.setProperty(DEF_LANG, "results_cleared", "The results were cleared.");
+        DRIVER.setProperty(DEF_LANG, "searchtoken_google", "Please provide a google search api token.");
+        DRIVER.setProperty(DEF_LANG, "result_out", "The Result is out of Range.");
+        DRIVER.setProperty(DEF_LANG, "no_search", "There is no search running.");
+        DRIVER.setProperty(DEF_LANG, "search_result", "Your search Result");
+        DRIVER.setProperty(DEF_LANG, "search_info", "Search Query");
+        DRIVER.setProperty(DEF_LANG, "search_count", "Result %1s of %2s");
     }
 }

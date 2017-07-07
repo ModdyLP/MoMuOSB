@@ -2,8 +2,11 @@ package modules;
 
 import discord.BotUtils;
 import discord.DiscordInit;
+import discord.SystemInfo;
 import events.Command;
 import events.Module;
+import storage.LanguageInterface;
+import storage.LanguageMethod;
 import util.*;
 import main.MoMuOSBMain;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -44,7 +47,7 @@ public class InfoCommands extends Module implements Fast {
         new Thread(() -> {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success_wait")), true);
             for (EmbedBuilder builder : genbuildHelp(event)) {
-                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
+                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
             }
         }).start();
         return true;
@@ -69,7 +72,7 @@ public class InfoCommands extends Module implements Fast {
         if (event.getAuthor().equals(DiscordInit.getInstance().getDiscordClient().getApplicationOwner())) {
             EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
             BotInviteBuilder builder = new BotInviteBuilder(INIT.BOT).withPermissions(permissions);
-            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build());
+            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build(), false);
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } else {
             BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("botowner_error"), true);
@@ -109,9 +112,11 @@ public class InfoCommands extends Module implements Fast {
                 statusTypes.add(iUser);
             }
         }));
-
+        SystemInfo info = new SystemInfo();
         String stringBuilder = LANG.getTranslation("stats_servercount") + ": " + INIT.BOT.getGuilds().size() +
                 "\n" + LANG.getTranslation("stats_shards") + ": " + event.getGuild().getShard().getInfo()[0] + " / " + INIT.BOT.getShardCount() +
+                "\n" + LANG.getTranslation("stats_shard_ping") + ": " + event.getGuild().getShard().getResponseTime() +
+                "\n" + LANG.getTranslation("stats_ram") + ": " + info.getUsedMem() +
                 "\n" + LANG.getTranslation("stats_user") + ": " + statusTypes.size() + " / " + INIT.BOT.getUsers().size() +
                 "\n" + LANG.getTranslation("stats_uptime") + ": " + Utils.calculateAndFormatTimeDiff(MoMuOSBMain.starttime, now) +
                 "\n" + LANG.getTranslation("stats_owner") + ": " + INIT.BOT.getApplicationOwner().getName() +
@@ -136,7 +141,7 @@ public class InfoCommands extends Module implements Fast {
                         "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
                         "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) +
                         "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
-                builders.get(page - 1).appendField(count+". "+LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
+                builders.get(page - 1).appendField((count+1)+". "+LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
             }
             if (builders.get(page - 1).getFieldCount() >= EmbedBuilder.FIELD_COUNT_LIMIT || builders.get(page - 1).getTotalVisibleCharacters() >= (EmbedBuilder.MAX_CHAR_LIMIT - 1000)) {
                 page++;
@@ -151,4 +156,33 @@ public class InfoCommands extends Module implements Fast {
         return builders;
     }
 
+    @LanguageMethod(
+            languagestringcount = 16
+    )
+    @Override
+    public void setdefaultLanguage() {
+        //Stats Command
+        DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
+        DRIVER.setProperty(DEF_LANG, "stats_servercount", "Server Count");
+        DRIVER.setProperty(DEF_LANG, "stats_shards", "Shards");
+        DRIVER.setProperty(DEF_LANG, "stats_owner", "Bot Owner");
+        DRIVER.setProperty(DEF_LANG, "stats_user", "Users");
+        DRIVER.setProperty(DEF_LANG, "stats_commands", "Commands");
+        DRIVER.setProperty(DEF_LANG, "stats_uptime", "Uptime");
+
+        //Help Command
+        DRIVER.setProperty(DEF_LANG, "help_title", "All Commands");
+        DRIVER.setProperty(DEF_LANG, "help_command", "Command");
+        DRIVER.setProperty(DEF_LANG, "help_alias", "Alias");
+        DRIVER.setProperty(DEF_LANG, "help_arguments", "Arguments");
+        DRIVER.setProperty(DEF_LANG, "help_description", "Description");
+        DRIVER.setProperty(DEF_LANG, "help_noneinfo", "If you want to reset a Value, then type for each argument NA.");
+        DRIVER.setProperty(DEF_LANG, "help_prefixinfo", "\nThe Prefixes are \n" +
+                "Admin Prefix:   !   \n" +
+                "Info Prefix:    .   \n" +
+                "Game Prefix:    ~   \n" +
+                "music Prefix:   $   \n");
+        DRIVER.setProperty(DEF_LANG, "help_permission", "Permission");
+
+    }
 }

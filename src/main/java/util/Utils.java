@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.sql.Date;
@@ -50,7 +51,7 @@ public class Utils {
     public static String makeArgsToString(String[] args, String[] replace) {
         String string = Arrays.toString(args).replace("[", "").replace("]", "").replace(",", "");
         for (String arg: replace) {
-            string = string.replace(arg, "");
+            string = string.replaceFirst(arg, "");
         }
         return string.trim();
     }
@@ -74,5 +75,18 @@ public class Utils {
             jsonArray = (JSONArray) json;
         }
         return jsonArray;
+    }
+    public static JSONObject objectToJSONObject(Object object){
+        Object json = null;
+        JSONObject jsonObject = null;
+        try {
+            json = new JSONTokener(object.toString()).nextValue();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (json instanceof JSONObject) {
+            jsonObject = (JSONObject) json;
+        }
+        return jsonObject;
     }
 }

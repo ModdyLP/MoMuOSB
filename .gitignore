@@ -3,3 +3,5 @@
 /config.json
 *.log
 /permissions.json
+/stats.json
+/gender.json

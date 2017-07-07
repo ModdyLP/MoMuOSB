@@ -41,7 +41,6 @@ public class FileDriver {
         return files.get(filename) != null && files.get(filename).exists();
     }
     public boolean checkIfFileisEmpty(String filename) {
-        loadJson();
         return jsons.get(filename).keySet().size() == 0;
     }
 
@@ -102,6 +101,7 @@ public class FileDriver {
      */
     public void loadJson() {
         try {
+            //Console.println("===LOADFILE===");
             for (String filename: files.keySet()) {
                 BufferedReader reader = new BufferedReader(new FileReader(files.get(filename)));
                 StringBuilder content = new StringBuilder();
@@ -125,6 +125,7 @@ public class FileDriver {
      */
     public void saveJson() {
         try {
+            //Console.println("===SAVEFILE===");
             for (String filename: files.keySet()) {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(files.get(filename)));
                 String json = jsons.get(filename).toString();

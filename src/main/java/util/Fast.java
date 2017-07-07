@@ -1,6 +1,7 @@
 package util;
 
 import discord.DiscordInit;
+import discord.ServerControl;
 import events.CommandManager;
 import events.EventListener;
 import permission.PermissionController;
@@ -18,4 +19,5 @@ public interface Fast {
     LanguageLoader LANG = LanguageLoader.getInstance();
     PermissionController PERM = PermissionController.getInstance();
     CommandManager COMMAND = CommandManager.getInstance();
+    ServerControl SERVER_CONTROL = ServerControl.getInstance();
 }

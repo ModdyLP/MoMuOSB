@@ -24,8 +24,11 @@ public class Console implements Fast{
     public static void debug(String message) {
         if (DRIVER.getPropertyOnly(DRIVER.CONFIG,"debug").equals(true)) {
             String debugprefix = "[DEBUG]";
-            System.out.println(Utils.format(getTimeNow())+prefix + debugprefix + message);
-            logger.info(prefix + debugprefix + message);
+            String[] parts = message.split("\n");
+            for (String part: parts) {
+                System.out.println(Utils.format(getTimeNow())+prefix + debugprefix + part);
+                logger.info(prefix + debugprefix + part);
+            }
         }
 
     }
@@ -36,8 +39,11 @@ public class Console implements Fast{
      */
     public static void error(String message) {
         String errorprefix = "[ERROR]";
-        System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + message);
-        logger.error(prefix + errorprefix + message);
+        String[] parts = message.split("\n");
+        for (String part: parts) {
+            System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + part);
+            logger.info(prefix + errorprefix + part);
+        }
     }
 
     /**
@@ -46,8 +52,11 @@ public class Console implements Fast{
      */
     public static void println(String message) {
         String infoprefix = "[INFO]";
-        System.out.println(Utils.format(getTimeNow())+prefix + infoprefix + message);
-        logger.info(prefix + infoprefix + message);
+        String[] parts = message.split("\n");
+        for (String part: parts) {
+            System.out.println(Utils.format(getTimeNow())+prefix + infoprefix + part);
+            logger.info(prefix + infoprefix + part);
+        }
     }
 
     private static Date getTimeNow() {

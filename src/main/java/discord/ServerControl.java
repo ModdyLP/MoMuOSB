@@ -7,50 +7,81 @@ import util.Fast;
 import util.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Created by N.Hartmann on 05.07.2017.
  * Copyright 2017
  */
 public class ServerControl implements Fast{
-    private static ArrayList<String> disabledserverslist = new ArrayList<>();
+    private static ArrayList<String> defaultlist;
+    public String MUSIC_MODULE = "music";
+    public String JOIN_MODULE = "join";
+    public String BAN_MODULE = "banned";
+    private static HashMap<String, ArrayList<String>> disabledlist = new HashMap<>();
+    private static ServerControl instance;
 
-    public static void addDisabledServer(IGuild guild, boolean newserver) {
+    public static ServerControl getInstance() {
+        if (instance == null) {
+            instance = new ServerControl();
+        }
+        disabledlist.put(instance.MUSIC_MODULE, new ArrayList<>());
+        disabledlist.put(instance.BAN_MODULE, new ArrayList<>());
+        disabledlist.put(instance.JOIN_MODULE, new ArrayList<>());
+        return instance;
+    }
+
+
+    public void addDisabledServer(IGuild guild, boolean newserver, String module) {
         try {
-            disabledserverslist.clear();
-            JSONArray jArray = Utils.objectToJSONArray(DRIVER.getProperty(DRIVER.CONFIG, "music_disabled_servers", new ArrayList<String>()));
-            if (jArray != null) {
-                for (int i = 0; i < jArray.length(); i++) {
-                    disabledserverslist.add(jArray.get(i).toString());
-                }
-            }
-            if (!disabledserverslist.contains(guild.getStringID())) {
-                disabledserverslist.add(guild.getStringID());
+            if (disabledlist.get(module) != null && !disabledlist.get(module).contains(guild.getStringID())) {
                 if (newserver) {
-                    DRIVER.setProperty(DRIVER.CONFIG, "music_disabled_servers", disabledserverslist);
+                    Console.debug("Server added as New");
+                    disabledlist.get(module).add(guild.getStringID());
+                    DRIVER.setProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
                 } else {
-                    DRIVER.getProperty(DRIVER.CONFIG, "music_disabled_servers", disabledserverslist);
+                    Console.debug("Server exists");
+                    disabledlist.get(module).add(guild.getStringID());
+                    DRIVER.getProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
                 }
-                DRIVER.saveJson();
+                Console.debug("Saved: |"+guild.getStringID()+"   "+module+"    "+guild.getStringID());
             }
         } catch (Exception ex) {
             Console.error("Cant add Server");
             ex.printStackTrace();
         }
     }
-
-    public static void removeDisabledServer(IGuild guild) {
+    public void addBannedServer(String guild) {
         try {
-            disabledserverslist.clear();
-            JSONArray jArray = Utils.objectToJSONArray(DRIVER.getProperty(DRIVER.CONFIG, "music_disabled_servers", new ArrayList<String>()));
+            if (disabledlist.get(BAN_MODULE) != null && !disabledlist.get(BAN_MODULE).contains(guild)) {
+                disabledlist.get(BAN_MODULE).add(guild);
+                Console.debug("Server added as New");
+                DRIVER.setProperty(DRIVER.CONFIG, BAN_MODULE+"_disabled_servers", disabledlist.get(BAN_MODULE));
+                Console.debug("Saved: |"+guild+"   "+BAN_MODULE+"    "+guild);
+            }
+        } catch (Exception ex) {
+            Console.error("Cant add Server");
+            ex.printStackTrace();
+        }
+    }
+    public void loadSavedServer(String module) {
+        disabledlist.get(module).clear();
+        if (DRIVER.hasKey(DRIVER.CONFIG, module+"_disabled_servers")) {
+            JSONArray jArray = Utils.objectToJSONArray(DRIVER.getPropertyOnly(DRIVER.CONFIG, module + "_disabled_servers"));
             if (jArray != null) {
                 for (int i = 0; i < jArray.length(); i++) {
-                    disabledserverslist.add(jArray.get(i).toString());
+                    disabledlist.get(module).add(jArray.get(i).toString());
+                    Console.debug("Load:  |" + module + "    " + jArray.get(i).toString());
                 }
             }
-            if (disabledserverslist.contains(guild.getStringID())) {
-                disabledserverslist.remove(guild.getStringID());
-                DRIVER.setProperty(DRIVER.CONFIG, "music_disabled_servers", disabledserverslist);
+        }
+    }
+    public void removeDisabledServer(IGuild guild, String module) {
+        try {
+            if (disabledlist.get(module) != null && disabledlist.get(module).contains(guild.getStringID())) {
+                disabledlist.get(module).remove(guild.getStringID());
+                DRIVER.setProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
                 DRIVER.saveJson();
             }
         } catch (Exception ex) {
@@ -58,7 +89,17 @@ public class ServerControl implements Fast{
             ex.printStackTrace();
         }
     }
-    public static ArrayList<String> getDisabledserverslist() {
-        return disabledserverslist;
+    public boolean checkServerisBanned(IGuild guild) {
+        if (disabledlist.get(BAN_MODULE) != null && guild != null) {
+            if(disabledlist.get(BAN_MODULE).contains(guild.getStringID())) {
+                Console.debug("Found: |" + guild.getStringID() + "   " + BAN_MODULE + "    " + guild.getStringID());
+                return true;
+            }
+        }
+        return false;
+    }
+    public ArrayList<String> getDisabledlist(String module) {
+        Console.debug(disabledlist.get(JOIN_MODULE).size()+"  "+disabledlist.get(MUSIC_MODULE).size());
+        return disabledlist.get(module);
     }
 }

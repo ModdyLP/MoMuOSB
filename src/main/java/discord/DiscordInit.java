@@ -1,6 +1,8 @@
 package discord;
 
 import events.EventListener;
+import events.ServerListener;
+import events.UserEvents;
 import util.Fast;
 import sx.blah.discord.api.IDiscordClient;
 import util.Console;
@@ -37,6 +39,8 @@ public class DiscordInit implements Fast{
             Console.println(LANG.getTranslation("login_info"));
              cli = BotUtils.getBuiltDiscordClient(token);
              cli.getDispatcher().registerListener(EventListener.getInstance());
+             cli.getDispatcher().registerListener(ServerListener.getInstance());
+             cli.getDispatcher().registerListener(UserEvents.getInstance());
              cli.login();
              BOT = cli;
         }

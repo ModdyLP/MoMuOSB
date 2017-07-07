@@ -3,15 +3,14 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import storage.LanguageInterface;
+import storage.LanguageMethod;
 import sx.blah.discord.handle.obj.IGuild;
-import util.Globals;
+import util.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.Image;
-import util.Markdown;
-import util.SMB;
-import util.Utils;
 
 import java.awt.*;
 import java.text.NumberFormat;
@@ -22,7 +21,7 @@ import java.util.List;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class ChangeCommands extends Module {
+public class ChangeCommands extends Module implements Fast {
 
     /**
      * Change the Avatar of the Bot
@@ -182,7 +181,7 @@ public class ChangeCommands extends Module {
             }
             builder.appendField(LANG.getTranslation("props"), stringBuilder.toString(), false);
 
-            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
+            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
         return true;
     }
@@ -258,31 +257,6 @@ public class ChangeCommands extends Module {
     }
 
     @Command(
-            command = "getserver",
-            arguments = {},
-            description = "Get Servers",
-            alias = "gets",
-            permission = Globals.BOT_OWNER,
-            prefix = Globals.ADMIN_PREFIX
-    )
-    public boolean getServer(MessageReceivedEvent event, String[] args) {
-        try {
-            List<IGuild> server = INIT.BOT.getGuilds();
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.withTitle("ServerList");
-            builder.withDescription(Markdown.bold("Size: "+server.size())+" \n");
-            for (IGuild serverinst: server) {
-                builder.appendDesc(Markdown.bold(serverinst.getName())+": "+serverinst.getStringID()+" \n");
-            }
-            builder.withColor(Color.green);
-            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
-        } catch (Exception ex) {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.SUCCESS+LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
-        }
-        return true;
-    }
-
-    @Command(
             command = "reloadconfig",
             arguments = {},
             description = "Reload the Config",
@@ -300,4 +274,15 @@ public class ChangeCommands extends Module {
         return true;
     }
 
+    @LanguageMethod(
+            languagestringcount = 4
+    )
+    @Override
+    public void setdefaultLanguage() {
+        //Changes
+        DRIVER.setProperty(DEF_LANG, "changeprop_error", "This option can't found in the config file!");
+        DRIVER.setProperty(DEF_LANG, "notchanged_error", "The change Command does not provide resetting.");
+        DRIVER.setProperty(DEF_LANG, "parse_error", "The Value cant parsed into a valid format.");
+        DRIVER.setProperty(DEF_LANG, "props", "Properties");
+    }
 }

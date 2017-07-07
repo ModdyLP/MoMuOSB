@@ -1,6 +1,8 @@
 package main;
 
 import discord.DiscordInit;
+import discord.Stats;
+import modules.RoleManagement;
 import storage.ConfigLoader;
 import util.Console;
 import util.Fast;
@@ -28,6 +30,9 @@ public class MoMuOSBMain implements Fast {
             LANG.createTranslations();
             LANG.setDefaultLanguage();
             Console.println("Language loading complete!");
+
+            Stats.loadStats();
+
             Runtime.getRuntime().addShutdownHook(new Thread() {
                         public void run() {
                             shutdown();
@@ -47,6 +52,9 @@ public class MoMuOSBMain implements Fast {
      */
     public static void shutdown() {
         Console.println("====================================Bot shutting down...==============================");
+        Stats.saveStats();
+        RoleManagement.saveGenders();
+
         if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
             INIT.BOT.logout();
         }

@@ -1,6 +1,7 @@
 package events;
 
 import org.tritonus.share.ArraySet;
+import storage.LanguageMethod;
 import util.Console;
 import util.GetAnnotation;
 
@@ -16,6 +17,10 @@ import java.util.Set;
 public class CommandManager {
     private HashMap<Command, Method> modules = new HashMap<>();
     private HashMap<Command, Module> instances = new HashMap<>();
+
+    public HashMap<LanguageMethod, Method> languages = new HashMap<>();
+    public HashMap<LanguageMethod, Module> langinstances = new HashMap<>();
+
     private static ArrayList<String> prefixe = new ArrayList<>();
 
     private static CommandManager instance;
@@ -28,7 +33,7 @@ public class CommandManager {
     }
 
     public void registerCommand(Class module, Module instance) {
-        HashMap<Command, Method> annotations = GetAnnotation.getCommandAnnotation(module);
+        HashMap<Command, Method> annotations = GetAnnotation.getCommandAnnotation(module, instance);
         for (Command anno : annotations.keySet()) {
             if (!getAllCommandsAsString().contains(anno.command())) {
                 if (!getAllAliasAsString().contains(anno.alias())) {
