@@ -5,10 +5,12 @@ import events.Command;
 import events.Module;
 import org.json.JSONObject;
 import storage.LanguageInterface;
+import storage.LanguageMethod;
 import storage.RestRequest;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.EmbedBuilder;
 import util.Console;
+import util.Fast;
 import util.SMB;
 import util.Utils;
 
@@ -18,7 +20,7 @@ import java.awt.*;
  * Created by N.Hartmann on 04.07.2017.
  * Copyright 2017
  */
-public class Gamestats extends Module implements LanguageInterface{
+public class Gamestats extends Module implements Fast{
     @Command(
             command = "gamestats",
             alias = "gstats",
@@ -53,6 +55,9 @@ public class Gamestats extends Module implements LanguageInterface{
         }
     }
 
+    @LanguageMethod(
+            languagestringcount = 0
+    )
     @Override
     public void setdefaultLanguage() {
 

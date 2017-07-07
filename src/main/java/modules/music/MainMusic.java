@@ -12,11 +12,13 @@ import events.Command;
 import events.Module;
 import events.UserEvents;
 import storage.LanguageInterface;
+import storage.LanguageMethod;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.audio.AudioPlayer;
+import util.Fast;
 import util.Globals;
 import util.SMB;
 
@@ -26,7 +28,7 @@ import java.util.Map;
 /**
  * Created by ModdyLP on 30.06.2017. Website: https://moddylp.de/
  */
-public class MainMusic extends Module implements LanguageInterface{
+public class MainMusic extends Module implements Fast{
 
     public static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
     private static final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
@@ -193,6 +195,9 @@ public class MainMusic extends Module implements LanguageInterface{
         BotUtils.sendEmbMessage(channel, SMB.shortMessage(LANG.getTranslation("music_skip")), true);
     }
 
+    @LanguageMethod(
+            languagestringcount = 10
+    )
     @Override
     public void setdefaultLanguage() {
         //Music

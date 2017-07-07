@@ -5,16 +5,12 @@ import events.Command;
 import events.Module;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import storage.LanguageInterface;
-import sx.blah.discord.api.events.EventSubscriber;
+import storage.LanguageMethod;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
-import util.Console;
-import util.Globals;
-import util.SMB;
-import util.Utils;
+import util.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,10 +21,11 @@ import java.util.List;
  * Created by N.Hartmann on 06.07.2017.
  * Copyright 2017
  */
-public class RoleManagement extends Module implements LanguageInterface{
+public class RoleManagement extends Module implements Fast {
 
     public static String female = "f";
     public static String male = "m";
+    private static String GENDER = "gender.json";
 
     private static HashMap<String, HashMap<IGuild, List<IRole>>> gendersave = new HashMap<>();
 
@@ -90,12 +87,17 @@ public class RoleManagement extends Module implements LanguageInterface{
         try {
             HashMap<IGuild, List<IRole>> roletoserver = new HashMap<>();
             List<IRole> roles = event.getGuild().getRolesByName(Utils.makeArgsToString(args, new String[]{args[0]}));
-            if (args[0].equalsIgnoreCase(female) || (args[0].equalsIgnoreCase(male))) {
-                roletoserver.put(event.getGuild(), roles);
-                gendersave.put(args[0], roletoserver);
-                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("role_gender_add"), roles.size(), args[0])), true);
+            if (roles.size() > 0) {
+                if (args[0].equalsIgnoreCase(female) || (args[0].equalsIgnoreCase(male))) {
+                    roletoserver.put(event.getGuild(), roles);
+                    gendersave.put(args[0], roletoserver);
+                    saveGenders();
+                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("role_gender_add"), roles.size(), args[0])), true);
+                } else {
+                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("role_gender_notfound")), true);
+                }
             } else {
-                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("role_gender_notfound")), true);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("role_notfound")), true);
             }
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace()))), true);
@@ -108,37 +110,54 @@ public class RoleManagement extends Module implements LanguageInterface{
     }
 
     public static List<IRole> getRoleforGender(IGuild guild, String gender) {
-        return gendersave.get(gender).get(guild);
+        if (guild == null) {
+            Console.error("Guild is null");
+        } else {
+            return gendersave.get(gender).get(guild);
+        }
+        return null;
     }
 
     public static void saveGenders() {
         try {
             Console.println("Saving Roles for RoleManagement");
-            if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "genderroles").equals(true)) {
-                JSONObject root = new JSONObject();
-                ArrayList<JSONObject> maleserverids = new ArrayList<>();
-                ArrayList<JSONObject> femaleserverids = new ArrayList<>();
-                if (gendersave.get(female) != null) {
-                    gendersave.get(female).keySet().forEach(iGuild -> {
+            JSONObject root = new JSONObject();
+            ArrayList<JSONObject> maleserverids = new ArrayList<>();
+            ArrayList<JSONObject> femaleserverids = new ArrayList<>();
+            if (gendersave.get(female) != null) {
+                gendersave.get(female).keySet().forEach(iGuild -> {
+                    if (!SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).contains(iGuild.getStringID())) {
+                        ArrayList<String> roleids = new ArrayList<>();
+                        for (IRole role: getRoleforGender(iGuild, female)) {
+                            roleids.add(role.getStringID());
+                        }
                         JSONObject femaleobj = new JSONObject();
-                        femaleobj.append(iGuild.getStringID(), getRoleforGender(iGuild, female));
+                        femaleobj.put(iGuild.getStringID(), roleids);
                         femaleserverids.add(femaleobj);
-                    });
-                }
-                if (gendersave.get(male) != null) {
-                    gendersave.get(male).keySet().forEach(iGuild -> {
-                        JSONObject femaleobj = new JSONObject();
-                        femaleobj.append(iGuild.getStringID(), getRoleforGender(iGuild, male));
-                        maleserverids.add(femaleobj);
-                    });
-                }
-                root.append(female, femaleserverids);
-                root.append(male, maleserverids);
-                DRIVER.setProperty(DRIVER.CONFIG, "gendersave", root);
-                DRIVER.saveJson();
-            }  else {
-                Console.error("Gender Module disabled");
+                    } else {
+                        Console.debug("Server is disabled for using Genders: "+iGuild.getName()+ Arrays.toString(SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).toArray()));
+                    }
+                });
             }
+            if (gendersave.get(male) != null) {
+                gendersave.get(male).keySet().forEach(iGuild -> {
+                    if (!SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).contains(iGuild.getStringID())) {
+                        ArrayList<String> roleids = new ArrayList<>();
+                        for (IRole role: getRoleforGender(iGuild, male)) {
+                            roleids.add(role.getStringID());
+                        }
+                        JSONObject femaleobj = new JSONObject();
+                        femaleobj.put(iGuild.getStringID(), roleids);
+                        maleserverids.add(femaleobj);
+                    } else {
+                        Console.debug("Server is disabled for using Genders: "+iGuild.getName()+ Arrays.toString(SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).toArray()));
+                    }
+                });
+            }
+            root.put(female, femaleserverids);
+            root.put(male, maleserverids);
+            DRIVER.setProperty(GENDER, "gendersave", root);
+            DRIVER.saveJson();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -147,10 +166,9 @@ public class RoleManagement extends Module implements LanguageInterface{
     public static void loadGenders() {
         try {
             Console.println("Loading Roles for RoleManagement");
-            if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "genderroles").equals(true)) {
-                ArrayList<JSONObject> maleserverids = new ArrayList<>();
-                ArrayList<JSONObject> femaleserverids = new ArrayList<>();
-                JSONObject root = Utils.objectToJSONObject(DRIVER.getProperty(DRIVER.CONFIG, "gendersave", new JSONObject()));
+            DRIVER.createNewFile(GENDER);
+            JSONObject root = Utils.objectToJSONObject(DRIVER.getProperty(GENDER, "gendersave", new JSONObject()));
+            if (root.keySet().contains(male) && root.keySet().contains(female)) {
                 Console.debug(Utils.crunchifyPrettyJSONUtility(root.toString(4)));
                 JSONArray malelist = root.getJSONArray(male);
                 JSONArray femalelist = root.getJSONArray(female);
@@ -160,8 +178,6 @@ public class RoleManagement extends Module implements LanguageInterface{
                 if (female != null) {
                     putvaluesfromlist(female, femalelist);
                 }
-            } else {
-                Console.error("Gender Module disabled");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -173,13 +189,15 @@ public class RoleManagement extends Module implements LanguageInterface{
             HashMap<IGuild, List<IRole>> serverrolesmap = new HashMap<>();
             for (int i = 0; i < list.length(); i++) {
                 JSONObject serverroles = Utils.objectToJSONObject(list.get(i));
-                for (Object serverid : serverroles.keySet()) {
-                    JSONArray array = Utils.objectToJSONArray(serverroles.get(serverid.toString()));
-                    ArrayList<IRole> roles = new ArrayList<>();
-                    for (int j = 0; j < array.length(); j++) {
-                        roles.add(INIT.BOT.getRoleByID(Long.valueOf(array.getString(i))));
+                if (serverroles != null) {
+                    for (Object serverid : serverroles.keySet()) {
+                        JSONArray array = Utils.objectToJSONArray(serverroles.get(serverid.toString()));
+                        ArrayList<IRole> roles = new ArrayList<>();
+                        for (int j = 0; j < array.length(); j++) {
+                            roles.add(INIT.BOT.getRoleByID(Long.valueOf(array.getString(i))));
+                        }
+                        serverrolesmap.put(INIT.BOT.getGuildByID(Long.valueOf(serverid.toString())), roles);
                     }
-                    serverrolesmap.put(INIT.BOT.getGuildByID(Long.valueOf(serverid.toString())), roles);
                 }
 
             }
@@ -187,6 +205,9 @@ public class RoleManagement extends Module implements LanguageInterface{
         }
     }
 
+    @LanguageMethod(
+            languagestringcount = 8
+    )
     @Override
     public void setdefaultLanguage() {
         //Role Manager
@@ -194,7 +215,9 @@ public class RoleManagement extends Module implements LanguageInterface{
         DRIVER.setProperty(DEF_LANG, "role_remove", "Role %1s removed successful to User %2s");
         DRIVER.setProperty(DEF_LANG, "role_gender_add", "Role %1s was added as Gender %2s");
         DRIVER.setProperty(DEF_LANG, "role_gender_notfound", "This Gender is not defined.");
-        DRIVER.setProperty(DEF_LANG, "female_ask", "Are you Male or Female? Answer with the Gender like this: @Botname w ");
-        DRIVER.setProperty(DEF_LANG, "gender_role_added", "You get the Role specified for your Gender.");
+        DRIVER.setProperty(DEF_LANG, "female_ask", "Are you Male or Female? \nAnswer with the Gender like this: \n@%1s f or @%1s m \n f = female, w = male");
+        DRIVER.setProperty(DEF_LANG, "gender_role_added", "You get the Role: %1s");
+        DRIVER.setProperty(DEF_LANG, "role_notfound", "The Role was not found.");
+        DRIVER.setProperty(DEF_LANG, "invalid_count_gender", "Your answer is not well formated. \n Look again on the Question.");
     }
 }

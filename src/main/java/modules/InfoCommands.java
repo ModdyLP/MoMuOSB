@@ -6,6 +6,7 @@ import discord.SystemInfo;
 import events.Command;
 import events.Module;
 import storage.LanguageInterface;
+import storage.LanguageMethod;
 import util.*;
 import main.MoMuOSBMain;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -25,7 +26,7 @@ import java.util.EnumSet;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class InfoCommands extends Module implements Fast, LanguageInterface {
+public class InfoCommands extends Module implements Fast {
 
     /**
      * Help Command
@@ -46,7 +47,7 @@ public class InfoCommands extends Module implements Fast, LanguageInterface {
         new Thread(() -> {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success_wait")), true);
             for (EmbedBuilder builder : genbuildHelp(event)) {
-                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder);
+                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
             }
         }).start();
         return true;
@@ -71,7 +72,7 @@ public class InfoCommands extends Module implements Fast, LanguageInterface {
         if (event.getAuthor().equals(DiscordInit.getInstance().getDiscordClient().getApplicationOwner())) {
             EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
             BotInviteBuilder builder = new BotInviteBuilder(INIT.BOT).withPermissions(permissions);
-            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build());
+            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build(), false);
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } else {
             BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("botowner_error"), true);
@@ -155,6 +156,9 @@ public class InfoCommands extends Module implements Fast, LanguageInterface {
         return builders;
     }
 
+    @LanguageMethod(
+            languagestringcount = 16
+    )
     @Override
     public void setdefaultLanguage() {
         //Stats Command

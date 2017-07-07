@@ -68,10 +68,12 @@ public class BotUtils implements Fast{
      * @param userchannel Channel
      * @param message Message
      */
-    public static IMessage sendPrivMessage(IPrivateChannel userchannel, String message){
+    public static IMessage sendPrivMessage(IPrivateChannel userchannel, String message, boolean delete){
         RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
             try{
-                return userchannel.sendMessage(message);
+                IMessage messages = userchannel.sendMessage(message);
+                deleteMessageFromBot(messages, delete);
+                return messages;
             } catch (DiscordException e){
                 Console.error(String.format(LANG.getTranslation("notsend_error"), e.getMessage()));
                 return null;
@@ -110,11 +112,13 @@ public class BotUtils implements Fast{
      * @param channel Channel
      * @param builder Message as Embeded Builder Instance
      */
-    public static IMessage sendPrivEmbMessage(IPrivateChannel channel, EmbedBuilder builder){
+    public static IMessage sendPrivEmbMessage(IPrivateChannel channel, EmbedBuilder builder, boolean delete){
         RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
             try{
                 Footer.addFooter(builder);
-                return channel.sendMessage(builder.build());
+                IMessage message = channel.sendMessage(builder.build());
+                deleteMessageFromBot(message, delete);
+                return message;
             } catch (DiscordException e){
                 Console.error(String.format(LANG.getTranslation("notsend_error"), e.getMessage()));
                 return null;

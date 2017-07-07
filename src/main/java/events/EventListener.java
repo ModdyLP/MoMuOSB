@@ -3,6 +3,7 @@ package events;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import discord.BotUtils;
 import discord.ServerControl;
+import discord.Stats;
 import discord.SystemInfo;
 import modules.RoleManagement;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
@@ -22,7 +23,6 @@ import java.util.*;
  */
 public class EventListener implements Fast {
     private static EventListener instance;
-    private static boolean running = false;
     private String botprefix;
     private String[] args;
     private String commandstring;
@@ -49,6 +49,11 @@ public class EventListener implements Fast {
     public void onMessageReceivedEvent(MessageReceivedEvent event) { // This method is NOT called because it doesn't have the @EventSubscriber annotation
         new Thread(() -> {
             try {
+                Stats.addMessages();
+                if (SERVER_CONTROL.checkServerisBanned(event.getGuild())) {
+                    Console.println("Leave Banned Server: "+event.getGuild().getName());
+                    //event.getGuild().leave();
+                }
                 //Check if Channel is Private (DM)
                 //Console.debug("MI: "+event.getGuild().getStringID()+"   "+event.getChannel().getName()+"   "+event.getAuthor().getName());
                 if (!event.getChannel().isPrivate()) {
@@ -58,6 +63,7 @@ public class EventListener implements Fast {
                         setArgsAndPrefix(messageparts, message);
                         Command command = COMMAND.getCommandByName(commandstring);
                         if (command != null && (botprefix + command.prefix()).equalsIgnoreCase(prefix)) {
+                            Stats.addCommands();
                             Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
                             //Check if Invoke Messages should be deleted
                             if (DRIVER.getProperty(DRIVER.CONFIG, "deleteinvokes", true).equals(true)) {
@@ -66,7 +72,7 @@ public class EventListener implements Fast {
                                     event.getMessage().delete();
                                 } else {
                                     Console.debug(Console.sendprefix + "Message not deleted: [" + message + "] -- nopermissions");
-                                    BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")));
+                                    BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
                                 }
                             }
                             if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
@@ -78,10 +84,14 @@ public class EventListener implements Fast {
                     }
                 } else {
                     if (event.getMessage().getMentions().contains(INIT.BOT.getOurUser())) {
-                        setArgsAndPrefix(event.getMessage().getContent().split(" "), event.getMessage().getContent());
-                        UserEvents.getInstance().setGenderRole(event, args[0]);
+                        String[] messageparts = event.getMessage().getContent().trim().split(" ");
+                        if (messageparts.length == 2) {
+                            UserEvents.getInstance().setGenderRole(event, messageparts[1]);
+                        } else {
+                            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR + LANG.getTranslation("invalid_count_gender"), true);
+                        }
                     } else {
-                        BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR + LANG.getTranslation("private_error"));
+                        BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR + LANG.getTranslation("private_error"), true);
                     }
                 }
             } catch (Exception ex) {
@@ -146,91 +156,5 @@ public class EventListener implements Fast {
      *
      * @param event The Event
      */
-    @EventSubscriber
-    public void onReadyEvent(ReadyEvent event) { // This method is called when the ReadyEvent is dispatched
-        Console.println("Bot login success");
-        Console.println("Shards: " + INIT.BOT.getShardCount());
-        StringBuilder serverstr = new StringBuilder();
-        int count = 1;
-        for (IGuild server : INIT.BOT.getGuilds()) {
-            serverstr.append("\n")
-                    .append(count)
-                    .append(". [")
-                    .append(server.getName())
-                    .append("   ")
-                    .append(server.getStringID())
-                    .append("]");
-            count++;
-        }
-        Console.println("Servers: " + serverstr);
-        RegisterCommands.registerAll();
-        Console.println("Loading Permissions from SaveFile");
-        PERM.loadPermissions(INIT.BOT.getGuilds());
-        PERM.setDefaultPermissions(INIT.BOT.getGuilds(), false);
-        INIT.BOT.changePlayingText(DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultplaying").toString());
-        INIT.BOT.changeUsername(DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultUsername").toString());
-        Console.println("Loading Command Descriptions");
-        for (Command command : COMMAND.getAllCommands()) {
-            LANG.getMethodDescription(command);
-        }
-        Console.println("Register Audioprovider");
-        AudioSourceManagers.registerRemoteSources(MainMusic.playerManager);
-        AudioSourceManagers.registerLocalSource(MainMusic.playerManager);
 
-        RoleManagement.loadGenders();
-
-        saveGuilds();
-        Console.println("====================================Bot Status========================================");
-        INIT.BOT.getShards().forEach(iShard -> {
-            Console.println("Shard "+iShard.getInfo()[0]+": "+iShard.isReady()+" Servers: "+iShard.getGuilds().size()+"  Ping: "+iShard.getResponseTime());
-        });
-        Console.println("Username: "+INIT.BOT.getOurUser().getName());
-        Console.println("PlayText: "+INIT.BOT.getOurUser().getPresence().getPlayingText().get());
-        Console.println("Status: "+INIT.BOT.getOurUser().getPresence().getStatus());
-        Console.println("Streaming: "+INIT.BOT.getOurUser().getPresence().getStreamingUrl());
-        SystemInfo info = new SystemInfo();
-        Console.println("SystemInfo: "+info.Info()+"\n");
-        Command helpcommand = COMMAND.getCommandByName("help");
-        Console.println("Type "+ DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString()+helpcommand.prefix()+helpcommand.command()+" for getting help.");
-        Console.println("====================================Bot Start completed===============================");
-        running = true;
-    }
-
-    @EventSubscriber
-    public void onGuildCreate(GuildCreateEvent event) {
-        Console.println("==================NEW SERVER |" + event.getGuild().getName() + "| " + event.getGuild().getStringID());
-        if (running) {
-            Console.debug("Adding Permission for new Server");
-            List<IGuild> server = new ArrayList<>();
-            server.add(event.getGuild());
-            PERM.setDefaultPermissions(server, true);
-            Console.debug("Adding Disabled Server for new Server");
-            saveGuild(event.getGuild());
-            DRIVER.saveJson();
-        }
-        Console.debug("===================new Server added====");
-    }
-
-    public void saveGuilds() {
-        for (IGuild server : INIT.BOT.getGuilds()) {
-            saveGuild(server);
-        }
-        DRIVER.saveJson();
-    }
-    public void saveGuild(IGuild server) {
-        if (DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE + "_disabled_default") || DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.JOIN_MODULE + "_disabled_default")) {
-            if (DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE + "_disabled_servers")) {
-                SERVER_CONTROL.addDisabledServer(server, running, SERVER_CONTROL.MUSIC_MODULE);
-            }
-            if (DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.JOIN_MODULE + "_disabled_servers")) {
-                SERVER_CONTROL.addDisabledServer(server, running, SERVER_CONTROL.JOIN_MODULE);
-            }
-            if (!DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE + "_disabled_servers")) {
-                SERVER_CONTROL.addDisabledServer(server, true, SERVER_CONTROL.MUSIC_MODULE);
-            }
-            if (!DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.JOIN_MODULE + "_disabled_servers")) {
-                SERVER_CONTROL.addDisabledServer(server, true, SERVER_CONTROL.JOIN_MODULE);
-            }
-        }
-    }
 }

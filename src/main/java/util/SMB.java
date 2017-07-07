@@ -9,8 +9,16 @@ import java.awt.*;
  */
 public class SMB {
     public static EmbedBuilder shortMessage(String message) {
+        String[] messageparts = message.split("\n");
         EmbedBuilder builder = new EmbedBuilder();
-        builder.withTitle(message);
+        if (messageparts.length > 1) {
+            builder.withTitle(messageparts[0]);
+            for (int i = 1; i < messageparts.length; i++) {
+                builder.appendDesc(messageparts[i]+"\n");
+            }
+        } else {
+            builder.withTitle(message);
+        }
         builder.withColor(Color.green);
         return builder;
     }

@@ -4,7 +4,9 @@ import discord.BotUtils;
 import events.Command;
 import events.Module;
 import storage.LanguageInterface;
+import storage.LanguageMethod;
 import sx.blah.discord.handle.obj.IPrivateChannel;
+import util.Fast;
 import util.Globals;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
@@ -19,7 +21,7 @@ import java.util.List;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class Moderation extends Module implements LanguageInterface{
+public class Moderation extends Module implements Fast{
 
     /**
      * Deletes a List Message
@@ -154,7 +156,9 @@ public class Moderation extends Module implements LanguageInterface{
         }).start();
         return true;
     }
-
+    @LanguageMethod(
+            languagestringcount = 1
+    )
     @Override
     public void setdefaultLanguage() {
         //Deletion

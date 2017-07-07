@@ -51,7 +51,7 @@ public class Utils {
     public static String makeArgsToString(String[] args, String[] replace) {
         String string = Arrays.toString(args).replace("[", "").replace("]", "").replace(",", "");
         for (String arg: replace) {
-            string = string.replace(arg, "");
+            string = string.replaceFirst(arg, "");
         }
         return string.trim();
     }

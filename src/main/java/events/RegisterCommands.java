@@ -1,15 +1,16 @@
 package events;
 
 import modules.*;
-import util.Fast;
 import modules.music.MainMusic;
+import storage.LanguageMethod;
 import util.Console;
+import util.Fast;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-class RegisterCommands implements Fast{
+public class RegisterCommands implements Fast{
     /**
      * Commands Registration
      */
@@ -24,7 +25,17 @@ class RegisterCommands implements Fast{
         COMMAND.registerCommand(Permission.class, new Permission());
         COMMAND.registerCommand(Gamestats.class, new Gamestats());
         COMMAND.registerCommand(RoleManagement.class, new RoleManagement());
+        COMMAND.registerCommand(ServerManager.class, new ServerManager());
 
+        try {
+            for (LanguageMethod language : COMMAND.languages.keySet()) {
+                Console.debug("Moduleclass:  "+COMMAND.langinstances.get(language).getClass().getName());
+                COMMAND.langinstances.get(language).setdefaultLanguage();
+            }
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.exit(0);
+        }
         DRIVER.saveJson();
 
 

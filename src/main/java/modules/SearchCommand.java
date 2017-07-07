@@ -4,16 +4,14 @@ import discord.BotUtils;
 import events.Command;
 import events.Module;
 import storage.LanguageInterface;
-import util.Globals;
+import storage.LanguageMethod;
+import util.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import storage.RestRequest;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.EmbedBuilder;
-import util.Console;
-import util.SMB;
-import util.Utils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ import java.util.HashMap;
 /**
  * Created by ModdyLP on 29.06.2017. Website: https://moddylp.de/
  */
-public class SearchCommand extends Module implements LanguageInterface{
+public class SearchCommand extends Module implements Fast{
 
     private HashMap<IGuild, ArrayList<String>> links = new HashMap<>();
     private HashMap<IGuild, Integer> searchmarker = new HashMap<>();
@@ -151,6 +149,9 @@ public class SearchCommand extends Module implements LanguageInterface{
         BotUtils.sendEmbMessage(event.getChannel(), builder, false);
     }
 
+    @LanguageMethod(
+            languagestringcount = 9
+    )
     @Override
     public void setdefaultLanguage() {
         //Search

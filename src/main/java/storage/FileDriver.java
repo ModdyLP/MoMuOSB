@@ -101,7 +101,7 @@ public class FileDriver {
      */
     public void loadJson() {
         try {
-            //Console.println("LOADJSON");
+            //Console.println("===LOADFILE===");
             for (String filename: files.keySet()) {
                 BufferedReader reader = new BufferedReader(new FileReader(files.get(filename)));
                 StringBuilder content = new StringBuilder();
@@ -125,7 +125,7 @@ public class FileDriver {
      */
     public void saveJson() {
         try {
-            //Console.println("SAVEJSON");
+            //Console.println("===SAVEFILE===");
             for (String filename: files.keySet()) {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(files.get(filename)));
                 String json = jsons.get(filename).toString();
