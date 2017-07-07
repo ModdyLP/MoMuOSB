@@ -41,7 +41,7 @@ public class UserEvents implements Fast{
     public void onUserJoin(UserJoinEvent event) {
         Console.debug(Console.recievedprefix+"User joined: "+event.getUser().getName()+" to Server: "+event.getGuild().getName());
         Stats.addUser();
-        if (!SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).contains(event.getGuild().getStringID()) || DRIVER.getPropertyOnly(DRIVER.CONFIG, "genderroles").equals(true)) {
+        if (!SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).contains(event.getGuild().getStringID()) && DRIVER.getPropertyOnly(DRIVER.CONFIG, "genderroles").equals(true)) {
             if (RoleManagement.isGenderdefined(event.getGuild())) {
                 user.put(event.getUser(), event.getGuild());
                 BotUtils.sendPrivEmbMessage(event.getUser().getOrCreatePMChannel(), SMB.shortMessage(String.format(LANG.getTranslation("female_ask"), INIT.BOT.getOurUser().getName())), false);
