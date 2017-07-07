@@ -11,6 +11,7 @@ import discord.ServerControl;
 import events.Command;
 import events.Module;
 import events.UserEvents;
+import storage.LanguageInterface;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -25,29 +26,11 @@ import java.util.Map;
 /**
  * Created by ModdyLP on 30.06.2017. Website: https://moddylp.de/
  */
-public class MainMusic extends Module {
+public class MainMusic extends Module implements LanguageInterface{
 
     public static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
     private static final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
 
-    @Command(
-            command = "setenabledmusic",
-            alias = "sem",
-            description = "Removes a Server from List",
-            arguments = {"ServerID"},
-            permission = Globals.BOT_OWNER,
-            prefix = Globals.MUSIC_PREFIX
-    )
-    public boolean removeDisabledServer(MessageReceivedEvent event, String[] args) {
-        try {
-            SERVER_CONTROL.removeDisabledServer(INIT.BOT.getGuildByID(Long.valueOf(args[0])), SERVER_CONTROL.MUSIC_MODULE);
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
-        } catch (Exception ex) {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
-            ex.printStackTrace();
-        }
-        return true;
-    }
 
     @Command(
             command = "join",
@@ -208,5 +191,21 @@ public class MainMusic extends Module {
         musicManager.scheduler.nextTrack();
 
         BotUtils.sendEmbMessage(channel, SMB.shortMessage(LANG.getTranslation("music_skip")), true);
+    }
+
+    @Override
+    public void setdefaultLanguage() {
+        //Music
+        DRIVER.setProperty(DEF_LANG, "music_notinchannel", "The Bot is not in a voice Channel.");
+        DRIVER.setProperty(DEF_LANG, "music_notinchannel_user", "You are not in a Voice Channel.");
+        DRIVER.setProperty(DEF_LANG, "music_volumechange", "Volume changed from %1s to %2s.");
+        DRIVER.setProperty(DEF_LANG, "music_volumechangeerror", "Can't change volume.");
+        DRIVER.setProperty(DEF_LANG, "music_add","Adding to queue: %1s.");
+        DRIVER.setProperty(DEF_LANG, "music_add_queue", "Adding to queue %1s (first track of playlist %2s).");
+        DRIVER.setProperty(DEF_LANG, "music_notfound", "Nothing found by %1s.");
+        DRIVER.setProperty(DEF_LANG, "music_notloaded", "Could not play the choosen song.");
+        DRIVER.setProperty(DEF_LANG, "music_skip", "Skipped to next track.");
+        DRIVER.setProperty(DEF_LANG, "disabledserver", "This server is disabled for using the Music Module");
+
     }
 }

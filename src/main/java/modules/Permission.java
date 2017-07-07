@@ -3,6 +3,7 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import storage.LanguageInterface;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.util.EmbedBuilder;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * Created by ModdyLP on 01.07.2017. Website: https://moddylp.de/
  */
-public class Permission extends Module {
+public class Permission extends Module implements LanguageInterface {
 
     @Command(
             command = "addperm",
@@ -164,5 +165,16 @@ public class Permission extends Module {
     }
     public boolean checkIfEveroneZwei(String[] args) {
         return Utils.makeArgsToString(args, new String[]{}).equalsIgnoreCase("everyone");
+    }
+
+    @Override
+    public void setdefaultLanguage() {
+        //Permission
+        DRIVER.setProperty(DEF_LANG, "perm_add_success", "Permission added successful.");
+        DRIVER.setProperty(DEF_LANG, "perm_add_failed", "Failed to add Permission to group.");
+        DRIVER.setProperty(DEF_LANG, "perm_rem_success", "Permission removed successful.");
+        DRIVER.setProperty(DEF_LANG, "perm_rem_failed", "Failed to remove Permission to group.");
+        DRIVER.setProperty(DEF_LANG, "permlist_title", "Permission List for Group %1s");
+        DRIVER.setProperty(DEF_LANG, "norolefound", "The Role was not found.");
     }
 }

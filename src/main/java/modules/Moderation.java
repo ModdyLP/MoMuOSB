@@ -3,6 +3,7 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import storage.LanguageInterface;
 import sx.blah.discord.handle.obj.IPrivateChannel;
 import util.Globals;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class Moderation extends Module{
+public class Moderation extends Module implements LanguageInterface{
 
     /**
      * Deletes a List Message
@@ -152,5 +153,11 @@ public class Moderation extends Module{
             }
         }).start();
         return true;
+    }
+
+    @Override
+    public void setdefaultLanguage() {
+        //Deletion
+        DRIVER.setProperty(DEF_LANG, "del_topic", "Deletion %1s of %2s");
     }
 }

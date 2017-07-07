@@ -4,6 +4,7 @@ import discord.BotUtils;
 import events.Command;
 import events.Module;
 import org.json.JSONObject;
+import storage.LanguageInterface;
 import storage.RestRequest;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.EmbedBuilder;
@@ -17,7 +18,7 @@ import java.awt.*;
  * Created by N.Hartmann on 04.07.2017.
  * Copyright 2017
  */
-public class Gamestats extends Module {
+public class Gamestats extends Module implements LanguageInterface{
     @Command(
             command = "gamestats",
             alias = "gstats",
@@ -50,5 +51,10 @@ public class Gamestats extends Module {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void setdefaultLanguage() {
+
     }
 }

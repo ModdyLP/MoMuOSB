@@ -5,6 +5,7 @@ import events.Command;
 import events.Module;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import storage.LanguageInterface;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by N.Hartmann on 06.07.2017.
  * Copyright 2017
  */
-public class RoleManagement extends Module {
+public class RoleManagement extends Module implements LanguageInterface{
 
     public static String female = "f";
     public static String male = "m";
@@ -186,4 +187,14 @@ public class RoleManagement extends Module {
         }
     }
 
+    @Override
+    public void setdefaultLanguage() {
+        //Role Manager
+        DRIVER.setProperty(DEF_LANG, "role_add", "Role %1s added successful to User %2s");
+        DRIVER.setProperty(DEF_LANG, "role_remove", "Role %1s removed successful to User %2s");
+        DRIVER.setProperty(DEF_LANG, "role_gender_add", "Role %1s was added as Gender %2s");
+        DRIVER.setProperty(DEF_LANG, "role_gender_notfound", "This Gender is not defined.");
+        DRIVER.setProperty(DEF_LANG, "female_ask", "Are you Male or Female? Answer with the Gender like this: @Botname w ");
+        DRIVER.setProperty(DEF_LANG, "gender_role_added", "You get the Role specified for your Gender.");
+    }
 }

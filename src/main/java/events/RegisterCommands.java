@@ -25,6 +25,8 @@ class RegisterCommands implements Fast{
         COMMAND.registerCommand(Gamestats.class, new Gamestats());
         COMMAND.registerCommand(RoleManagement.class, new RoleManagement());
 
+        DRIVER.saveJson();
+
 
         Console.println("All Commands("+COMMAND.getAllCommands().size()+") added to Bot");
     }

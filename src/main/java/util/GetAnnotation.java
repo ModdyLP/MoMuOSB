@@ -1,6 +1,7 @@
 package util;
 
 import events.Command;
+import storage.LanguageInterface;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 import java.lang.reflect.Method;
@@ -23,6 +24,10 @@ public class GetAnnotation implements Fast{
         try {
                 Method[] methods = clazz.getDeclaredMethods();
                 for (Method method : methods) {
+                    if(method.getName().equals("setdefaultLanguage")) {
+                        Console.debug("Load Language: "+method.getName());
+                        method.invoke(method);
+                    }
                     Command annotation = method.getAnnotation(Command.class);
                     if (annotation != null) {
                         if (method.getParameters().length == 2) {

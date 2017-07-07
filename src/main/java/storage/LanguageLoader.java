@@ -83,6 +83,7 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "command_success_wait", "The command was successful. Please wait... Result is generating...");
         DRIVER.setProperty(DEF_LANG, "shutdowninfo", "The Bot will shutting down in 10 seconds! Bye bye.");
 
+<<<<<<< Updated upstream
         //Stats Command
         DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
         DRIVER.setProperty(DEF_LANG, "stats_servercount", "Server Count");
@@ -156,6 +157,8 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "female_ask", "Are you Male or Female? Answer with the Gender like this: @Botname w ");
         DRIVER.setProperty(DEF_LANG, "gender_role_added", "You get the Role specified for your Gender.");
 
+=======
+>>>>>>> Stashed changes
         DRIVER.saveJson();
     }
 

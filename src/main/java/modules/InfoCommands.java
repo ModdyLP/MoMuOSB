@@ -5,6 +5,7 @@ import discord.DiscordInit;
 import discord.SystemInfo;
 import events.Command;
 import events.Module;
+import storage.LanguageInterface;
 import util.*;
 import main.MoMuOSBMain;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -24,7 +25,7 @@ import java.util.EnumSet;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class InfoCommands extends Module implements Fast {
+public class InfoCommands extends Module implements Fast, LanguageInterface {
 
     /**
      * Help Command
@@ -154,4 +155,30 @@ public class InfoCommands extends Module implements Fast {
         return builders;
     }
 
+    @Override
+    public void setdefaultLanguage() {
+        //Stats Command
+        DRIVER.setProperty(DEF_LANG, "stats_title", "General Stats");
+        DRIVER.setProperty(DEF_LANG, "stats_servercount", "Server Count");
+        DRIVER.setProperty(DEF_LANG, "stats_shards", "Shards");
+        DRIVER.setProperty(DEF_LANG, "stats_owner", "Bot Owner");
+        DRIVER.setProperty(DEF_LANG, "stats_user", "Users");
+        DRIVER.setProperty(DEF_LANG, "stats_commands", "Commands");
+        DRIVER.setProperty(DEF_LANG, "stats_uptime", "Uptime");
+
+        //Help Command
+        DRIVER.setProperty(DEF_LANG, "help_title", "All Commands");
+        DRIVER.setProperty(DEF_LANG, "help_command", "Command");
+        DRIVER.setProperty(DEF_LANG, "help_alias", "Alias");
+        DRIVER.setProperty(DEF_LANG, "help_arguments", "Arguments");
+        DRIVER.setProperty(DEF_LANG, "help_description", "Description");
+        DRIVER.setProperty(DEF_LANG, "help_noneinfo", "If you want to reset a Value, then type for each argument NA.");
+        DRIVER.setProperty(DEF_LANG, "help_prefixinfo", "\nThe Prefixes are \n" +
+                "Admin Prefix:   !   \n" +
+                "Info Prefix:    .   \n" +
+                "Game Prefix:    ~   \n" +
+                "music Prefix:   $   \n");
+        DRIVER.setProperty(DEF_LANG, "help_permission", "Permission");
+
+    }
 }

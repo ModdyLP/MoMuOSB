@@ -3,6 +3,7 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import storage.LanguageInterface;
 import sx.blah.discord.handle.obj.IGuild;
 import util.Globals;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -22,7 +23,7 @@ import java.util.List;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class ChangeCommands extends Module {
+public class ChangeCommands extends Module implements LanguageInterface {
 
     /**
      * Change the Avatar of the Bot
@@ -300,4 +301,12 @@ public class ChangeCommands extends Module {
         return true;
     }
 
+    @Override
+    public void setdefaultLanguage() {
+        //Changes
+        DRIVER.setProperty(DEF_LANG, "changeprop_error", "This option can't found in the config file!");
+        DRIVER.setProperty(DEF_LANG, "notchanged_error", "The change Command does not provide resetting.");
+        DRIVER.setProperty(DEF_LANG, "parse_error", "The Value cant parsed into a valid format.");
+        DRIVER.setProperty(DEF_LANG, "props", "Properties");
+    }
 }
