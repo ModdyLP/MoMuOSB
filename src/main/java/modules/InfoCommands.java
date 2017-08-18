@@ -71,10 +71,10 @@ public class InfoCommands extends Module implements Fast {
     public boolean getRegisterDate(MessageReceivedEvent event, String[] args) {
         new Thread(() -> {
             StringBuilder content = new StringBuilder();
-            SimpleDateFormat format = new SimpleDateFormat("d.M.Y H:m:s_S");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy H:m:s_S");
             if (event.getMessage().getMentions().size() > 0) {
                 for (IUser user: event.getMessage().getMentions()) {
-                    content.append(user.getName()).append(":  ").append(format.format(user.getCreationDate())).append("\n");
+                    content.append(user.getName()).append(":  ").append(user.getCreationDate().format(formatter)).append("\n");
                 }
             } else {
                 content.append("No User specified");
