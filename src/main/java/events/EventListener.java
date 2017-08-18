@@ -72,7 +72,6 @@ public class EventListener implements Fast {
                                     event.getMessage().delete();
                                 } else {
                                     Console.debug(Console.sendprefix + "Message not deleted: [" + message + "] -- nopermissions");
-                                    BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
                                 }
                             }
                             if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {

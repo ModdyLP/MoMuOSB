@@ -5,7 +5,6 @@ import discord.DiscordInit;
 import discord.SystemInfo;
 import events.Command;
 import events.Module;
-import storage.LanguageInterface;
 import storage.LanguageMethod;
 import util.*;
 import main.MoMuOSBMain;
@@ -52,6 +51,27 @@ public class InfoCommands extends Module implements Fast {
         }).start();
         return true;
     }
+    /**
+     * Help Command
+     *
+     * @param event MessageEvent
+     * @param args  Argumente [Not needed]
+     * @return state
+     */
+    @Command(
+            command = "getregister",
+            description = "Display the help",
+            alias = "greg",
+            arguments = {},
+            permission = Globals.BOT_INFO,
+            prefix = Globals.INFO_PREFIX
+    )
+    public boolean getRegisterDate(MessageReceivedEvent event, String[] args) {
+        new Thread(() -> {
+            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), event.getAuthor().getCreationDate().toString(), false);
+        }).start();
+        return true;
+    }
 
     /**
      * Send a invitation
@@ -70,10 +90,10 @@ public class InfoCommands extends Module implements Fast {
     )
     public boolean inviteBot(MessageReceivedEvent event, String[] args) {
         if (event.getAuthor().equals(DiscordInit.getInstance().getDiscordClient().getApplicationOwner())) {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
             EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
             BotInviteBuilder builder = new BotInviteBuilder(INIT.BOT).withPermissions(permissions);
             BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build(), false);
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } else {
             BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("botowner_error"), true);
         }
