@@ -17,6 +17,8 @@ import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -62,17 +64,20 @@ public class InfoCommands extends Module implements Fast {
             command = "getregister",
             description = "Display the help",
             alias = "greg",
-            arguments = {"Mention User"},
+            arguments = {"Mention User []"},
             permission = Globals.BOT_INFO,
             prefix = Globals.INFO_PREFIX
     )
     public boolean getRegisterDate(MessageReceivedEvent event, String[] args) {
         new Thread(() -> {
             StringBuilder content = new StringBuilder();
+            SimpleDateFormat format = new SimpleDateFormat("d.M.Y H:m:s_S");
             if (event.getMessage().getMentions().size() > 0) {
                 for (IUser user: event.getMessage().getMentions()) {
-                    content.append(user.getName()).append(":  ").append(user.getCreationDate().toString()).append("\n");
+                    content.append(user.getName()).append(":  ").append(format.format(user.getCreationDate())).append("\n");
                 }
+            } else {
+                content.append("No User specified");
             }
             BotUtils.sendMessage(event.getChannel(), content.toString() , false);
         }).start();
