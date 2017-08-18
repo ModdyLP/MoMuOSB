@@ -62,13 +62,19 @@ public class InfoCommands extends Module implements Fast {
             command = "getregister",
             description = "Display the help",
             alias = "greg",
-            arguments = {},
+            arguments = {"Mention User"},
             permission = Globals.BOT_INFO,
             prefix = Globals.INFO_PREFIX
     )
     public boolean getRegisterDate(MessageReceivedEvent event, String[] args) {
         new Thread(() -> {
-            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), event.getAuthor().getCreationDate().toString(), false);
+            StringBuilder content = new StringBuilder();
+            if (event.getMessage().getMentions().size() > 0) {
+                for (IUser user: event.getMessage().getMentions()) {
+                    content.append(event.getAuthor().getName()).append(":  ").append(event.getAuthor().getCreationDate().toString()).append("\n");
+                }
+            }
+            BotUtils.sendMessage(event.getChannel(), content.toString() , false);
         }).start();
         return true;
     }
