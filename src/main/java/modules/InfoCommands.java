@@ -71,7 +71,7 @@ public class InfoCommands extends Module implements Fast {
             StringBuilder content = new StringBuilder();
             if (event.getMessage().getMentions().size() > 0) {
                 for (IUser user: event.getMessage().getMentions()) {
-                    content.append(event.getAuthor().getName()).append(":  ").append(event.getAuthor().getCreationDate().toString()).append("\n");
+                    content.append(user.getName()).append(":  ").append(user.getCreationDate().toString()).append("\n");
                 }
             }
             BotUtils.sendMessage(event.getChannel(), content.toString() , false);
