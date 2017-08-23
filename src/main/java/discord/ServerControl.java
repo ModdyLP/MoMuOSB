@@ -37,18 +37,18 @@ public class ServerControl implements Fast{
         try {
             if (disabledlist.get(module) != null && !disabledlist.get(module).contains(guild.getStringID())) {
                 if (newserver) {
-                    Console.debug("Server added as New");
+                    Console.debug(module+"| Server added as New");
                     disabledlist.get(module).add(guild.getStringID());
                     DRIVER.setProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
                 } else {
-                    Console.debug("Server exists");
+                    Console.debug(module+"| Server exists");
                     disabledlist.get(module).add(guild.getStringID());
                     DRIVER.getProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
                 }
                 Console.debug("Saved: |"+guild.getStringID()+"   "+module+"    "+guild.getStringID());
             }
         } catch (Exception ex) {
-            Console.error("Cant add Server");
+            Console.error(module+"| Cant add Server");
             ex.printStackTrace();
         }
     }
@@ -56,12 +56,12 @@ public class ServerControl implements Fast{
         try {
             if (disabledlist.get(BAN_MODULE) != null && !disabledlist.get(BAN_MODULE).contains(guild)) {
                 disabledlist.get(BAN_MODULE).add(guild);
-                Console.debug("Server added as New");
+                Console.debug("Server added as Banned");
                 DRIVER.setProperty(DRIVER.CONFIG, BAN_MODULE+"_disabled_servers", disabledlist.get(BAN_MODULE));
                 Console.debug("Saved: |"+guild+"   "+BAN_MODULE+"    "+guild);
             }
         } catch (Exception ex) {
-            Console.error("Cant add Server");
+            Console.error("Banned| Cant add Server");
             ex.printStackTrace();
         }
     }

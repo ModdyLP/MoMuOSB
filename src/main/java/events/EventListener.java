@@ -95,6 +95,7 @@ public class EventListener implements Fast {
                     }
                 }
             } catch (Exception ex) {
+                BotUtils.sendMessage(event.getChannel(), String.format(LANG.getTranslation("commonmessage_error"), "Execution failed"), true);
                 Console.error(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace())));
                 ex.printStackTrace();
             }

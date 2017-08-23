@@ -125,6 +125,7 @@ public class InfoCommands extends Module implements Fast {
             prefix = Globals.ADMIN_PREFIX
     )
     public boolean createInvite(MessageReceivedEvent event, String[] args) {
+        Console.debug("Creating Invite link to Server: "+args[0]);
         if (INIT.BOT.getGuildByID(Long.valueOf(args[0])) != null) {
             IChannel channel = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getGeneralChannel();
             if (channel == null) {
