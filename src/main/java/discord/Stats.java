@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import sx.blah.discord.handle.obj.IGuild;
 import util.Console;
 import util.Fast;
+import util.SMB;
 import util.Utils;
 
 import java.util.ArrayList;
@@ -29,6 +30,11 @@ public class Stats implements Fast {
         if (!serverlist.contains(server.getStringID())) {
             joinedserver = joinedserver + 1;
             serverlist.add(server.getStringID());
+            BotUtils.sendPrivEmbMessage(server.getOwner().getOrCreatePMChannel(), SMB.shortMessage("Hello, \n" +
+                    "I'm your new Discord bot. \n" +
+                    "Type "+DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString()+".help \n" +
+                    "If you have any Problems then contact me (https://moddylp.de/). \n \n" +
+                    "Have a nice Day"), false);
         }
     }
 
