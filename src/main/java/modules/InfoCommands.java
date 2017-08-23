@@ -6,6 +6,7 @@ import discord.SystemInfo;
 import events.Command;
 import events.Module;
 import storage.LanguageMethod;
+import sx.blah.discord.handle.obj.IInvite;
 import util.*;
 import main.MoMuOSBMain;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -109,6 +110,31 @@ public class InfoCommands extends Module implements Fast {
             BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("botowner_error"), true);
         }
 
+        return true;
+    }
+    /**
+     * Send a invitation
+     *
+     * @param event MessageEvent
+     * @param args  Argumente [Not needed]
+     * @return state
+     */
+    @Command(
+            command = "createInvite",
+            description = "Invites the bot",
+            alias = "crei",
+            arguments = {"Server ID"},
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean createInvite(MessageReceivedEvent event, String[] args) {
+            IInvite invite = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getGeneralChannel().createInvite(0, 1, false, false);
+            if (invite != null) {
+                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), invite.toString() + "   ||||   " + invite.getCode(), false);
+            } else {
+                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "The Bot cant create a InviteLink", false);
+            }
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         return true;
     }
 
