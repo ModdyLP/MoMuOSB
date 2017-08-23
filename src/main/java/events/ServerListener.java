@@ -1,6 +1,7 @@
 package events;
 
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import discord.BotUtils;
 import discord.Stats;
 import discord.SystemInfo;
 import modules.RoleManagement;
@@ -99,7 +100,8 @@ public class ServerListener implements Fast{
         Console.println("==================NEW SERVER |" + event.getGuild().getName() + "| " + event.getGuild().getStringID());
         if (SERVER_CONTROL.checkServerisBanned(event.getGuild())) {
             Console.println("Leave Banned Server: "+event.getGuild().getName());
-            //event.getGuild().leave();
+            BotUtils.sendPrivMessage(event.getGuild().getOwner().getOrCreatePMChannel(), "Your Server is on the banned Server List. Please contact webmaster@moddylp.de and describe why do you want to get unbanned.", false);
+            event.getGuild().leave();
         } else {
             if (running) {
                 Stats.addServer(event.getGuild());
