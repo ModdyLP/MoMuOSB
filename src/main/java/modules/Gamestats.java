@@ -42,12 +42,12 @@ public class Gamestats extends Module implements Fast{
                 JSONObject competitive = stats.getJSONObject("competitive").getJSONObject("overall_stats");
                 JSONObject quickplay = stats.getJSONObject("quickplay").getJSONObject("game_stats");
                 builder.withThumbnail(competitive.getString("avatar"));
-                builder.withTitle(args[1]+"  Level: "+(competitive.getInt("prestige") * 100 + competitive.getInt("level")));
-                builder.appendField("Competitive Rank", competitive.get("comprank").toString()+"   "+competitive.getString("tier"), false);
-                builder.appendField("Games Won Quickplay", quickplay.get("games_won").toString(), false);
+                builder.withTitle(args[1]+" "+LANG.getTranslation("game_overwatch_level")+": "+(competitive.getInt("prestige") * 100 + competitive.getInt("level")));
+                builder.appendField(LANG.getTranslation("game_overwatch_comprank")+": ", competitive.get("comprank").toString()+"   "+competitive.getString("tier"), false);
+                builder.appendField(LANG.getTranslation("game_overwatch_gameswon"), quickplay.get("games_won").toString(), false);
                 BotUtils.sendEmbMessage(event.getChannel(), builder, false);
             } else {
-                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage("This Game isn't supported."), true);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("game_unsupported")), true);
             }
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
@@ -56,10 +56,13 @@ public class Gamestats extends Module implements Fast{
     }
 
     @LanguageMethod(
-            languagestringcount = 0
+            languagestringcount = 4
     )
     @Override
     public void setdefaultLanguage() {
-
+        DRIVER.setProperty(DEF_LANG, "game_overwatch_level", "Level");
+        DRIVER.setProperty(DEF_LANG, "game_overwatch_comprank", "Competitive Rank");
+        DRIVER.setProperty(DEF_LANG, "game_overwatch_gameswon", "Games Won Quickplay");
+        DRIVER.setProperty(DEF_LANG, "game_unsupported", "This Game isn't supported.");
     }
 }

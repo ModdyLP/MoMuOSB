@@ -11,6 +11,6 @@ import util.Fast;
 public class Module implements Fast, LanguageInterface {
     @Override
     public void setdefaultLanguage() {
-        Console.error("No Language");
+        Console.error("No Language for "+this.getClass().getName());
     }
 }

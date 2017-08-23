@@ -51,6 +51,7 @@ public class InfoCommands extends Module implements Fast {
         }).start();
         return true;
     }
+
     /**
      * Help Command
      *
@@ -71,13 +72,13 @@ public class InfoCommands extends Module implements Fast {
             StringBuilder content = new StringBuilder();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy H:m:s");
             if (event.getMessage().getMentions().size() > 0) {
-                for (IUser user: event.getMessage().getMentions()) {
+                for (IUser user : event.getMessage().getMentions()) {
                     content.append(user.getName()).append(":  ").append(user.getCreationDate().format(formatter)).append("\n");
                 }
             } else {
                 content.append("No User specified");
             }
-            BotUtils.sendMessage(event.getChannel(), content.toString() , false);
+            BotUtils.sendMessage(event.getChannel(), content.toString(), false);
         }).start();
         return true;
     }
@@ -109,6 +110,7 @@ public class InfoCommands extends Module implements Fast {
 
         return true;
     }
+
     /**
      * Send a invitation
      *
@@ -125,7 +127,7 @@ public class InfoCommands extends Module implements Fast {
             prefix = Globals.ADMIN_PREFIX
     )
     public boolean createInvite(MessageReceivedEvent event, String[] args) {
-        Console.debug("Creating Invite link to Server: "+args[0]);
+        Console.debug("Creating Invite link to Server: " + args[0]);
         if (INIT.BOT.getGuildByID(Long.valueOf(args[0])) != null) {
             IChannel channel = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getGeneralChannel();
             if (channel == null) {
@@ -204,13 +206,11 @@ public class InfoCommands extends Module implements Fast {
         builders.get(page - 1).appendDescription(LANG.getTranslation("help_prefixinfo"));
         int count = 0;
         for (Command command : COMMAND.getAllCommands()) {
-            if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
-                String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + botprefix + command.prefix() + command.alias() +
-                        "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
-                        "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) +
-                        "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
-                builders.get(page - 1).appendField((count+1)+". "+LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
-            }
+            String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + botprefix + command.prefix() + command.alias() +
+                    "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
+                    "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) +
+                    "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
+            builders.get(page - 1).appendField((count + 1) + ". " + LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
             if (builders.get(page - 1).getFieldCount() >= EmbedBuilder.FIELD_COUNT_LIMIT || builders.get(page - 1).getTotalVisibleCharacters() >= (EmbedBuilder.MAX_CHAR_LIMIT - 1000)) {
                 page++;
                 EmbedBuilder buildertemp = new EmbedBuilder();
@@ -220,12 +220,12 @@ public class InfoCommands extends Module implements Fast {
             builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
             builders.get(page - 1).withColor(Color.CYAN);
         }
-        builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + ")" + " Page: " + 1 + " :information_source:");
+        builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + ")" + LANG.getTranslation("help_page") + 1 + " :information_source:");
         return builders;
     }
 
     @LanguageMethod(
-            languagestringcount = 16
+            languagestringcount = 18
     )
     @Override
     public void setdefaultLanguage() {
@@ -242,6 +242,7 @@ public class InfoCommands extends Module implements Fast {
 
         //Help Command
         DRIVER.setProperty(DEF_LANG, "help_title", "All Commands");
+        DRIVER.setProperty(DEF_LANG, "help_page", "Page");
         DRIVER.setProperty(DEF_LANG, "help_command", "Command");
         DRIVER.setProperty(DEF_LANG, "help_alias", "Alias");
         DRIVER.setProperty(DEF_LANG, "help_arguments", "Arguments");

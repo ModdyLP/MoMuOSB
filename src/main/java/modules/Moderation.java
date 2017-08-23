@@ -21,12 +21,13 @@ import java.util.List;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class Moderation extends Module implements Fast{
+public class Moderation extends Module implements Fast {
 
     /**
      * Deletes a List Message
+     *
      * @param event MessageEvent
-     * @param args Argumente [Not needed]
+     * @param args  Argumente [Not needed]
      * @return state
      */
     @Command(
@@ -42,32 +43,31 @@ public class Moderation extends Module implements Fast{
             int total = 0;
             try {
                 IChannel channel = event.getChannel();
-                String origintopic = channel.getTopic();
-                    MessageHistory messages = channel.getMessageHistory(Integer.parseInt(args[0]));
-                    if (messages.getLatestMessage().getLongID() == event.getMessage().getLongID()) {
-                        while (!event.getMessage().isDeleted()) {
-                            Thread.sleep(200);
-                        }
-                        messages = channel.getMessageHistory(Integer.parseInt(args[0]));
+                MessageHistory messages = channel.getMessageHistory(Integer.parseInt(args[0]));
+                BotUtils.bulkdeleteMessage(channel, messages);
+                if (messages.getLatestMessage().getLongID() == event.getMessage().getLongID()) {
+                    while (!event.getMessage().isDeleted()) {
+                        Thread.sleep(200);
                     }
-                    total = messages.size();
-                    BotUtils.bulkdeleteMessage(channel, messages);
-                    channel.changeTopic(origintopic + " ["+String.format(LANG.getTranslation("del_topic"), total, total)+"]");
-                    Console.debug(Console.sendprefix+"DM: "+total);
-                    Thread.sleep(2000);
-                    channel.changeTopic(origintopic);
-                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+                    messages = channel.getMessageHistory(Integer.parseInt(args[0]));
+                }
+                total = messages.size();
+
+                Thread.sleep(2000);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("del_wait_success")), true);
             } catch (Exception ex) {
-                BotUtils.sendMessage(event.getChannel(), LANG.ERROR+String.format(LANG.getTranslation("deletion_error"), total, total, ex.getMessage()), true);
+                BotUtils.sendMessage(event.getChannel(), LANG.ERROR + String.format(LANG.getTranslation("deletion_error"), total, total, ex.getMessage()), true);
             }
         }).start();
 
         return true;
     }
+
     /**
      * Force Deletes a List Message
+     *
      * @param event MessageEvent
-     * @param args Argumente [Not needed]
+     * @param args  Argumente [Not needed]
      * @return state
      */
     @Command(
@@ -85,32 +85,30 @@ public class Moderation extends Module implements Fast{
             try {
                 IChannel channel = event.getChannel();
                 String origintopic = channel.getTopic();
-                    MessageHistory messages = channel.getMessageHistory(Integer.parseInt(args[0]));
+                MessageHistory messages = channel.getMessageHistory(Integer.parseInt(args[0]));
                 if (messages.getLatestMessage().getLongID() == event.getMessage().getLongID()) {
                     while (!event.getMessage().isDeleted()) {
                         Thread.sleep(200);
                     }
                     messages = channel.getMessageHistory(Integer.parseInt(args[0]));
                 }
-                    total = messages.size();
-                    for (IMessage message: messages) {
-                        if (!message.isDeleted()) {
-                            BotUtils.deleteMessageOne(message);
-                            count++;
-                            channel.changeTopic(origintopic + " ["+String.format(LANG.getTranslation("del_topic"), count, total)+"]");
-                        }
+                total = messages.size();
+                for (IMessage message : messages) {
+                    if (!message.isDeleted()) {
+                        BotUtils.deleteMessageOne(message);
+                        count++;
                     }
-                    Thread.sleep(1000);
-                    channel.changeTopic(origintopic);
-                    Console.debug(Console.sendprefix+"FDM: "+count+" of "+total);
-                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS+LANG.getTranslation("command_success")), true);
+                }
+                Thread.sleep(1000);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("del_wait_success")), true);
             } catch (Exception ex) {
-                BotUtils.sendMessage(event.getChannel(), LANG.ERROR+String.format(LANG.getTranslation("deletion_error"), count, total, ex.getMessage()), true);
+                BotUtils.sendMessage(event.getChannel(), LANG.ERROR + String.format(LANG.getTranslation("deletion_error"), count, total, ex.getMessage()), true);
             }
         }).start();
 
         return true;
     }
+
     @Command(
             command = "shutdown",
             description = "Shutdown the bot",
@@ -126,11 +124,12 @@ public class Moderation extends Module implements Fast{
                 Thread.sleep(10000);
                 System.exit(0);
             } catch (Exception ex) {
-                Console.error("Error on shutdown: "+ex.getMessage());
+                Console.error("Error on shutdown: " + ex.getMessage());
             }
         }).start();
         return true;
     }
+
     @Command(
             command = "deleteprivmsg",
             description = "Shutdown the bot",
@@ -144,7 +143,7 @@ public class Moderation extends Module implements Fast{
             try {
                 IPrivateChannel privateChannel = event.getAuthor().getOrCreatePMChannel();
                 List<IMessage> messageList = privateChannel.getMessageHistory(Integer.parseInt(args[0]));
-                for (IMessage message: messageList) {
+                for (IMessage message : messageList) {
                     if (message.getAuthor().isBot()) {
                         BotUtils.deleteMessageOne(message);
                     }
@@ -156,12 +155,14 @@ public class Moderation extends Module implements Fast{
         }).start();
         return true;
     }
+
     @LanguageMethod(
-            languagestringcount = 1
+            languagestringcount = 2
     )
     @Override
     public void setdefaultLanguage() {
         //Deletion
         DRIVER.setProperty(DEF_LANG, "del_topic", "Deletion %1s of %2s");
+        DRIVER.setProperty(DEF_LANG, "del_wait_success", "Deletion invoked... Wait until messages disapear.");
     }
 }
