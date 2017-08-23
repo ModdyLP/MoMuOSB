@@ -237,6 +237,8 @@ public class InfoCommands extends Module implements Fast {
         DRIVER.setProperty(DEF_LANG, "stats_user", "Users");
         DRIVER.setProperty(DEF_LANG, "stats_commands", "Commands");
         DRIVER.setProperty(DEF_LANG, "stats_uptime", "Uptime");
+        DRIVER.setProperty(DEF_LANG, "stats_ram", "Ram Usage");
+        DRIVER.setProperty(DEF_LANG, "stats_shard_ping", "Ping for Shard");
 
         //Help Command
         DRIVER.setProperty(DEF_LANG, "help_title", "All Commands");
