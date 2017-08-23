@@ -27,7 +27,7 @@ public class Console implements Fast{
             String[] parts = message.split("\n");
             for (String part: parts) {
                 System.out.println(Utils.format(getTimeNow())+prefix + debugprefix + part);
-                logger.debug(prefix + debugprefix + part);
+                logger.info(prefix + debugprefix + part);
             }
         }
 
