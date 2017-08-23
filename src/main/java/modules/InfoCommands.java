@@ -6,13 +6,10 @@ import discord.SystemInfo;
 import events.Command;
 import events.Module;
 import storage.LanguageMethod;
-import sx.blah.discord.handle.obj.IInvite;
+import sx.blah.discord.handle.obj.*;
 import util.*;
 import main.MoMuOSBMain;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.handle.obj.StatusType;
 import sx.blah.discord.util.BotInviteBuilder;
 import sx.blah.discord.util.EmbedBuilder;
 
@@ -128,14 +125,27 @@ public class InfoCommands extends Module implements Fast {
             prefix = Globals.ADMIN_PREFIX
     )
     public boolean createInvite(MessageReceivedEvent event, String[] args) {
-            IInvite invite = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getGeneralChannel().createInvite(0, 1, false, false);
-            if (invite != null) {
-                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), invite.toString() + "   ||||   " + invite.getCode(), false);
-            } else {
-                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "The Bot cant create a InviteLink", false);
+        if (INIT.BOT.getGuildByID(Long.valueOf(args[0])) != null) {
+            IChannel channel = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getGeneralChannel();
+            if (channel == null) {
+                channel = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getChannels().get(0);
             }
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
-        return true;
+            if (channel != null) {
+                IInvite invite = channel.createInvite(0, 1, false, false);
+                if (invite != null) {
+                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), invite.toString() + "   ||||   " + invite.getCode(), false);
+                } else {
+                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "The Bot cant create a InviteLink", false);
+                }
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
+            } else {
+                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", false);
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
