@@ -1,5 +1,5 @@
 # MoMuOSB
-### Multi OS Discord Bot
+### Multi OS Discord Bot [![Build Status](https://ci.moddylp.de/job/MoMuOSB/badge/icon)](https://ci.moddylp.de/job/MoMuOSB/)
 ***
 Build with Maven
 

@@ -52,7 +52,8 @@ public class EventListener implements Fast {
                 Stats.addMessages();
                 if (SERVER_CONTROL.checkServerisBanned(event.getGuild())) {
                     Console.println("Leave Banned Server: "+event.getGuild().getName());
-                    //event.getGuild().leave();
+                    BotUtils.sendPrivMessage(event.getGuild().getOwner().getOrCreatePMChannel(), "Your Server is on the banned Server List. Please contact webmaster@moddylp.de and describe why do you want to get unbanned.", false);
+                    event.getGuild().leave();
                 }
                 //Check if Channel is Private (DM)
                 //Console.debug("MI: "+event.getGuild().getStringID()+"   "+event.getChannel().getName()+"   "+event.getAuthor().getName());
@@ -72,7 +73,6 @@ public class EventListener implements Fast {
                                     event.getMessage().delete();
                                 } else {
                                     Console.debug(Console.sendprefix + "Message not deleted: [" + message + "] -- nopermissions");
-                                    BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
                                 }
                             }
                             if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
@@ -95,8 +95,9 @@ public class EventListener implements Fast {
                     }
                 }
             } catch (Exception ex) {
+                BotUtils.sendMessage(event.getChannel(), String.format(LANG.getTranslation("commonmessage_error"), "Execution failed"), true);
                 Console.error(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace())));
-                ex.printStackTrace();
+                Console.error(ex);
             }
         }).start();
     }
@@ -147,7 +148,7 @@ public class EventListener implements Fast {
 
         } catch (Exception ex) {
             Console.error(String.format(LANG.getTranslation("execution_error"), ex.getCause()));
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 

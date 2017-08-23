@@ -8,10 +8,7 @@ import storage.LanguageMethod;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.EmbedBuilder;
-import util.Fast;
-import util.Globals;
-import util.Markdown;
-import util.SMB;
+import util.*;
 
 import java.awt.*;
 import java.util.List;
@@ -35,7 +32,7 @@ public class ServerManager extends Module implements Fast{
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
         return true;
     }
@@ -55,7 +52,7 @@ public class ServerManager extends Module implements Fast{
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
         return true;
     }

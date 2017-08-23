@@ -68,7 +68,7 @@ public class SearchCommand extends Module implements Fast{
                     BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("engine_unknown")), true);
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Console.error(ex);
             }
         }).start();
 

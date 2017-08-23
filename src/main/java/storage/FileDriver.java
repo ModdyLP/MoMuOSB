@@ -72,7 +72,7 @@ public class FileDriver {
             loadJson();
         } catch (Exception ex) {
             Console.error("File can not be accessed: "+filenamewithpath);
-            ex.printStackTrace();
+            Console.error(ex);
             MoMuOSBMain.shutdown();
         }
     }
@@ -91,7 +91,7 @@ public class FileDriver {
             }
         } catch (Exception ex) {
             Console.error("Parsing error");
-            ex.printStackTrace();
+            Console.error(ex);
         }
         return json;
     }
@@ -115,7 +115,7 @@ public class FileDriver {
 
         } catch (Exception ex) {
             Console.error("File can not be loaded");
-            ex.printStackTrace();
+            Console.error(ex);
             MoMuOSBMain.shutdown();
         }
     }
@@ -135,7 +135,7 @@ public class FileDriver {
             }
         } catch (Exception ex) {
             Console.error("File can not be saved");
-            ex.printStackTrace();
+            Console.error(ex);
             MoMuOSBMain.shutdown();
         }
     }
@@ -160,7 +160,7 @@ public class FileDriver {
             }
         } catch (Exception ex) {
             Console.error("Can not set Property: ");
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -178,7 +178,7 @@ public class FileDriver {
             }
         } catch (Exception ex) {
             setProperty(filename, option, defaultvalue);
-            ex.printStackTrace();
+            Console.error(ex);
         }
         return jsons.get(filename).get(option);
     }
@@ -187,7 +187,7 @@ public class FileDriver {
         try {
             return jsons.get(filename).has(option);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Console.error(ex);
         }
         return false;
     }
@@ -219,7 +219,7 @@ public class FileDriver {
             }
         } catch (Exception ex) {
             Console.error("Can not remove Property: ");
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -231,7 +231,7 @@ public class FileDriver {
             }
         } catch (Exception ex) {
             Console.error("Can not list Property: ");
-            ex.printStackTrace();
+            Console.error(ex);
         }
         return objects;
     }

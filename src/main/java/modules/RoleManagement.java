@@ -34,7 +34,7 @@ public class RoleManagement extends Module implements Fast {
             description = "Add a User to a specific role",
             arguments = {"User Mention", "Role []"},
             prefix = Globals.ADMIN_PREFIX,
-            permission = "role_manage",
+            permission = Globals.BOT_MANAGE,
             alias = "aur"
     )
     public void addUsertoRole(MessageReceivedEvent event, String[] args) {
@@ -48,7 +48,7 @@ public class RoleManagement extends Module implements Fast {
             }
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace()))), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -57,7 +57,7 @@ public class RoleManagement extends Module implements Fast {
             description = "Add a User to a specific role",
             arguments = {"User Mention", "Role []"},
             prefix = Globals.ADMIN_PREFIX,
-            permission = "role_manage",
+            permission = Globals.BOT_MANAGE,
             alias = "rmur"
     )
     public void removeUsertoRole(MessageReceivedEvent event, String[] args) {
@@ -71,14 +71,14 @@ public class RoleManagement extends Module implements Fast {
             }
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace()))), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
     @Command(
             command = "definegenderrole",
             description = "Add a User to a specific role",
-            arguments = {"Gender (m or w)", "Role []"},
+            arguments = {"Gender (m or f)", "Role []"},
             prefix = Globals.ADMIN_PREFIX,
             permission = "role_manage",
             alias = "dgr"
@@ -101,7 +101,7 @@ public class RoleManagement extends Module implements Fast {
             }
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace()))), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -126,7 +126,6 @@ public class RoleManagement extends Module implements Fast {
             ArrayList<JSONObject> femaleserverids = new ArrayList<>();
             if (gendersave.get(female) != null) {
                 gendersave.get(female).keySet().forEach(iGuild -> {
-                    if (!SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).contains(iGuild.getStringID())) {
                         ArrayList<String> roleids = new ArrayList<>();
                         for (IRole role: getRoleforGender(iGuild, female)) {
                             roleids.add(role.getStringID());
@@ -134,14 +133,10 @@ public class RoleManagement extends Module implements Fast {
                         JSONObject femaleobj = new JSONObject();
                         femaleobj.put(iGuild.getStringID(), roleids);
                         femaleserverids.add(femaleobj);
-                    } else {
-                        Console.debug("Server is disabled for using Genders: "+iGuild.getName()+ Arrays.toString(SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).toArray()));
-                    }
                 });
             }
             if (gendersave.get(male) != null) {
                 gendersave.get(male).keySet().forEach(iGuild -> {
-                    if (!SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).contains(iGuild.getStringID())) {
                         ArrayList<String> roleids = new ArrayList<>();
                         for (IRole role: getRoleforGender(iGuild, male)) {
                             roleids.add(role.getStringID());
@@ -149,9 +144,6 @@ public class RoleManagement extends Module implements Fast {
                         JSONObject femaleobj = new JSONObject();
                         femaleobj.put(iGuild.getStringID(), roleids);
                         maleserverids.add(femaleobj);
-                    } else {
-                        Console.debug("Server is disabled for using Genders: "+iGuild.getName()+ Arrays.toString(SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).toArray()));
-                    }
                 });
             }
             root.put(female, femaleserverids);
@@ -159,7 +151,7 @@ public class RoleManagement extends Module implements Fast {
             DRIVER.setProperty(GENDER, "gendersave", root);
             DRIVER.saveJson();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -180,7 +172,7 @@ public class RoleManagement extends Module implements Fast {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 

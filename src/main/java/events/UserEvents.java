@@ -39,7 +39,7 @@ public class UserEvents implements Fast{
 
     @EventSubscriber
     public void onUserJoin(UserJoinEvent event) {
-        Console.debug(Console.recievedprefix+"User joined: "+event.getUser().getName()+" to Server: "+event.getGuild().getName());
+        Console.debug(Console.recievedprefix+"User joined: [S]"+event.getGuild().getName()+" [U]"+event.getUser().getName());
         Stats.addUser();
         if (!SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).contains(event.getGuild().getStringID()) && DRIVER.getPropertyOnly(DRIVER.CONFIG, "genderroles").equals(true)) {
             if (RoleManagement.isGenderdefined(event.getGuild())) {

@@ -57,7 +57,7 @@ public class WebClient
         }
         catch ( Exception ex )
         {
-            ex.printStackTrace();
+            Console.error(ex);
             //If something went wrong.
             return "{'error' : '"+ex.getMessage()+"'}";
             

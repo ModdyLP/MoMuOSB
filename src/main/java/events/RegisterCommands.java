@@ -33,7 +33,7 @@ public class RegisterCommands implements Fast{
                 COMMAND.langinstances.get(language).setdefaultLanguage();
             }
         }catch (Exception ex) {
-            ex.printStackTrace();
+            Console.error(ex);
             System.exit(0);
         }
         DRIVER.saveJson();

@@ -42,7 +42,18 @@ public class Console implements Fast{
         String[] parts = message.split("\n");
         for (String part: parts) {
             System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + part);
-            logger.info(prefix + errorprefix + part);
+            logger.error(prefix + errorprefix + part);
+        }
+    }
+    /**
+     * Error message
+     * @param message message
+     */
+    public static void error(Exception message) {
+        String errorprefix = "[ERROR]";
+        for(StackTraceElement stackTraceElement : message.getStackTrace()) {
+            System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + System.lineSeparator() + stackTraceElement.toString());
+            logger.error(prefix+ errorprefix + System.lineSeparator() + stackTraceElement.toString());
         }
     }
 

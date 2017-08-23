@@ -37,32 +37,32 @@ public class ServerControl implements Fast{
         try {
             if (disabledlist.get(module) != null && !disabledlist.get(module).contains(guild.getStringID())) {
                 if (newserver) {
-                    Console.debug("Server added as New");
+                    Console.debug(module+"| Server added as New");
                     disabledlist.get(module).add(guild.getStringID());
                     DRIVER.setProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
                 } else {
-                    Console.debug("Server exists");
+                    Console.debug(module+"| Server exists");
                     disabledlist.get(module).add(guild.getStringID());
                     DRIVER.getProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
                 }
                 Console.debug("Saved: |"+guild.getStringID()+"   "+module+"    "+guild.getStringID());
             }
         } catch (Exception ex) {
-            Console.error("Cant add Server");
-            ex.printStackTrace();
+            Console.error(module+"| Cant add Server");
+            Console.error(ex);
         }
     }
     public void addBannedServer(String guild) {
         try {
             if (disabledlist.get(BAN_MODULE) != null && !disabledlist.get(BAN_MODULE).contains(guild)) {
                 disabledlist.get(BAN_MODULE).add(guild);
-                Console.debug("Server added as New");
+                Console.debug("Server added as Banned");
                 DRIVER.setProperty(DRIVER.CONFIG, BAN_MODULE+"_disabled_servers", disabledlist.get(BAN_MODULE));
                 Console.debug("Saved: |"+guild+"   "+BAN_MODULE+"    "+guild);
             }
         } catch (Exception ex) {
-            Console.error("Cant add Server");
-            ex.printStackTrace();
+            Console.error("Banned| Cant add Server");
+            Console.error(ex);
         }
     }
     public void loadSavedServer(String module) {
@@ -76,6 +76,7 @@ public class ServerControl implements Fast{
                 }
             }
         }
+        Console.debug("Disabled Servers: "+module+" |"+ disabledlist.get(module).size());
     }
     public void removeDisabledServer(IGuild guild, String module) {
         try {
@@ -86,7 +87,7 @@ public class ServerControl implements Fast{
             }
         } catch (Exception ex) {
             Console.error("Cant remove Server");
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
     public boolean checkServerisBanned(IGuild guild) {
@@ -99,7 +100,7 @@ public class ServerControl implements Fast{
         return false;
     }
     public ArrayList<String> getDisabledlist(String module) {
-        Console.debug(disabledlist.get(JOIN_MODULE).size()+"  "+disabledlist.get(MUSIC_MODULE).size());
+
         return disabledlist.get(module);
     }
 }

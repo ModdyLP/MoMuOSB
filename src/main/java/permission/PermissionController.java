@@ -145,7 +145,7 @@ public class PermissionController implements Fast {
             DRIVER.saveJson();
         } catch (Exception ex) {
             Console.error("Saving of Permissions failed");
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -178,7 +178,7 @@ public class PermissionController implements Fast {
             }
         } catch (Exception ex) {
             Console.error("Failed to load Permissions");
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 

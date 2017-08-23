@@ -59,7 +59,7 @@ public class Permission extends Module implements Fast {
             }
         } catch (Exception ex) {
             Console.error("Error on adding Permission" + ex.getMessage());
-            ex.printStackTrace();
+            Console.error(ex);
         }
 
     }
@@ -103,7 +103,7 @@ public class Permission extends Module implements Fast {
             }
         } catch (Exception ex) {
             Console.error("Error on adding Permission" + ex.getMessage());
-            ex.printStackTrace();
+            Console.error(ex);
         }
 
     }
@@ -153,7 +153,7 @@ public class Permission extends Module implements Fast {
             }
         } catch (Exception ex) {
             Console.error("Error on adding Permission" + ex.getMessage());
-            ex.printStackTrace();
+            Console.error(ex);
         }
 
     }
