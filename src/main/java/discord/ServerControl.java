@@ -76,6 +76,7 @@ public class ServerControl implements Fast{
                 }
             }
         }
+        Console.debug("Disabled Servers: "+module+" |"+ disabledlist.get(module).size());
     }
     public void removeDisabledServer(IGuild guild, String module) {
         try {
@@ -99,7 +100,7 @@ public class ServerControl implements Fast{
         return false;
     }
     public ArrayList<String> getDisabledlist(String module) {
-        Console.debug(disabledlist.get(JOIN_MODULE).size()+"  "+disabledlist.get(MUSIC_MODULE).size());
+
         return disabledlist.get(module);
     }
 }
