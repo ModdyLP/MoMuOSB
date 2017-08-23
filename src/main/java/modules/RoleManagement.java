@@ -48,7 +48,7 @@ public class RoleManagement extends Module implements Fast {
             }
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace()))), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -71,7 +71,7 @@ public class RoleManagement extends Module implements Fast {
             }
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace()))), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -101,7 +101,7 @@ public class RoleManagement extends Module implements Fast {
             }
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), Arrays.toString(ex.getStackTrace()))), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -159,7 +159,7 @@ public class RoleManagement extends Module implements Fast {
             DRIVER.setProperty(GENDER, "gendersave", root);
             DRIVER.saveJson();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -180,7 +180,7 @@ public class RoleManagement extends Module implements Fast {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 

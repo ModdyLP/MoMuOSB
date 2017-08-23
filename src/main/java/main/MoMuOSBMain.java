@@ -42,7 +42,7 @@ public class MoMuOSBMain implements Fast {
 
         } catch (Exception ex) {
             Console.error(ex.getMessage());
-            ex.printStackTrace();
+            Console.error(ex);
         }
 
     }

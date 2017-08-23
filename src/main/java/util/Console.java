@@ -45,6 +45,17 @@ public class Console implements Fast{
             logger.info(prefix + errorprefix + part);
         }
     }
+    /**
+     * Error message
+     * @param message message
+     */
+    public static void error(Exception message) {
+        String errorprefix = "[ERROR]";
+        for(StackTraceElement stackTraceElement : message.getStackTrace()) {
+            System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + System.lineSeparator() + stackTraceElement.toString());
+            logger.info(prefix+ errorprefix + System.lineSeparator() + stackTraceElement.toString());
+        }
+    }
 
     /**
      * Info Message

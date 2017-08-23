@@ -35,7 +35,7 @@ public class ServerManager extends Module implements Fast{
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
         return true;
     }
@@ -55,7 +55,7 @@ public class ServerManager extends Module implements Fast{
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
         return true;
     }

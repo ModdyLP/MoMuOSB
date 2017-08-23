@@ -49,7 +49,7 @@ public class ServerControl implements Fast{
             }
         } catch (Exception ex) {
             Console.error(module+"| Cant add Server");
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
     public void addBannedServer(String guild) {
@@ -62,7 +62,7 @@ public class ServerControl implements Fast{
             }
         } catch (Exception ex) {
             Console.error("Banned| Cant add Server");
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
     public void loadSavedServer(String module) {
@@ -86,7 +86,7 @@ public class ServerControl implements Fast{
             }
         } catch (Exception ex) {
             Console.error("Cant remove Server");
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
     public boolean checkServerisBanned(IGuild guild) {

@@ -49,7 +49,7 @@ public class GetAnnotation implements Fast{
                 }
         } catch (Exception ex) {
             Console.error(String.format(LANG.getTranslation("annotation_error"), clazz.getName(), ex.getMessage()));
-            ex.printStackTrace();
+            Console.error(ex);
         }
         return allannotation;
     }

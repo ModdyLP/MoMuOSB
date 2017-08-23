@@ -59,7 +59,7 @@ public class Stats implements Fast {
             DRIVER.saveJson();
             Console.println(getStats());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
@@ -79,7 +79,7 @@ public class Stats implements Fast {
             commands = Integer.valueOf(DRIVER.getProperty(STATS, "commands", commands).toString());
             Console.println(getStats());
         }catch (Exception ex) {
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 

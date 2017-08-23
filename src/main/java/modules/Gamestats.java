@@ -51,7 +51,7 @@ public class Gamestats extends Module implements Fast{
             }
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
-            ex.printStackTrace();
+            Console.error(ex);
         }
     }
 
