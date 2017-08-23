@@ -8,10 +8,7 @@ import storage.LanguageMethod;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.EmbedBuilder;
-import util.Fast;
-import util.Globals;
-import util.Markdown;
-import util.SMB;
+import util.*;
 
 import java.awt.*;
 import java.util.List;
