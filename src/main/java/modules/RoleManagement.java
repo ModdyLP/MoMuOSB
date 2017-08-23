@@ -34,7 +34,7 @@ public class RoleManagement extends Module implements Fast {
             description = "Add a User to a specific role",
             arguments = {"User Mention", "Role []"},
             prefix = Globals.ADMIN_PREFIX,
-            permission = "role_manage",
+            permission = Globals.BOT_MANAGE,
             alias = "aur"
     )
     public void addUsertoRole(MessageReceivedEvent event, String[] args) {
@@ -57,7 +57,7 @@ public class RoleManagement extends Module implements Fast {
             description = "Add a User to a specific role",
             arguments = {"User Mention", "Role []"},
             prefix = Globals.ADMIN_PREFIX,
-            permission = "role_manage",
+            permission = Globals.BOT_MANAGE,
             alias = "rmur"
     )
     public void removeUsertoRole(MessageReceivedEvent event, String[] args) {
