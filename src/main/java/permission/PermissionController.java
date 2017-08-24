@@ -25,7 +25,6 @@ public class PermissionController implements Fast {
     public static PermissionController getInstance() {
         if (instance == null) {
             instance = new PermissionController();
-            bypass = DRIVER.getPropertyOnly(DRIVER.CONFIG, "ownerbypass").equals(true);
         }
         return instance;
     }
@@ -178,6 +177,7 @@ public class PermissionController implements Fast {
                     }
                 }
             }
+            bypass = DRIVER.getPropertyOnly(DRIVER.CONFIG, "ownerbypass").equals(true);
         } catch (Exception ex) {
             Console.error("Failed to load Permissions");
             Console.error(ex);
