@@ -223,7 +223,7 @@ public class InfoCommands extends Module implements Fast {
             }
             count++;
         }
-        builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + ")" + LANG.getTranslation("help_page") + 1 + " :information_source:");
+        builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + " / "+COMMAND.getAllCommands().size()+")" + LANG.getTranslation("help_page") + 1 + " :information_source:");
         return builders;
     }
 
