@@ -132,7 +132,7 @@ public class Moderation extends Module implements Fast {
 
     @Command(
             command = "deleteprivmsg",
-            description = "Shutdown the bot",
+            description = "Deletes private Messages from Bot",
             alias = "dpm",
             arguments = {"Count"},
             permission = Globals.BOT_INFO,

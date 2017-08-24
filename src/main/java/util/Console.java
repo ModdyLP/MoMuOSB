@@ -27,7 +27,7 @@ public class Console implements Fast{
             String[] parts = message.split("\n");
             for (String part: parts) {
                 System.out.println(Utils.format(getTimeNow())+prefix + debugprefix + part);
-                logger.info(prefix + debugprefix + part);
+                logger.debug(prefix + debugprefix + part);
             }
         }
 
@@ -51,6 +51,7 @@ public class Console implements Fast{
      */
     public static void error(Exception message) {
         String errorprefix = "[ERROR]";
+        message.printStackTrace();
         for(StackTraceElement stackTraceElement : message.getStackTrace()) {
             System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + System.lineSeparator() + stackTraceElement.toString());
             logger.error(prefix+ errorprefix + System.lineSeparator() + stackTraceElement.toString());
