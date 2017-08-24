@@ -26,6 +26,7 @@ import java.util.EnumSet;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
+//GITHUB IDENT MODDYLP
 public class InfoCommands extends Module implements Fast {
 
     /**

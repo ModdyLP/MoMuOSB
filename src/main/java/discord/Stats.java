@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * Created by N.Hartmann on 07.07.2017.
  * Copyright 2017
  */
+//GITHUB IDENT MODDYLP
 public class Stats implements Fast {
     private static int joineduser = 0;
     private static int joinedserver = 0;
