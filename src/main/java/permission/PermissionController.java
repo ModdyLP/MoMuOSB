@@ -20,10 +20,12 @@ public class PermissionController implements Fast {
 
     private static PermissionController instance;
     private static String PERMFILE = "permissions.json";
+    private static boolean bypass = false;
 
     public static PermissionController getInstance() {
         if (instance == null) {
             instance = new PermissionController();
+            bypass = DRIVER.getPropertyOnly(DRIVER.CONFIG, "ownerbypass").equals(true);
         }
         return instance;
     }
@@ -48,7 +50,7 @@ public class PermissionController implements Fast {
                 }
             }
         }
-        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "ownerbypass").equals(true) && user.equals(INIT.BOT.getApplicationOwner())) {
+        if (bypass && user.equals(INIT.BOT.getApplicationOwner())) {
             check = true;
         }
         return check;

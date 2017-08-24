@@ -5,6 +5,7 @@ import discord.DiscordInit;
 import discord.SystemInfo;
 import events.Command;
 import events.Module;
+import permission.PermissionController;
 import storage.LanguageMethod;
 import sx.blah.discord.handle.obj.*;
 import util.*;
@@ -206,19 +207,21 @@ public class InfoCommands extends Module implements Fast {
         builders.get(page - 1).appendDescription(LANG.getTranslation("help_prefixinfo"));
         int count = 0;
         for (Command command : COMMAND.getAllCommands()) {
-            String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + botprefix + command.prefix() + command.alias() +
-                    "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
-                    "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) +
-                    "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
-            builders.get(page - 1).appendField((count + 1) + ". " + LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
+            if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
+                String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + botprefix + command.prefix() + command.alias() +
+                        "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
+                        "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) +
+                        "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
+                builders.get(page - 1).appendField((count + 1) + ". " + LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
+            }
             if (builders.get(page - 1).getFieldCount() >= EmbedBuilder.FIELD_COUNT_LIMIT || builders.get(page - 1).getTotalVisibleCharacters() >= (EmbedBuilder.MAX_CHAR_LIMIT - 1000)) {
                 page++;
                 EmbedBuilder buildertemp = new EmbedBuilder();
                 builders.add(page - 1, buildertemp);
+                builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
+                builders.get(page - 1).withColor(Color.CYAN);
             }
             count++;
-            builders.get(page - 1).withTitle(":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
-            builders.get(page - 1).withColor(Color.CYAN);
         }
         builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + ")" + LANG.getTranslation("help_page") + 1 + " :information_source:");
         return builders;
