@@ -3,6 +3,10 @@ package util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Date;
 
 
@@ -51,7 +55,11 @@ public class Console implements Fast{
      */
     public static void error(Exception message) {
         String errorprefix = "[ERROR]";
-        message.printStackTrace();
+        try {
+            message.printStackTrace(new PrintWriter(new File("error.log")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for(StackTraceElement stackTraceElement : message.getStackTrace()) {
             System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + System.lineSeparator() + stackTraceElement.toString());
             logger.error(prefix+ errorprefix + System.lineSeparator() + stackTraceElement.toString());
