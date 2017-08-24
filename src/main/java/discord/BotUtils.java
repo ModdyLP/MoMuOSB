@@ -48,12 +48,17 @@ public class BotUtils implements Fast{
     public static IMessage sendMessage(IChannel channel, String message, boolean delete){
         RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
             try{
-                if (channel.getModifiedPermissions(INIT.BOT.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
-                    IMessage messageinst = channel.sendMessage(message);
-                    deleteMessageFromBot(messageinst, delete);
-                    return messageinst;
+                if (INIT.BOT.getGuildByID(channel.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
+                    if (channel.getModifiedPermissions(INIT.BOT.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
+                        IMessage messageinst = channel.sendMessage(message);
+                        deleteMessageFromBot(messageinst, delete);
+                        return messageinst;
+                    } else {
+                        Console.error(String.format(LANG.getTranslation("notsendpermission_error"), channel.getGuild().getName(), channel.getName()));
+                        return null;
+                    }
                 } else {
-                    Console.error(String.format(LANG.getTranslation("notsendpermission_error"), channel.getGuild().getName(), channel.getName()));
+                    Console.debug("BOT is not on this server: "+channel.getGuild().getName());
                     return null;
                 }
             } catch (DiscordException e){
@@ -91,13 +96,18 @@ public class BotUtils implements Fast{
     public static IMessage sendEmbMessage(IChannel channel, EmbedBuilder builder, boolean delete){
         RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
             try{
-                if (channel.getModifiedPermissions(INIT.BOT.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
-                    Footer.addFooter(builder);
-                    IMessage message = channel.sendMessage(builder.build());
-                    deleteMessageFromBot(message, delete);
-                    return message;
+                if (INIT.BOT.getGuildByID(channel.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
+                    if (channel.getModifiedPermissions(INIT.BOT.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
+                        Footer.addFooter(builder);
+                        IMessage message = channel.sendMessage(builder.build());
+                        deleteMessageFromBot(message, delete);
+                        return message;
+                    } else {
+                        Console.error(String.format(LANG.getTranslation("notsendpermission_error"), channel.getGuild().getName(), channel.getName()));
+                        return null;
+                    }
                 } else {
-                    Console.error(String.format(LANG.getTranslation("notsendpermission_error"), channel.getGuild().getName(), channel.getName()));
+                    Console.debug("BOT is not on this server: "+channel.getGuild().getName());
                     return null;
                 }
             } catch (DiscordException e){
@@ -137,8 +147,12 @@ public class BotUtils implements Fast{
         if (delete && DRIVER.getPropertyOnly(DRIVER.CONFIG,"deleteBotAnswers").equals(true)) {
             new Thread(() -> {
                 try {
-                    Thread.sleep(Integer.parseInt(DRIVER.getPropertyOnly(DRIVER.CONFIG,"botanswerdeletseconds").toString()) * 1000);
-                    message.delete();
+                    if (INIT.BOT.getGuildByID(message.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
+                        Thread.sleep(Integer.parseInt(DRIVER.getPropertyOnly(DRIVER.CONFIG, "botanswerdeletseconds").toString()) * 1000);
+                        message.delete();
+                    } else {
+                        Console.debug("BOT is not on this server: "+message.getGuild().getName());
+                    }
                 } catch (Exception ex) {
                     Console.error(LANG.getTranslation("common_error"));
                 }
@@ -153,7 +167,11 @@ public class BotUtils implements Fast{
     public static void deleteMessageOne(IMessage message) {
         RequestBuffer.request(() -> {
             try {
-                message.delete();
+                if (INIT.BOT.getGuildByID(message.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
+                    message.delete();
+                } else {
+                    Console.debug("BOT is not on this server: "+message.getGuild().getName());
+                }
             } catch (DiscordException e) {
                 Console.error(String.format(LANG.getTranslation("notdeleted_error"), e.getMessage()));
             }
@@ -168,7 +186,11 @@ public class BotUtils implements Fast{
     public static void bulkdeleteMessage(IChannel channel, List<IMessage> messages) {
         RequestBuffer.request(() -> {
             try {
-                channel.bulkDelete(messages);
+                if (INIT.BOT.getGuildByID(channel.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
+                    channel.bulkDelete(messages);
+                } else {
+                    Console.debug("BOT is not on this server: "+channel.getGuild().getName());
+                }
             } catch (DiscordException e) {
                 Console.error(String.format(LANG.getTranslation("notdeleted_error"), e.getMessage()));
             }
