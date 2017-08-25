@@ -54,7 +54,7 @@ public class EventListener implements Fast {
             try {
                 Stats.addMessages();
                 if (SERVER_CONTROL.checkServerisBanned(event.getGuild())) {
-                    Console.println("Leave Banned Server: "+event.getGuild().getName());
+                    Console.println("Leave Banned Server: " + event.getGuild().getName());
                     BotUtils.sendPrivMessage(event.getGuild().getOwner().getOrCreatePMChannel(), "Your Server is on the banned Server List. Please contact webmaster@moddylp.de and describe why do you want to get unbanned.", false);
                     event.getGuild().leave();
                 }
@@ -91,21 +91,23 @@ public class EventListener implements Fast {
                         if (messageparts.length == 2) {
                             UserEvents.getInstance().setGenderRole(event, messageparts[1]);
                         }
-                    } else if (event.getMessage().getMentions().size() > 0 && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
-                            for (IUser user : event.getMessage().getMentions()) {
-                                Console.debug("Mention: "+user.getName());
-                                IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent(), false);
-                                if (message != null) {
-                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to "+user.mention(), true);
-                                    return;
-                                } else {
-                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to "+user.mention(), true);
-                                }
+                    } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+                        String msgcontent = event.getMessage().getContent();
+                        String userid = msgcontent.substring(msgcontent.indexOf("~") + 1, msgcontent.indexOf(" "));
+
+                        IUser user = INIT.BOT.getUserByID(Long.valueOf(userid));
+                        Console.debug("Mention: " + user.getName());
+                        IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("~"+userid, ""), false);
+                        if (message != null) {
+                            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to " + user.mention(), true);
+                        } else {
+                            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + user.mention(), true);
                         }
-                    } else if (event.getMessage().getMentions().size() > 0 && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+
+                    } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                         BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.getTranslation("private_msg_not_owner"), true);
                     } else {
-                        BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), "Message recieved from "+event.getAuthor()+" : "+event.getMessage().getContent(), false);
+                        BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), "Message recieved from " + event.getAuthor() + " : " + event.getMessage().getContent(), false);
                     }
                 }
             } catch (Exception ex) {
@@ -155,7 +157,7 @@ public class EventListener implements Fast {
                     String[] printargs = newargs.toArray(new String[]{});
                     COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, printargs);
                 }
-                Console.debug(Console.sendprefix+"New Args: "+newargs);
+                Console.debug(Console.sendprefix + "New Args: " + newargs);
             } else {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + String.format(LANG.getTranslation("tofewarguments_error"), args.length, command.arguments().length)), true);
             }
