@@ -154,7 +154,7 @@ public class BotUtils implements Fast{
                         Console.debug("BOT is not on this server: "+message.getGuild().getName());
                     }
                 } catch (Exception ex) {
-                    Console.error(LANG.getTranslation("common_error"));
+                    Console.error(String.format(LANG.getTranslation("commonmessage_error"),ex.getMessage()+"  "+ex.getCause().getMessage()));
                 }
             }).start();
         }
@@ -167,11 +167,7 @@ public class BotUtils implements Fast{
     public static void deleteMessageOne(IMessage message) {
         RequestBuffer.request(() -> {
             try {
-                if (INIT.BOT.getGuildByID(message.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
-                    message.delete();
-                } else {
-                    Console.debug("BOT is not on this server: "+message.getGuild().getName());
-                }
+                message.delete();
             } catch (DiscordException e) {
                 Console.error(String.format(LANG.getTranslation("notdeleted_error"), e.getMessage()));
             }

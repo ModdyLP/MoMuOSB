@@ -172,7 +172,7 @@ public class InfoCommands extends Module implements Fast {
         if (guild != null) {
             IUser user = guild.getOwner();
             if (user != null) {
-                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Owner of Server("+guild.getName()+") is @"+user.getName()+"#"+user.getDiscriminator(), false);
+                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Owner of Server("+guild.getName()+") is "+user.mention(), false);
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
             } else {
                 BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", false);
