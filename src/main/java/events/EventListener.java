@@ -7,6 +7,8 @@ import discord.Stats;
 import discord.SystemInfo;
 import modules.RoleManagement;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
+import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
 import util.*;
 import modules.music.MainMusic;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -87,11 +89,16 @@ public class EventListener implements Fast {
                         String[] messageparts = event.getMessage().getContent().trim().split(" ");
                         if (messageparts.length == 2) {
                             UserEvents.getInstance().setGenderRole(event, messageparts[1]);
-                        } else {
-                            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR + LANG.getTranslation("invalid_count_gender"), true);
+                        }
+                    } else if (event.getMessage().getMentions().size() > 0 && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+                        for (IUser user: event.getMessage().getMentions()) {
+                            IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent(), false);
+                            if (message != null) {
+                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered", true);
+                            }
                         }
                     } else {
-                        BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.ERROR + LANG.getTranslation("private_error"), true);
+                        BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), "Message recieved from "+event.getAuthor()+" : "+event.getMessage().getContent(), false);
                     }
                 }
             } catch (Exception ex) {
