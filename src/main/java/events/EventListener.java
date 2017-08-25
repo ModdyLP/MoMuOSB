@@ -95,19 +95,23 @@ public class EventListener implements Fast {
                         String msgcontent = event.getMessage().getContent();
                         String userid = msgcontent.substring(msgcontent.indexOf("~") + 1, msgcontent.indexOf(" ")).trim();
 
-                        IUser user = INIT.BOT.fetchUser(Long.valueOf(userid));
-                        if (user != null) {
-                            Console.debug("Mention: " + user.getName());
-                            IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("~" + userid, ""), false);
-                            if (message != null) {
-                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to " + user.mention(), true);
-                            } else {
-                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + user.mention(), true);
+                        IUser user = null;
+                        for (IGuild guild: INIT.BOT.getGuilds()) {
+                            user = guild.getUserByID(Long.valueOf(userid));
+                            if (user != null) {
+                                Console.debug("Mention: " + user.getName());
+                                IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("~" + userid, ""), false);
+                                if (message != null) {
+                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to " + user.mention(), true);
+                                    return;
+                                } else {
+                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + user.mention(), true);
+                                }
                             }
-                        } else {
+                        }
+                        if (user == null) {
                             BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "User not found: |"+userid+"|", true);
                         }
-
                     } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                         BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.getTranslation("private_msg_not_owner"), true);
                     } else {
