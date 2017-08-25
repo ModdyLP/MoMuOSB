@@ -82,9 +82,9 @@ public class MainMusic extends Module implements Fast{
         }
 
         AudioPlayer audioP = AudioPlayer.getAudioPlayerForGuild(event.getGuild());
-
-        audioP.clear();
-
+        if (audioP != null) {
+            audioP.clear();
+        }
         botVoiceChannel.leave();
         BotUtils.deleteMessageOne(playmessages.get(event.getGuild()));
         playmessages.remove(event.getGuild());

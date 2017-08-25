@@ -138,7 +138,7 @@ public class EventListener implements Fast {
      * @param event   The Message Event
      */
     private void initiateCommand(String[] args, Command command, MessageReceivedEvent event) {
-        Console.debug(Console.sendprefix + "Args: " + Arrays.toString(args));
+        Console.debug(Console.sendprefix + "ORIGINArgs: " + Arrays.toString(args));
         try {
             ArrayList<String> newargs = new ArrayList<>();
             if (args.length >= command.arguments().length) {
@@ -153,9 +153,10 @@ public class EventListener implements Fast {
                 } else {
                     if (newargs.size() > 0) {
                         String[] printargs = newargs.toArray(new String[]{});
-                        Console.debug(Console.sendprefix + "Args: " + Arrays.toString(printargs));
+                        Console.debug(Console.sendprefix + "NEWArgs: " + Arrays.toString(printargs));
                         COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, printargs);
                     } else {
+                        Console.debug(Console.sendprefix + "NORMArgs: " + Arrays.toString(args));
                         COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, args);
                     }
                 }
