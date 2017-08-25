@@ -131,7 +131,7 @@ public class InfoCommands extends Module implements Fast {
     public boolean createInvite(MessageReceivedEvent event, String[] args) {
         Console.debug("Creating Invite link to Server: " + args[0]);
         if (INIT.BOT.getGuildByID(Long.valueOf(args[0])) != null) {
-            IChannel channel = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getGeneralChannel();
+            IChannel channel = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getDefaultChannel();
             if (channel == null) {
                 channel = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getChannels().get(0);
             }
@@ -142,6 +142,37 @@ public class InfoCommands extends Module implements Fast {
                 } else {
                     BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "The Bot cant create a InviteLink", false);
                 }
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
+            } else {
+                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", false);
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * Get the Owner
+     *
+     * @param event MessageEvent
+     * @param args  Argumente [Not needed]
+     * @return state
+     */
+    @Command(
+            command = "getOwner",
+            description = "Get the Server Owner",
+            alias = "getOw",
+            arguments = {"Server ID"},
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean getOwner(MessageReceivedEvent event, String[] args) {
+        IGuild guild = INIT.BOT.getGuildByID(Long.valueOf(args[0]));
+        if (guild != null) {
+            IUser user = guild.getOwner();
+            if (user != null) {
+                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Owner of Server("+guild.getName()+") is @"+user.getName()+"#"+user.getDiscriminator(), false);
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
             } else {
                 BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", false);
