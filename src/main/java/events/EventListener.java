@@ -138,23 +138,26 @@ public class EventListener implements Fast {
      */
     private void initiateCommand(String[] args, Command command, MessageReceivedEvent event) {
         try {
+            Console.debug(Console.sendprefix + "Args: " + Arrays.toString(args));
             ArrayList<String> newargs = new ArrayList<>();
             if (args.length >= command.arguments().length) {
-                for (int i = 0; i < command.arguments().length; i++) {
-                    if (command.arguments()[i].contains("[]")) {
-                        newargs.addAll(Arrays.asList(args).subList(i, args.length));
-                    } else {
-                        newargs.add(args[i]);
+                for (String arg: command.arguments()) {
+                    if (arg.contains("[]")) {
+                        newargs.addAll(Arrays.asList(args));
+                        return;
                     }
-
                 }
-                if (newargs.size() < args.length) {
+                if (args.length > command.arguments().length && newargs.size() == 0) {
                     BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + String.format(LANG.getTranslation("tomanyarguments_error"), args.length, command.arguments().length)), true);
                 } else {
-                    String[] printargs = newargs.toArray(new String[]{});
-                    COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, printargs);
+                    if (newargs.size() > 0) {
+                        String[] printargs = newargs.toArray(new String[]{});
+                        Console.debug(Console.sendprefix + "Args: " + Arrays.toString(printargs));
+                        COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, printargs);
+                    } else {
+                        COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, args);
+                    }
                 }
-                Console.debug(Console.sendprefix + "New Args: " + Arrays.toString(newargs.toArray()));
             } else {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + String.format(LANG.getTranslation("tofewarguments_error"), args.length, command.arguments().length)), true);
             }
