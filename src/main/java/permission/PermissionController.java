@@ -182,6 +182,7 @@ public class PermissionController implements Fast {
                     DRIVER.removeProperty(PERMFILE, roleid);
                 }
             }
+            DRIVER.saveJson();
             bypass = DRIVER.getPropertyOnly(DRIVER.CONFIG, "ownerbypass").equals(true);
         } catch (Exception ex) {
             Console.error("Failed to load Permissions");
