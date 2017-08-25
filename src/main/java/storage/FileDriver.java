@@ -17,6 +17,7 @@ public class FileDriver {
 
     //FILEDRIVE IS NOT TRANSLATED - CAUSES ERRORS BECAUSE LANGUAGE IS NOT LOADED
     public String CONFIG = "config.json";
+    public String MODULE = "modules.json";
 
     private static FileDriver instance;
     private static HashMap<String, File> files = new HashMap<>();

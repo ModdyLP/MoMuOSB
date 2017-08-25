@@ -39,11 +39,11 @@ public class ServerControl implements Fast{
                 if (newserver) {
                     Console.debug(module+"| Server added as New");
                     disabledlist.get(module).add(guild.getStringID());
-                    DRIVER.setProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
+                    DRIVER.setProperty(DRIVER.MODULE, module+"_disabled_servers", disabledlist.get(module));
                 } else {
                     Console.debug(module+"| Server exists");
                     disabledlist.get(module).add(guild.getStringID());
-                    DRIVER.getProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
+                    DRIVER.getProperty(DRIVER.MODULE, module+"_disabled_servers", disabledlist.get(module));
                 }
                 Console.debug("Saved: |"+guild.getStringID()+"   "+module+"    "+guild.getStringID());
             }
@@ -57,7 +57,7 @@ public class ServerControl implements Fast{
             if (disabledlist.get(BAN_MODULE) != null && !disabledlist.get(BAN_MODULE).contains(guild)) {
                 disabledlist.get(BAN_MODULE).add(guild);
                 Console.debug("Server added as Banned");
-                DRIVER.setProperty(DRIVER.CONFIG, BAN_MODULE+"_disabled_servers", disabledlist.get(BAN_MODULE));
+                DRIVER.setProperty(DRIVER.MODULE, BAN_MODULE+"_disabled_servers", disabledlist.get(BAN_MODULE));
                 Console.debug("Saved: |"+guild+"   "+BAN_MODULE+"    "+guild);
             }
         } catch (Exception ex) {
@@ -66,9 +66,10 @@ public class ServerControl implements Fast{
         }
     }
     public void loadSavedServer(String module) {
+        DRIVER.createNewFile(DRIVER.MODULE);
         disabledlist.get(module).clear();
-        if (DRIVER.hasKey(DRIVER.CONFIG, module+"_disabled_servers")) {
-            JSONArray jArray = Utils.objectToJSONArray(DRIVER.getPropertyOnly(DRIVER.CONFIG, module + "_disabled_servers"));
+        if (DRIVER.hasKey(DRIVER.MODULE, module+"_disabled_servers")) {
+            JSONArray jArray = Utils.objectToJSONArray(DRIVER.getPropertyOnly(DRIVER.MODULE, module + "_disabled_servers"));
             if (jArray != null) {
                 for (int i = 0; i < jArray.length(); i++) {
                     disabledlist.get(module).add(jArray.get(i).toString());
@@ -82,7 +83,7 @@ public class ServerControl implements Fast{
         try {
             if (disabledlist.get(module) != null && disabledlist.get(module).contains(guild.getStringID())) {
                 disabledlist.get(module).remove(guild.getStringID());
-                DRIVER.setProperty(DRIVER.CONFIG, module+"_disabled_servers", disabledlist.get(module));
+                DRIVER.setProperty(DRIVER.MODULE, module+"_disabled_servers", disabledlist.get(module));
                 DRIVER.saveJson();
             }
         } catch (Exception ex) {

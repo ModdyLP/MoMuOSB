@@ -129,17 +129,17 @@ public class ServerListener implements Fast{
         DRIVER.saveJson();
     }
     private void saveGuild(IGuild server) {
-        if (DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE + "_disabled_default") || DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.JOIN_MODULE + "_disabled_default")) {
-            if (DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE + "_disabled_servers")) {
+        if (DRIVER.getProperty(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE + "_disabled_default", true).equals(true) || DRIVER.getProperty(DRIVER.CONFIG, SERVER_CONTROL.JOIN_MODULE + "_disabled_default", true).equals(true)) {
+            if (DRIVER.hasKey(DRIVER.MODULE, SERVER_CONTROL.MUSIC_MODULE + "_disabled_servers")) {
                 SERVER_CONTROL.addDisabledServer(server, running, SERVER_CONTROL.MUSIC_MODULE);
             }
-            if (DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.JOIN_MODULE + "_disabled_servers")) {
+            if (DRIVER.hasKey(DRIVER.MODULE, SERVER_CONTROL.JOIN_MODULE + "_disabled_servers")) {
                 SERVER_CONTROL.addDisabledServer(server, running, SERVER_CONTROL.JOIN_MODULE);
             }
-            if (!DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE + "_disabled_servers")) {
+            if (!DRIVER.hasKey(DRIVER.MODULE, SERVER_CONTROL.MUSIC_MODULE + "_disabled_servers")) {
                 SERVER_CONTROL.addDisabledServer(server, true, SERVER_CONTROL.MUSIC_MODULE);
             }
-            if (!DRIVER.hasKey(DRIVER.CONFIG, SERVER_CONTROL.JOIN_MODULE + "_disabled_servers")) {
+            if (!DRIVER.hasKey(DRIVER.MODULE, SERVER_CONTROL.JOIN_MODULE + "_disabled_servers")) {
                 SERVER_CONTROL.addDisabledServer(server, true, SERVER_CONTROL.JOIN_MODULE);
             }
         }

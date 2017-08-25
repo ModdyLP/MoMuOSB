@@ -155,8 +155,9 @@ public class PermissionController implements Fast {
             DRIVER.createNewFile(PERMFILE);
             HashMap<String, Object> values = DRIVER.getAllKeysWithValues(PERMFILE);
             for (String roleid : values.keySet()) {
+                IRole role = null;
                 for (IGuild serverinstance : server) {
-                    IRole role = serverinstance.getRoleByID(Long.valueOf(roleid));
+                    role = serverinstance.getRoleByID(Long.valueOf(roleid));
                     if (role != null) {
                         ArrayList<String> permission = new ArrayList<>();
                         JSONArray jArray = (JSONArray) values.get(roleid);
@@ -175,6 +176,10 @@ public class PermissionController implements Fast {
                             }
                         }
                     }
+                }
+                if (role == null) {
+                    Console.debug("Role removed: "+roleid+" Server is no longer part of Bot");
+                    DRIVER.removeProperty(PERMFILE, roleid);
                 }
             }
             bypass = DRIVER.getPropertyOnly(DRIVER.CONFIG, "ownerbypass").equals(true);
