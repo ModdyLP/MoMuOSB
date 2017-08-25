@@ -26,6 +26,7 @@ public class EventListener implements Fast {
     private String commandstring;
     private String prefix;
 
+
     /**
      * Get Instance
      *
@@ -103,7 +104,7 @@ public class EventListener implements Fast {
                     } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                         BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.getTranslation("private_msg_not_owner"), true);
                     } else {
-                        BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), "Message recieved from " + event.getAuthor() + " : " + event.getMessage().getContent(), false);
+                        BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), event.getAuthor().mention() + " : " + event.getMessage().getContent(), false);
                     }
                 }
             } catch (Exception ex) {

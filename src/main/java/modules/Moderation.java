@@ -141,11 +141,13 @@ public class Moderation extends Module implements Fast {
     public boolean deleteprivateMessages(MessageReceivedEvent event, String[] args) {
         new Thread(() -> {
             try {
+                int count = 0;
                 IPrivateChannel privateChannel = event.getAuthor().getOrCreatePMChannel();
-                List<IMessage> messageList = privateChannel.getMessageHistory(Integer.parseInt(args[0]));
+                List<IMessage> messageList = privateChannel.getMessageHistory(Integer.parseInt(args[0])*3);
                 for (IMessage message : messageList) {
-                    if (message.getAuthor().isBot()) {
+                    if (message.getAuthor().isBot() && count <= Integer.parseInt(args[0])) {
                         BotUtils.deleteMessageOne(message);
+                        count++;
                     }
                 }
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("deleteprivinfo")), true);
