@@ -207,7 +207,7 @@ public class RoleManagement extends Module implements Fast {
         DRIVER.setProperty(DEF_LANG, "role_remove", "Role %1s removed successful to User %2s");
         DRIVER.setProperty(DEF_LANG, "role_gender_add", "Role %1s was added as Gender %2s");
         DRIVER.setProperty(DEF_LANG, "role_gender_notfound", "This Gender is not defined.");
-        DRIVER.setProperty(DEF_LANG, "female_ask", "Are you Male or Female? \nAnswer with the Gender like this: \n@%1s f or @%1s m \n f = female, w = male");
+        DRIVER.setProperty(DEF_LANG, "female_ask", "Are you Male or Female? \nAnswer with the Gender like this: \n@%1s f or @%1s m \n f = female, m = male");
         DRIVER.setProperty(DEF_LANG, "gender_role_added", "You get the Role: %1s");
         DRIVER.setProperty(DEF_LANG, "role_notfound", "The Role was not found.");
         DRIVER.setProperty(DEF_LANG, "invalid_count_gender", "Your answer is not well formated. \n Look again on the Question.");

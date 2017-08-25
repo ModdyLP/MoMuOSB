@@ -50,7 +50,10 @@ public class BotUtils implements Fast {
     public static IMessage sendMessage(IChannel channel, String message, boolean delete) {
         try {
             RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
-
+                if (channel.isPrivate()) {
+                    Console.error("Message not send. Try to send public message to private Channel"+message);
+                    return null;
+                }
                 if (INIT.BOT.getGuildByID(channel.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
                     if (channel.getModifiedPermissions(INIT.BOT.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
                         IMessage messageinst = channel.sendMessage(message);

@@ -76,6 +76,7 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "botowner_error", "This command can only be used from Bot Owner.");
         DRIVER.setProperty(DEF_LANG, "deletion_error", "Deletion of Messages failed (%1s of %2s) Error: %3s");
         DRIVER.setProperty(DEF_LANG, "deleteprivinfo", "Deletion was successfull.");
+        DRIVER.setProperty(DEF_LANG, "role_permissions", "Bot requires a higher position in role Hierarchy to add the Gender roles");
 
         DRIVER.setProperty(DEF_LANG, "private_msg_not_owner", "You can not send Messages directly to other Users. \nPlease write a message without a mention to contact the Bot Owner.");
 

@@ -52,19 +52,23 @@ public class UserEvents implements Fast{
     }
 
     public void setGenderRole(MessageReceivedEvent event, String gender) {
-        List<IRole> roles = RoleManagement.getRoleforGender(user.get(event.getAuthor()), gender);
-        StringBuilder rolename = new StringBuilder();
-        if (roles != null) {
-            for (IRole role : roles) {
-                rolename.append(role.getName()).append(",");
-                event.getAuthor().addRole(role);
+        try {
+            List<IRole> roles = RoleManagement.getRoleforGender(user.get(event.getAuthor()), gender);
+            StringBuilder rolename = new StringBuilder();
+            if (roles != null) {
+                for (IRole role : roles) {
+                    rolename.append(role.getName()).append(",");
+                    event.getAuthor().addRole(role);
+                }
+                if (roles.size() > 0) {
+                    user.remove(event.getAuthor());
+                }
+                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(String.format(LANG.getTranslation("gender_role_added"), rolename.toString())), true);
+            } else {
+                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(LANG.getTranslation("role_notfound")), true);
             }
-            if (roles.size() > 0) {
-                user.remove(event.getAuthor());
-            }
-            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(String.format(LANG.getTranslation("gender_role_added"), rolename.toString())), true);
-        } else {
-            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(LANG.getTranslation("role_notfound")), true);
+        } catch (Exception ex) {
+            BotUtils.sendPrivEmbMessage(event.getGuild().getOwner().getOrCreatePMChannel(), SMB.shortMessage(LANG.getTranslation("role_permissions")), true);
         }
     }
 }

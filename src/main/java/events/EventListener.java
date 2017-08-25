@@ -58,6 +58,7 @@ public class EventListener implements Fast {
                 //Console.debug("MI: "+event.getGuild().getStringID()+"   "+event.getChannel().getName()+"   "+event.getAuthor().getName());
                 if (!event.getChannel().isPrivate()) {
                     String message = event.getMessage().getContent();
+                    message = message.replace("  ", " ");
                     String[] messageparts = message.split(" ");
                     if (messageparts.length > 0) {
                         setArgsAndPrefix(messageparts, message);
