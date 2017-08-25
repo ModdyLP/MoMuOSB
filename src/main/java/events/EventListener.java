@@ -86,7 +86,7 @@ public class EventListener implements Fast {
                         }
                     }
                 } else {
-                    if (event.getMessage().getMentions().contains(INIT.BOT.getOurUser())) {
+                    if (event.getMessage().getMentions().contains(INIT.BOT.getOurUser()) && (event.getMessage().getContent().contains("f") || event.getMessage().getContent().contains("m"))) {
                         String[] messageparts = event.getMessage().getContent().trim().split(" ");
                         if (messageparts.length == 2) {
                             UserEvents.getInstance().setGenderRole(event, messageparts[1]);
@@ -105,7 +105,8 @@ public class EventListener implements Fast {
                                 return;
                             }
                         }
-
+                    } else if (event.getMessage().getContent().contains("@") && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+                        BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.getTranslation("private_msg_not_owner"), true);
                     } else {
                         BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), "Message recieved from "+event.getAuthor()+" : "+event.getMessage().getContent(), false);
                     }

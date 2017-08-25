@@ -77,6 +77,8 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "deletion_error", "Deletion of Messages failed (%1s of %2s) Error: %3s");
         DRIVER.setProperty(DEF_LANG, "deleteprivinfo", "Deletion was successfull.");
 
+        DRIVER.setProperty(DEF_LANG, "private_msg_not_owner", "You can not send Messages directly to other Users. \nPlease write a message without a mention to contact the Bot Owner.");
+
         //Infos
         DRIVER.setProperty(DEF_LANG, "login_info", "Bot sign into the server. Please wait until the Bot is ready...");
         DRIVER.setProperty(DEF_LANG, "command_success", "The command was successful!");
