@@ -95,7 +95,7 @@ public class EventListener implements Fast {
                         String msgcontent = event.getMessage().getContent();
                         String userid = msgcontent.substring(msgcontent.indexOf("~") + 1, msgcontent.indexOf(" ")).trim();
 
-                        IUser user = INIT.BOT.getUserByID(Long.valueOf(userid));
+                        IUser user = INIT.BOT.fetchUser(Long.valueOf(userid));
                         if (user != null) {
                             Console.debug("Mention: " + user.getName());
                             IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("~" + userid, ""), false);
@@ -105,7 +105,7 @@ public class EventListener implements Fast {
                                 BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + user.mention(), true);
                             }
                         } else {
-                            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "User not found: "+userid, true);
+                            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "User not found: |"+userid+"|", true);
                         }
 
                     } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
