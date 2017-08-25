@@ -147,14 +147,16 @@ public class BotUtils implements Fast{
         if (delete && DRIVER.getPropertyOnly(DRIVER.CONFIG,"deleteBotAnswers").equals(true)) {
             new Thread(() -> {
                 try {
-                    if (INIT.BOT.getGuildByID(message.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
                         Thread.sleep(Integer.parseInt(DRIVER.getPropertyOnly(DRIVER.CONFIG, "botanswerdeletseconds").toString()) * 1000);
-                        message.delete();
-                    } else {
-                        Console.debug("BOT is not on this server: "+message.getGuild().getName());
-                    }
+                        RequestBuffer.RequestFuture<Void> feature = RequestBuffer.request(() -> {
+                            try {
+                                message.delete();
+                            } catch (Exception ex) {
+                                Console.error("BOTDelete: "+String.format(LANG.getTranslation("commonmessage_error"),ex.getMessage()));
+                            }
+                        });
                 } catch (Exception ex) {
-                    Console.error(String.format(LANG.getTranslation("commonmessage_error"),ex.getMessage()));
+                    Console.error("BOTDelete: "+String.format(LANG.getTranslation("commonmessage_error"),ex.getMessage()));
                 }
             }).start();
         }
@@ -169,7 +171,7 @@ public class BotUtils implements Fast{
             try {
                 message.delete();
             } catch (Exception e) {
-                Console.error(String.format(LANG.getTranslation("notdeleted_error"), e.getMessage()));
+                Console.error("OneMSGdelete: "+String.format(LANG.getTranslation("notdeleted_error"), e.getMessage()));
             }
         });
     }
@@ -188,7 +190,7 @@ public class BotUtils implements Fast{
                     Console.debug("BOT is not on this server: "+channel.getGuild().getName());
                 }
             } catch (DiscordException e) {
-                Console.error(String.format(LANG.getTranslation("notdeleted_error"), e.getMessage()));
+                Console.error("BulkDelete: "+String.format(LANG.getTranslation("notdeleted_error"), e.getMessage()));
             }
         });
     }

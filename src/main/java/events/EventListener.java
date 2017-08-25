@@ -96,7 +96,7 @@ public class EventListener implements Fast {
                         String username = s.substring(s.indexOf("@")+1, s.indexOf(" "));
                         for (IGuild guild: INIT.BOT.getGuilds()) {
                             for (IUser user :guild.getUsersByName(username)) {
-                                IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace(username, ""), false);
+                                IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("@"+username, ""), false);
                                 if (message != null) {
                                     BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to "+user.mention(), true);
                                 } else {
