@@ -168,7 +168,7 @@ public class BotUtils implements Fast{
         RequestBuffer.request(() -> {
             try {
                 message.delete();
-            } catch (DiscordException e) {
+            } catch (Exception e) {
                 Console.error(String.format(LANG.getTranslation("notdeleted_error"), e.getMessage()));
             }
         });

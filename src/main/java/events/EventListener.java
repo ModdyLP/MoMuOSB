@@ -98,8 +98,11 @@ public class EventListener implements Fast {
                             for (IUser user :guild.getUsersByName(username)) {
                                 IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent(), false);
                                 if (message != null) {
-                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to "+user.getName(), true);
+                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to "+user.mention(), true);
+                                } else {
+                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to "+user.mention(), true);
                                 }
+                                return;
                             }
                         }
 
