@@ -154,7 +154,7 @@ public class EventListener implements Fast {
                     String[] printargs = newargs.toArray(new String[]{});
                     COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, printargs);
                 }
-                Console.debug(Console.sendprefix + "New Args: " + newargs);
+                Console.debug(Console.sendprefix + "New Args: " + Arrays.toString(newargs.toArray()));
             } else {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + String.format(LANG.getTranslation("tofewarguments_error"), args.length, command.arguments().length)), true);
             }
