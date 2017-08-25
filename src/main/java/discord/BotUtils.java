@@ -132,6 +132,27 @@ public class BotUtils implements Fast {
             return null;
         }
     }
+    public static IMessage updateEmbMessage(IChannel channel, EmbedBuilder builder, IMessage message) {
+        try {
+            RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
+                if (INIT.BOT.getGuildByID(channel.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
+                    if (channel.getModifiedPermissions(INIT.BOT.getOurUser()).contains(Permissions.SEND_MESSAGES)) {
+                        return message.edit(builder.build());
+                    } else {
+                        Console.error(String.format(LANG.getTranslation("notsendpermission_error"), channel.getGuild().getName(), channel.getName()));
+                        return null;
+                    }
+                } else {
+                    Console.debug("BOT is not on this server: " + channel.getGuild().getName());
+                    return null;
+                }
+            });
+            return feature.get();
+        } catch (DiscordException e) {
+            Console.error(String.format(LANG.getTranslation("notsend_error"), e.getMessage()));
+            return null;
+        }
+    }
 
     /**
      * Send a Message in Channel

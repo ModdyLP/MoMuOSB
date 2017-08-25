@@ -3,6 +3,8 @@ package modules.music;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -16,12 +18,15 @@ import storage.LanguageMethod;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IVoiceChannel;
+import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.audio.AudioPlayer;
 import util.Fast;
 import util.Globals;
 import util.SMB;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +37,7 @@ public class MainMusic extends Module implements Fast{
 
     public static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
     private static final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
+    private static final HashMap<IGuild, IMessage> playmessages = new HashMap<>();
 
 
     @Command(
@@ -48,7 +54,8 @@ public class MainMusic extends Module implements Fast{
 
             if (userVoiceChannel == null)
                 return false;
-
+            IMessage message = BotUtils.sendEmbMessage(event.getChannel(), updateState("None", "0", "0"), false);
+            playmessages.put(event.getGuild(), message);
             userVoiceChannel.join();
             this.volumeMusic(event, new String[]{DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultvolume").toString()});
             return true;
@@ -79,6 +86,8 @@ public class MainMusic extends Module implements Fast{
         audioP.clear();
 
         botVoiceChannel.leave();
+        BotUtils.deleteMessageOne(playmessages.get(event.getGuild()));
+        playmessages.remove(event.getGuild());
         return true;
     }
 
@@ -154,7 +163,7 @@ public class MainMusic extends Module implements Fast{
             @Override
             public void trackLoaded(AudioTrack track) {
                 BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add"), track.getInfo().title)), true);
-
+                BotUtils.updateEmbMessage(channel, updateState(track.getInfo().title, "1" ,"1"), playmessages.get(channel.getGuild()));
                 play(musicManager, track);
             }
 
@@ -169,6 +178,7 @@ public class MainMusic extends Module implements Fast{
                 BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add_queue"), firstTrack.getInfo().title, playlist.getName())), true);
 
                 play(musicManager, firstTrack);
+                BotUtils.updateEmbMessage(channel, updateState(firstTrack.getInfo().title, String.valueOf(playlist.getTracks().size()), String.valueOf(firstTrack.getPosition())), playmessages.get(channel.getGuild()));
             }
 
             @Override
@@ -184,7 +194,6 @@ public class MainMusic extends Module implements Fast{
     }
 
     private static void play(GuildMusicManager musicManager, AudioTrack track) {
-
         musicManager.scheduler.queue(track);
     }
 
@@ -212,5 +221,13 @@ public class MainMusic extends Module implements Fast{
         DRIVER.setProperty(DEF_LANG, "music_skip", "Skipped to next track.");
         DRIVER.setProperty(DEF_LANG, "disabledserver", "This server is disabled for using the Music Module");
 
+    }
+    private static EmbedBuilder updateState(String song, String queuesize, String quequepos) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.withTitle("Music Box");
+        builder.withColor(Color.cyan);
+        builder.appendField("Song", song, false);
+        builder.appendField("Queue", quequepos+" /  "+queuesize, false);
+        return builder;
     }
 }

@@ -41,7 +41,7 @@ public class ServerControl implements Fast{
                     disabledlist.get(module).add(guild.getStringID());
                     DRIVER.setProperty(DRIVER.MODULE, module+"_disabled_servers", disabledlist.get(module));
                 } else {
-                    Console.debug(module+"| Server exists");
+                    Console.debug(module+"| Server exists not added");
                 }
                 Console.debug("Saved: |"+guild.getStringID()+"   "+module+"    "+guild.getStringID());
             }
