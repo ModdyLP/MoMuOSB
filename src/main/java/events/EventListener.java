@@ -1,6 +1,7 @@
 package events;
 
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sun.org.apache.bcel.internal.generic.IUSHR;
 import discord.BotUtils;
 import discord.ServerControl;
 import discord.Stats;
@@ -90,13 +91,18 @@ public class EventListener implements Fast {
                         if (messageparts.length == 2) {
                             UserEvents.getInstance().setGenderRole(event, messageparts[1]);
                         }
-                    } else if (event.getMessage().getMentions().size() > 0 && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
-                        for (IUser user: event.getMessage().getMentions()) {
-                            IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent(), false);
-                            if (message != null) {
-                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered", true);
+                    } else if (event.getMessage().getContent().contains("@") && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+                        String s = event.getMessage().getContent();
+                        String username = s.substring(s.indexOf("@")+1, s.indexOf(" "));
+                        for (IGuild guild: INIT.BOT.getGuilds()) {
+                            for (IUser user :guild.getUsersByName(username)) {
+                                IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent(), false);
+                                if (message != null) {
+                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to "+user.getName(), true);
+                                }
                             }
                         }
+
                     } else {
                         BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), "Message recieved from "+event.getAuthor()+" : "+event.getMessage().getContent(), false);
                     }
