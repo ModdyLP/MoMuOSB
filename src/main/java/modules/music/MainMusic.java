@@ -75,7 +75,10 @@ public class MainMusic extends Module implements Fast{
     )
     public boolean leaveMusic(MessageReceivedEvent event, String[] args) {
         IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
-
+        if (playmessages.containsKey(event.getGuild())) {
+            BotUtils.deleteMessageOne(playmessages.get(event.getGuild()));
+            playmessages.remove(event.getGuild());
+        }
         if (botVoiceChannel == null) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("music_notinchannel_user")), true);
             return false;
@@ -86,8 +89,6 @@ public class MainMusic extends Module implements Fast{
             audioP.clear();
         }
         botVoiceChannel.leave();
-        BotUtils.deleteMessageOne(playmessages.get(event.getGuild()));
-        playmessages.remove(event.getGuild());
         return true;
     }
 
@@ -158,6 +159,7 @@ public class MainMusic extends Module implements Fast{
 
     private static void loadAndPlay(final IChannel channel, final String trackUrl) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+
 
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
