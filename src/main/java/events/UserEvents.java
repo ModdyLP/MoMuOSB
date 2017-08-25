@@ -44,7 +44,7 @@ public class UserEvents implements Fast{
         if (!SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).contains(event.getGuild().getStringID()) && DRIVER.getPropertyOnly(DRIVER.CONFIG, "genderroles").equals(true)) {
             if (RoleManagement.isGenderdefined(event.getGuild())) {
                 user.put(event.getUser(), event.getGuild());
-                BotUtils.sendPrivEmbMessage(event.getUser().getOrCreatePMChannel(), SMB.shortMessage(String.format(LANG.getTranslation("female_ask"), INIT.BOT.getOurUser().getName())), false);
+                BotUtils.sendPrivEmbMessage(event.getUser().getOrCreatePMChannel(), SMB.shortMessage(LANG.getTranslation("female_ask").replaceAll("%1s", INIT.BOT.getOurUser().getName())), false);
             } else {
                 Console.debug("Server has not valid Gender.");
             }

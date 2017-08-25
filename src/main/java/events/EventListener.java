@@ -137,8 +137,8 @@ public class EventListener implements Fast {
      * @param event   The Message Event
      */
     private void initiateCommand(String[] args, Command command, MessageReceivedEvent event) {
+        Console.debug(Console.sendprefix + "Args: " + Arrays.toString(args));
         try {
-            Console.debug(Console.sendprefix + "Args: " + Arrays.toString(args));
             ArrayList<String> newargs = new ArrayList<>();
             if (args.length >= command.arguments().length) {
                 for (String arg: command.arguments()) {
@@ -158,6 +158,7 @@ public class EventListener implements Fast {
                         COMMAND.getModules().get(command).invoke(COMMAND.getInstances().get(command), event, args);
                     }
                 }
+                Console.debug(Console.sendprefix + "Size: " +args.length+"  "+newargs.size());
             } else {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + String.format(LANG.getTranslation("tofewarguments_error"), args.length, command.arguments().length)), true);
             }
