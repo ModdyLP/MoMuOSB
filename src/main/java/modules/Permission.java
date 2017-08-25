@@ -191,17 +191,21 @@ public class Permission extends Module implements Fast {
             ArrayList<String> permissions = PERM.getGrouppermissions().get(role);
             builders.get(page - 1).withTitle(String.format(LANG.getTranslation("permlist_title"),
                     role.getName()+"   "+role.getGuild().getName()));
-            for (String permission : permissions) {
-                for (Command command : COMMAND.getCommandByPermission(permission)) {
-                    builders.get(page - 1).appendField(LANG.getTranslation("help_command") +
-                                    ": " + command.command(),
-                            LANG.getTranslation("help_permission") + ": " + permission, false);
-                    if (builders.get(page - 1).getFieldCount() == EmbedBuilder.FIELD_COUNT_LIMIT) {
-                        EmbedBuilder buildertemp = new EmbedBuilder();
-                        builders.add(page - 1, buildertemp);
-                        page++;
+            if (permissions != null && permissions.size() > 0) {
+                for (String permission : permissions) {
+                    for (Command command : COMMAND.getCommandByPermission(permission)) {
+                        builders.get(page - 1).appendField(LANG.getTranslation("help_command") +
+                                        ": " + command.command(),
+                                LANG.getTranslation("help_permission") + ": " + permission, false);
+                        if (builders.get(page - 1).getFieldCount() == EmbedBuilder.FIELD_COUNT_LIMIT) {
+                            EmbedBuilder buildertemp = new EmbedBuilder();
+                            builders.add(page - 1, buildertemp);
+                            page++;
+                        }
                     }
                 }
+            } else {
+                Console.debug("No Permissions found for role: "+role.getName());
             }
         }
         for (EmbedBuilder builderinst : builders) {

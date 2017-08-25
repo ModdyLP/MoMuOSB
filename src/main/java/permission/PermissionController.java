@@ -181,6 +181,7 @@ public class PermissionController implements Fast {
                     Console.debug("Role removed: "+roleid+" Server is no longer part of Bot");
                     DRIVER.removeProperty(PERMFILE, roleid);
                 }
+                Console.debug("Permissions: "+grouppermissions.size()+"  "+permissions.size());
             }
             DRIVER.saveJson();
             bypass = DRIVER.getPropertyOnly(DRIVER.CONFIG, "ownerbypass").equals(true);
