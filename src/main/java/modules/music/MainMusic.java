@@ -43,14 +43,14 @@ public class MainMusic extends Module implements Fast{
             prefix = Globals.MUSIC_PREFIX
     )
     public boolean joinCommand(MessageReceivedEvent event, String[] args) {
-        if (DRIVER.getPropertyOnly(DRIVER.MODULE, "music_disabled_default").equals(false) || !SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.MUSIC_MODULE).contains(event.getGuild().getStringID())) {
+        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "music_disabled_default").equals(false) || !SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.MUSIC_MODULE).contains(event.getGuild().getStringID())) {
             IVoiceChannel userVoiceChannel = event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel();
 
             if (userVoiceChannel == null)
                 return false;
 
             userVoiceChannel.join();
-            this.volumeMusic(event, new String[]{DRIVER.getPropertyOnly(DRIVER.MODULE, "defaultvolume").toString()});
+            this.volumeMusic(event, new String[]{DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultvolume").toString()});
             return true;
         } else {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("disabledserver")), true);
