@@ -1,24 +1,19 @@
 package events;
 
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import com.sun.org.apache.bcel.internal.generic.IUSHR;
 import discord.BotUtils;
-import discord.ServerControl;
 import discord.Stats;
-import discord.SystemInfo;
-import modules.RoleManagement;
-import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
+import sx.blah.discord.api.events.EventSubscriber;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import util.*;
-import modules.music.MainMusic;
-import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
+import util.Console;
+import util.Fast;
+import util.SMB;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -94,23 +89,16 @@ public class EventListener implements Fast {
                     } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                         String msgcontent = event.getMessage().getContent();
                         String userid = msgcontent.substring(msgcontent.indexOf("~") + 1, msgcontent.indexOf(" ")).trim();
-
-                        IUser user = null;
-                        for (IGuild guild: INIT.BOT.getGuilds()) {
-                            user = guild.getUserByID(Long.valueOf(userid));
-                            if (user != null) {
-                                Console.debug("Mention: " + user.getName());
-                                IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("~" + userid, ""), false);
-                                if (message != null) {
-                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to " + user.mention(), true);
-                                    return;
-                                } else {
-                                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + user.mention(), true);
-                                }
+                        Console.debug("Search for User: |"+userid+"|");
+                        for (IUser user : INIT.BOT.getUsersByName(userid, true)) {
+                            Console.debug("Mention: " + user.getName());
+                            IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("~" + userid, ""), false);
+                            if (message != null) {
+                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to " + user.mention(), true);
+                                return;
+                            } else {
+                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + user.mention(), true);
                             }
-                        }
-                        if (user == null) {
-                            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "User not found: |"+userid+"|", true);
                         }
                     } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                         BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.getTranslation("private_msg_not_owner"), true);
