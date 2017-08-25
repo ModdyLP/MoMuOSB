@@ -58,7 +58,7 @@ public class Permission extends Module implements Fast {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_add_failed")), true);
             }
         } catch (Exception ex) {
-            Console.error("Error on adding Permission" + ex.getMessage());
+            Console.error("Error on adding Permission " + ex.getMessage());
             Console.error(ex);
         }
 
@@ -102,7 +102,7 @@ public class Permission extends Module implements Fast {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("perm_rem_failed")), true);
             }
         } catch (Exception ex) {
-            Console.error("Error on adding Permission" + ex.getMessage());
+            Console.error("Error on adding Permission " + ex.getMessage());
             Console.error(ex);
         }
 
@@ -128,7 +128,7 @@ public class Permission extends Module implements Fast {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("norolefound")), true);
             }
         } catch (Exception ex) {
-            Console.error("Error on adding Permission" + ex.getMessage());
+            Console.error("Error on adding Permission " + ex.getMessage());
             Console.error(ex);
         }
 
@@ -146,14 +146,13 @@ public class Permission extends Module implements Fast {
         try {
             List<IRole> roles = INIT.BOT.getGuildByID(Long.valueOf(args[0])).getRoles();
             if (roles.size() > 0) {
-                roles.add(INIT.BOT.getGuildByID(Long.valueOf(args[0])).getEveryoneRole());
                 buildMessage(roles, event);
             } else {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("norolefound")), true);
             }
 
         } catch (Exception ex) {
-            Console.error("Error on adding Permission" + ex.getMessage());
+            Console.error("Error on adding Permission " + ex.getMessage());
             Console.error(ex);
         }
 
@@ -177,7 +176,7 @@ public class Permission extends Module implements Fast {
         DRIVER.setProperty(DEF_LANG, "perm_add_failed", "Failed to add Permission to group.");
         DRIVER.setProperty(DEF_LANG, "perm_rem_success", "Permission removed successful.");
         DRIVER.setProperty(DEF_LANG, "perm_rem_failed", "Failed to remove Permission to group.");
-        DRIVER.setProperty(DEF_LANG, "permlist_title", "Permission List for Group %1s");
+        DRIVER.setProperty(DEF_LANG, "permlist_title", "Permission List");
         DRIVER.setProperty(DEF_LANG, "norolefound", "The Role was not found.");
     }
 
@@ -189,23 +188,11 @@ public class Permission extends Module implements Fast {
         builders.get(page - 1).withColor(Color.CYAN);
         for (IRole role : roles) {
             ArrayList<String> permissions = PERM.getGrouppermissions().get(role);
-            builders.get(page - 1).withTitle(String.format(LANG.getTranslation("permlist_title"),
-                    role.getName()+"   "+role.getGuild().getName()));
             if (permissions != null && permissions.size() > 0) {
                 for (String permission : permissions) {
-                    for (Command command : COMMAND.getCommandByPermission(permission)) {
-                        builders.get(page - 1).appendField(LANG.getTranslation("help_command") +
-                                        ": " + command.command(),
-                                LANG.getTranslation("help_permission") + ": " + permission, false);
-                        if (builders.get(page - 1).getFieldCount() == EmbedBuilder.FIELD_COUNT_LIMIT) {
-                            EmbedBuilder buildertemp = new EmbedBuilder();
-                            builders.add(page - 1, buildertemp);
-                            page++;
-                        }
-                    }
+                        builders.get(page - 1).appendDesc("[S]"+role.getGuild().getName()+" [R]"+role.mention()+" ["+LANG.getTranslation("help_permission") + "]: " + permission+"\n");
+                        page = Utils.checkIfEmbedisToBig(builders, page, LANG.getTranslation("permlist_title"));
                 }
-            } else {
-                Console.debug("No Permissions found for role: "+role.getName());
             }
         }
         for (EmbedBuilder builderinst : builders) {

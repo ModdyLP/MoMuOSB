@@ -23,7 +23,7 @@ public class ServerManager extends Module implements Fast{
             alias = "sse",
             description = "Removes a Server from List",
             arguments = {"ServerID", "Module {join, music, banned}"},
-            permission = Globals.BOT_MANAGE,
+            permission = Globals.BOT_OWNER,
             prefix = Globals.ADMIN_PREFIX
     )
     public boolean removeDisabledServer(MessageReceivedEvent event, String[] args) {
@@ -42,7 +42,7 @@ public class ServerManager extends Module implements Fast{
             alias = "bans",
             description = "Ban a Server",
             arguments = {"ServerID"},
-            permission = Globals.BOT_MANAGE,
+            permission = Globals.BOT_OWNER,
             prefix = Globals.ADMIN_PREFIX
     )
     public boolean banServer(MessageReceivedEvent event, String[] args) {

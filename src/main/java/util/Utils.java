@@ -9,10 +9,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import sx.blah.discord.util.EmbedBuilder;
 
+import java.awt.*;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.List;
+
+import static util.Fast.LANG;
 
 /**
  * Created by N.Hartmann on 29.06.2017.
@@ -88,5 +93,15 @@ public class Utils {
             jsonObject = (JSONObject) json;
         }
         return jsonObject;
+    }
+    public static int checkIfEmbedisToBig(List<EmbedBuilder> builders, int page, String title) {
+        if (builders.get(page - 1).getFieldCount() >= (EmbedBuilder.FIELD_COUNT_LIMIT-1) || builders.get(page - 1).getTotalVisibleCharacters() >= (EmbedBuilder.MAX_CHAR_LIMIT - 1000)) {
+            page++;
+            EmbedBuilder buildertemp = new EmbedBuilder();
+            builders.add(page - 1, buildertemp);
+            builders.get(page - 1).withTitle(title);
+            builders.get(page - 1).withColor(Color.CYAN);
+        }
+        return page;
     }
 }

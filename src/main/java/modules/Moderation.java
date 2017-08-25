@@ -114,7 +114,7 @@ public class Moderation extends Module implements Fast {
             description = "Shutdown the bot",
             alias = "die",
             arguments = {},
-            permission = Globals.BOT_MANAGE,
+            permission = Globals.BOT_OWNER,
             prefix = Globals.ADMIN_PREFIX
     )
     public boolean shutdownbot(MessageReceivedEvent event, String[] args) {

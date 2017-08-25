@@ -3,6 +3,7 @@ package permission;
 import com.google.gson.JsonArray;
 import events.Command;
 import org.json.JSONArray;
+import sx.blah.discord.handle.impl.obj.Role;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
@@ -177,11 +178,18 @@ public class PermissionController implements Fast {
                         }
                     }
                 }
-                if (role == null) {
-                    Console.debug("Role removed: "+roleid+" Server is no longer part of Bot");
-                    DRIVER.removeProperty(PERMFILE, roleid);
+            }
+            for (String roleid : values.keySet()) {
+                boolean found = false;
+                for (IRole role: grouppermissions.keySet()) {
+                    if (role.getStringID().equals(roleid)) {
+                        found = true;
+                    }
                 }
-                Console.debug("Permissions: "+grouppermissions.size()+"  "+permissions.size());
+                if (!found) {
+                    DRIVER.removeProperty(PERMFILE, roleid);
+                    Console.debug("Role "+roleid+" removed from Permfile, not exist");
+                }
             }
             DRIVER.saveJson();
             bypass = DRIVER.getPropertyOnly(DRIVER.CONFIG, "ownerbypass").equals(true);
