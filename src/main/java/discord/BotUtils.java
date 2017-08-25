@@ -154,7 +154,7 @@ public class BotUtils implements Fast{
                         Console.debug("BOT is not on this server: "+message.getGuild().getName());
                     }
                 } catch (Exception ex) {
-                    Console.error(String.format(LANG.getTranslation("commonmessage_error"),ex.getMessage()+"  "+ex.getCause().getMessage()));
+                    Console.error(String.format(LANG.getTranslation("commonmessage_error"),ex.getMessage()));
                 }
             }).start();
         }
