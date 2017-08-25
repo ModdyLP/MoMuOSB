@@ -91,21 +91,18 @@ public class EventListener implements Fast {
                         if (messageparts.length == 2) {
                             UserEvents.getInstance().setGenderRole(event, messageparts[1]);
                         }
-                    } else if (event.getMessage().getContent().contains("@") && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
-                        String s = event.getMessage().getContent();
-                        String username = s.substring(s.indexOf("@")+1, s.indexOf(" "));
-                        for (IGuild guild: INIT.BOT.getGuilds()) {
-                            for (IUser user :guild.getUsersByName(username)) {
-                                IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("@"+username, ""), false);
+                    } else if (event.getMessage().getMentions().size() > 0 && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+                            for (IUser user : event.getMessage().getMentions()) {
+                                Console.debug("Mention: "+user.getName());
+                                IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent(), false);
                                 if (message != null) {
                                     BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to "+user.mention(), true);
+                                    return;
                                 } else {
                                     BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to "+user.mention(), true);
                                 }
-                                return;
-                            }
                         }
-                    } else if (event.getMessage().getContent().contains("@") && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+                    } else if (event.getMessage().getMentions().size() > 0 && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                         BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.getTranslation("private_msg_not_owner"), true);
                     } else {
                         BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), "Message recieved from "+event.getAuthor()+" : "+event.getMessage().getContent(), false);
