@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -109,9 +110,14 @@ public class Utils {
     }
     public static IUser getUserByID(String id) {
         Console.debug("Search for User: |"+id+"|");
+        int count = 0;
         for (IGuild server : INIT.BOT.getGuilds()) {
             for (IUser user : server.getUsers()) {
-                if (user.getLongID() == Long.valueOf(id.trim())) {
+                count++;
+                if (StringUtils.isNumeric(id) && user.getLongID() == Long.valueOf(id.trim())) {
+                    return user;
+                }
+                if (user.getStringID() == id.trim()) {
                     return user;
                 }
                 if (user.getName().equals(id)) {
@@ -122,6 +128,7 @@ public class Utils {
                 }
             }
         }
+        Console.debug("User scanned: "+count);
         return null;
     }
 }
