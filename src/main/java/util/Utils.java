@@ -17,6 +17,7 @@ import sx.blah.discord.util.EmbedBuilder;
 import java.awt.*;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -134,5 +135,17 @@ public class Utils {
         }
         Console.debug("User scanned: "+count);
         return null;
+    }
+    public static List<IGuild> getServerbyUser(IUser user) {
+        ArrayList<IGuild> server = new ArrayList<>();
+        for (IGuild serverinst : INIT.BOT.getGuilds()) {
+            for (IUser users : serverinst.getUsers()) {
+                if (users.equals(user)) {
+                    server.add(serverinst);
+                }
+            }
+        }
+        Console.debug("Server found: "+server.size());
+        return server;
     }
 }

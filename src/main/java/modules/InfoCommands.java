@@ -76,9 +76,15 @@ public class InfoCommands extends Module implements Fast {
             if (user != null) {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.withTitle(user.getName()+" -- "+user.getStringID());
-                builder.withDescription(user.getCreationDate().toString()+"\n");
+                builder.withDescription("Registriert seid: "+user.getCreationDate().toString()+"\n");
                 builder.withThumbnail(user.getAvatarURL());
-                builder.appendDescription(user.getDisplayName(event.getGuild())+"\n");
+                builder.appendDescription("Nickname: "+user.getDisplayName(event.getGuild())+"\n");
+                StringBuilder builder1 = new StringBuilder();
+                for (IGuild guild: Utils.getServerbyUser(user)) {
+                   builder1.append(guild.getName()).append("  ").append(guild.getStringID()).append("  ").append(guild.getRegion().getName());
+                }
+                builder.appendField("Server", builder1.toString(), false);
+
                 BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
             } else {
                 BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("User not found with this ID: "+args[0]), false);
