@@ -98,10 +98,12 @@ public class EventListener implements Fast {
                             Console.debug("Mention: " + user.getName());
                             IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("~" + userid, ""), false);
                             if (message != null) {
-                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to " + user.mention(), true);
+                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to " + user.mention()+"  "+userid, true);
                             } else {
-                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + user.mention(), true);
+                                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + user.mention()+"  "+userid, true);
                             }
+                        } else {
+                            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + userid, true);
                         }
                     } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                         BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.getTranslation("private_msg_not_owner"), true);

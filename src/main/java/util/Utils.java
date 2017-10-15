@@ -108,9 +108,10 @@ public class Utils {
         return page;
     }
     public static IUser getUserByID(String id) {
+        Console.debug("Search for User: |"+id+"|");
         for (IGuild server : INIT.BOT.getGuilds()) {
             for (IUser user : server.getUsers()) {
-                if (user.getLongID() == Long.valueOf(id)) {
+                if (user.getLongID() == Long.valueOf(id.trim())) {
                     return user;
                 }
                 if (user.getName().equals(id)) {
