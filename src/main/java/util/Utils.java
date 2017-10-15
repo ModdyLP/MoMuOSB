@@ -115,15 +115,19 @@ public class Utils {
             for (IUser user : server.getUsers()) {
                 count++;
                 if (StringUtils.isNumeric(id) && user.getLongID() == Long.valueOf(id.trim())) {
+                    Console.debug("FOUND");
                     return user;
                 }
-                if (user.getStringID() == id.trim()) {
+                if (user.getStringID().equals(id.trim())) {
+                    Console.debug("FOUND");
                     return user;
                 }
                 if (user.getName().equals(id)) {
+                    Console.debug("FOUND");
                     return user;
                 }
                 if (user.getDisplayName(server).equals(id)) {
+                    Console.debug("FOUND");
                     return user;
                 }
             }
