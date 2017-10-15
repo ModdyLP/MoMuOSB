@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
@@ -17,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
+import static util.Fast.INIT;
 import static util.Fast.LANG;
 
 /**
@@ -103,5 +106,21 @@ public class Utils {
             builders.get(page - 1).withColor(Color.CYAN);
         }
         return page;
+    }
+    public static IUser getUserByID(String id) {
+        for (IGuild server : INIT.BOT.getGuilds()) {
+            for (IUser user : server.getUsers()) {
+                if (user.getLongID() == Long.valueOf(id)) {
+                    return user;
+                }
+                if (user.getName().equals(id)) {
+                    return user;
+                }
+                if (user.getDisplayName(server).equals(id)) {
+                    return user;
+                }
+            }
+        }
+        return null;
     }
 }

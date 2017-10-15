@@ -62,6 +62,40 @@ public class InfoCommands extends Module implements Fast {
      * @return state
      */
     @Command(
+            command = "userinfo",
+            description = "Display Infos about a User",
+            alias = "usri",
+            arguments = {"UserID"},
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.INFO_PREFIX
+    )
+    public boolean userinfo(MessageReceivedEvent event, String[] args) {
+        new Thread(() -> {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
+            IUser user = Utils.getUserByID(args[0]);
+            if (user != null) {
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.withTitle(user.getName()+" -- "+user.getStringID());
+                builder.withDescription(user.getCreationDate().toString()+"\n");
+                builder.withThumbnail(user.getAvatarURL());
+                builder.appendDescription(user.getDisplayName(event.getGuild())+"\n");
+                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
+            } else {
+                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("User not found with this ID: "+args[0]), false);
+            }
+
+        }).start();
+        return true;
+    }
+
+    /**
+     * Help Command
+     *
+     * @param event MessageEvent
+     * @param args  Argumente [Not needed]
+     * @return state
+     */
+    @Command(
             command = "getregister",
             description = "Display the help",
             alias = "greg",

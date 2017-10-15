@@ -10,6 +10,7 @@ import sx.blah.discord.handle.obj.Permissions;
 import util.Console;
 import util.Fast;
 import util.SMB;
+import util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,12 +93,12 @@ public class EventListener implements Fast {
                         String msgcontent = event.getMessage().getContent();
                         String userid = msgcontent.substring(msgcontent.indexOf("~") + 1, msgcontent.indexOf(" ")).trim();
                         Console.debug("Search for User: |"+userid+"|");
-                        for (IUser user : INIT.BOT.getUsersByName(userid, true)) {
+                        IUser user = Utils.getUserByID(userid);
+                        if (user != null) {
                             Console.debug("Mention: " + user.getName());
                             IMessage message = BotUtils.sendPrivMessage(user.getOrCreatePMChannel(), event.getMessage().getContent().replace("~" + userid, ""), false);
                             if (message != null) {
                                 BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was delivered to " + user.mention(), true);
-                                return;
                             } else {
                                 BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Message was NOT delivered to " + user.mention(), true);
                             }
@@ -105,7 +106,7 @@ public class EventListener implements Fast {
                     } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && !event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                         BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), LANG.getTranslation("private_msg_not_owner"), true);
                     } else {
-                        BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), event.getAuthor().mention() + " : " + event.getMessage().getContent(), false);
+                        BotUtils.sendPrivMessage(INIT.BOT.getApplicationOwner().getOrCreatePMChannel(), event.getAuthor().mention() + "("+event.getAuthor().getName()+")"+ ": " + event.getMessage().getContent(), false);
                     }
                 }
             } catch (Exception ex) {
