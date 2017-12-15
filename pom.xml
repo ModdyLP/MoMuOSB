@@ -31,36 +31,23 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <artifactSet>
-                        <includes>
-                            <include>com.github.austinv11:*</include>
-                            <include>com.sedmelluq:*</include>
-                            <include>org.slf4j:*</include>
-                            <include>com.google.code.gson:*</include>
-                            <include>org.apache.httpcomponents:*</include>
-                            <include>org.apache.commons:*</include>
-                            <include>commons-logging:*</include>
-                            <include>commons-codec:*</include>
-                            <include>commons-io:*</include>
-                            <include>org.eclipse.jetty.websocket:*</include>
-                            <include>org.eclipse.jetty:*</include>
-                            <include>net.jodah:*</include>
-                            <include>com.fasterxml.jackson.module:*</include>
-                            <include>net.java.dev.jna:*</include>
-                            <include>com.googlecode.soundlibs:*</include>
-                            <include>junit:*</include>
-                            <include>org.jcraft:*</include>
-                            <include>org.jflac:*</include>
-                            <include>org.tritonus:*</include>
-                            <include>com.vdurmont:*</include>
-                            <include>org.json:*</include>
-                            <include>com.koloboke:*</include>
-                            <include>com.fasterxml.jackson.core:*</include>
-                            <include>org.jsoup:*</include>
-                            <include>net.iharder:*</include>
-                            <include>log4j:*</include>
-                        </includes>
-                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <!--
+                                Exclude files that sign a jar
+                                (one or multiple of the dependencies).
+                                One may not repack a signed jar without
+                                this, or you will get a
+                                SecurityException at program start.
+                            -->
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                                <exclude>META-INF/*.INF</exclude> <!-- This one may not be required -->
+                            </excludes>
+                        </filter>
+                    </filters>
                     <transformers>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -93,22 +80,18 @@
         <dependency>
             <groupId>com.github.austinv11</groupId>
             <artifactId>Discord4J</artifactId>
-            <version>LATEST</version>
+            <version>2.9.2</version>
         </dependency>
         <dependency>
             <groupId>com.sedmelluq</groupId>
             <artifactId>lavaplayer</artifactId>
-            <version>LATEST</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>LATEST</version>
+            <version>1.2.45</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>LATEST</version>
         </dependency>
+
     </dependencies>
 </project>
