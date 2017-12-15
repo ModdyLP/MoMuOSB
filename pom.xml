@@ -6,7 +6,7 @@
 
     <groupId>de.moddylp</groupId>
     <artifactId>momuosb</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2017121501</version>
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
@@ -28,25 +28,52 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>com.github.austinv11:*</include>
+                            <include>com.sedmelluq:*</include>
+                            <include>org.slf4j:*</include>
+                            <include>com.google.code.gson:*</include>
+                            <include>org.apache.httpcomponents:*</include>
+                            <include>org.apache.commons:*</include>
+                            <include>commons-logging:*</include>
+                            <include>commons-codec:*</include>
+                            <include>commons-io:*</include>
+                            <include>org.eclipse.jetty.websocket:*</include>
+                            <include>org.eclipse.jetty:*</include>
+                            <include>net.jodah:*</include>
+                            <include>com.fasterxml.jackson.module:*</include>
+                            <include>net.java.dev.jna:*</include>
+                            <include>com.googlecode.soundlibs:*</include>
+                            <include>junit:*</include>
+                            <include>org.jcraft:*</include>
+                            <include>org.jflac:*</include>
+                            <include>org.tritonus:*</include>
+                            <include>com.vdurmont:*</include>
+                            <include>org.json:*</include>
+                            <include>com.koloboke:*</include>
+                            <include>com.fasterxml.jackson.core:*</include>
+                            <include>org.jsoup:*</include>
+                            <include>net.iharder:*</include>
+                            <include>log4j:*</include>
+                        </includes>
+                    </artifactSet>
+                    <transformers>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>main.MoMuOSBMain</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <archive>
-                                <manifest>
-                                    <mainClass>
-                                        main.MoMuOSBMain
-                                    </mainClass>
-                                </manifest>
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -66,22 +93,22 @@
         <dependency>
             <groupId>com.github.austinv11</groupId>
             <artifactId>Discord4J</artifactId>
-            <version>2.9</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>com.sedmelluq</groupId>
             <artifactId>lavaplayer</artifactId>
-            <version>1.2.36</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.5</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.3</version>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 </project>
