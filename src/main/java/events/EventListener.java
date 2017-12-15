@@ -54,6 +54,7 @@ public class EventListener implements Fast {
                     Console.println("Leave Banned Server: " + event.getGuild().getName());
                     BotUtils.sendPrivMessage(event.getGuild().getOwner().getOrCreatePMChannel(), "Your Server is on the banned Server List. Please contact webmaster@moddylp.de and describe why do you want to get unbanned.", false);
                     event.getGuild().leave();
+                    return;
                 }
                 //Check if Channel is Private (DM)
                 //Console.debug("MI: "+event.getGuild().getStringID()+"   "+event.getChannel().getName()+"   "+event.getAuthor().getName());
