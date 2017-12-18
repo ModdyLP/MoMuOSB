@@ -1,4 +1,4 @@
-package storage;
+package storage.api;
 
 /**
  * Created by N.Hartmann on 07.07.2017.

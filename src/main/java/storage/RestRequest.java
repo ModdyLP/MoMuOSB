@@ -1,7 +1,8 @@
 package storage;
 
+import main.MoMuOSBMain;
 import org.json.JSONObject;
-import util.Console;
+import storage.api.Storage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -71,7 +72,7 @@ public class RestRequest
                 }
             }
         }
-        Console.debug(Request.toString());
+        MoMuOSBMain.logger.debug(Request.toString());
         return WebClient.fetchUrl(Request.toString());
     }
     

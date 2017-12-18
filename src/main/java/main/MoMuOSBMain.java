@@ -1,11 +1,9 @@
 package main;
 
-import discord.DiscordInit;
-import discord.Stats;
-import modules.RoleManagement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import storage.ConfigLoader;
-import util.Console;
-import util.Fast;
+import storage.api.Storage;
 
 import java.sql.Date;
 
@@ -13,9 +11,10 @@ import java.sql.Date;
  * Created by N.Hartmann on 28.06.2017.
  * Copyright 2017
  */
-public class MoMuOSBMain implements Fast {
+public class MoMuOSBMain {
 
     public static Date starttime = new Date(System.currentTimeMillis());
+    public static final Logger logger = LogManager.getLogger();
 
     /**
      * main Method
@@ -23,41 +22,31 @@ public class MoMuOSBMain implements Fast {
      */
     public static void main(String[] args) {
         try {
-            Console.println("=================================Bot starting...======================================");
-            Console.println("Bot was created by ModdyLP - Niklas H. https://moddylp.de.");
+            logger.info("=================================Bot starting...======================================");
+            logger.info("Bot was created by ModdyLP - Niklas H. https://moddylp.de.");
             ConfigLoader.loadConfigOptions();
-            Console.println("Loading Language....");
-            LANG.createTranslations();
-            LANG.setDefaultLanguage();
-            Console.println("Language loading complete!");
+            logger.info("Loading Language....");
 
-            Stats.loadStats();
+            logger.info("Language loading complete!");
+
 
             Runtime.getRuntime().addShutdownHook(new Thread() {
                         public void run() {
                             shutdown();
                         }
                     });
-            DiscordInit.getInstance().init();
 
         } catch (Exception ex) {
-            Console.error(ex.getMessage());
-            Console.error(ex);
+            logger.error(ex.getMessage());
+            logger.error(ex);
         }
-
     }
 
     /**
      * Shutdown Method
      */
     public static void shutdown() {
-        Console.println("====================================Bot shutting down...==============================");
-        Stats.saveStats();
-        RoleManagement.saveGenders();
-
-        if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
-            INIT.BOT.logout();
-        }
-        Console.println("ByeBye... Created by ModdyLP @2017");
+        MoMuOSBMain.logger.info("====================================Bot shutting down...==============================");
+        MoMuOSBMain.logger.info("ByeBye... Created by ModdyLP @2017");
     }
 }

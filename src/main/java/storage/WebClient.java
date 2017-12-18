@@ -1,7 +1,8 @@
 package storage;
 
+import main.MoMuOSBMain;
 import org.apache.commons.io.FileUtils;
-import util.Console;
+import storage.api.Storage;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -57,7 +58,7 @@ public class WebClient
         }
         catch ( Exception ex )
         {
-            Console.error(ex);
+            MoMuOSBMain.logger.error(ex);
             //If something went wrong.
             return "{'error' : '"+ex.getMessage()+"'}";
             
@@ -86,7 +87,7 @@ public class WebClient
         {
             
             //Post fail message.
-            Console.debug( "Failed to download \"" + url + "\" to " + target.getPath() );
+            MoMuOSBMain.logger.debug( "Failed to download \"" + url + "\" to " + target.getPath() );
 
             
             //Failed.

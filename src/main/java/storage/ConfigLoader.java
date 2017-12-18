@@ -1,15 +1,13 @@
 package storage;
 
-import util.Fast;
-import util.Console;
+import storage.api.Storage;
 
 /**
  * Created by N.Hartmann on 30.06.2017.
  * Copyright 2017
  */
-public class ConfigLoader implements Fast {
+public class ConfigLoader implements Storage {
     public static void loadConfigOptions() {
-        Console.println("Loading Config Default Options");
         DRIVER.createNewFile(DRIVER.CONFIG);
         DRIVER.getProperty(DRIVER.CONFIG,"botanswerdeletseconds", 5);
         DRIVER.getProperty(DRIVER.CONFIG,"debug", false);
@@ -23,8 +21,6 @@ public class ConfigLoader implements Fast {
         DRIVER.getProperty(DRIVER.CONFIG,"token", "");
         DRIVER.getProperty(DRIVER.CONFIG, "ownerbypass", true);
         DRIVER.getProperty(DRIVER.CONFIG, "botprefix", "");
-        DRIVER.getProperty(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE+"_disabled_default", true);
-        DRIVER.getProperty(DRIVER.CONFIG, SERVER_CONTROL.JOIN_MODULE+"_disabled_default", true);
         DRIVER.getProperty(DRIVER.CONFIG, "genderroles", false);
         DRIVER.saveJson();
     }

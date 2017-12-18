@@ -1,14 +1,13 @@
 package storage;
 
-import events.Command;
-import util.Fast;
-import util.Console;
+import main.MoMuOSBMain;
+import storage.api.Storage;
 
 /**
  * Created by N.Hartmann on 29.06.2017.
  * Copyright 2017
  */
-public class LanguageLoader implements Fast{
+public class LanguageLoader implements Storage{
 
     public String SUCCESS = ":heavy_check_mark: ";
     public String LANG;
@@ -39,9 +38,6 @@ public class LanguageLoader implements Fast{
         }
         DRIVER.createNewFile(DEF_LANG);
     }
-    public String getMethodDescription(Command command) {
-        return DRIVER.getProperty(LANG, COMMAND.getMethodNameByCommand(command)+"_"+command.command(), command.description()).toString();
-    }
 
     /**
      * Get an Translation String
@@ -56,7 +52,7 @@ public class LanguageLoader implements Fast{
      * Save Default Config to File
      */
     public void setDefaultLanguage() {
-        Console.debug("DefaultLanguage Loading for Fallback");
+        MoMuOSBMain.logger.debug("DefaultLanguage Loading for Fallback");
 
         //Errors
         DRIVER.setProperty(DEF_LANG, "common_error", "There was an error!");

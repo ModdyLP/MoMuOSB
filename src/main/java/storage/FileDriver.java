@@ -3,8 +3,7 @@ package storage;
 import com.google.gson.JsonParser;
 import main.MoMuOSBMain;
 import org.json.JSONObject;
-import util.Console;
-import util.Utils;
+import storage.api.Storage;
 
 import java.io.*;
 import java.util.HashMap;
@@ -51,7 +50,7 @@ public class FileDriver {
                 File file = new File(parts[i]);
                 if(!file.exists()) {
                     if (!file.mkdir()) {
-                        Console.error("Cant create Folder: "+file.getAbsolutePath());
+                        MoMuOSBMain.logger.error("Cant create Folder: "+file.getAbsolutePath());
                         MoMuOSBMain.shutdown();
                     }
                 }
@@ -60,15 +59,15 @@ public class FileDriver {
             files.put(filenamewithpath, file);
             if (!file.exists()) {
                 if (file.createNewFile()) {
-                    Console.println(filenamewithpath + " created at " + file.getAbsolutePath());
+                    MoMuOSBMain.logger.info(filenamewithpath + " created at " + file.getAbsolutePath());
                 }
             } else {
-                Console.println(filenamewithpath + " loaded at " + file.getAbsolutePath());
+                MoMuOSBMain.logger.info(filenamewithpath + " loaded at " + file.getAbsolutePath());
             }
             loadJson();
         } catch (Exception ex) {
-            Console.error("File can not be accessed: "+filenamewithpath);
-            Console.error(ex);
+            MoMuOSBMain.logger.error("File can not be accessed: "+filenamewithpath);
+            MoMuOSBMain.logger.error(ex);
             MoMuOSBMain.shutdown();
         }
     }
@@ -86,8 +85,8 @@ public class FileDriver {
                 json = new JSONObject(jsonParser.parse(string).getAsJsonObject().toString());
             }
         } catch (Exception ex) {
-            Console.error("Parsing error");
-            Console.error(ex);
+            MoMuOSBMain.logger.error("Parsing error");
+            MoMuOSBMain.logger.error(ex);
         }
         return json;
     }
@@ -97,7 +96,7 @@ public class FileDriver {
      */
     public void loadJson() {
         try {
-            Console.println("===LOADFILES===");
+            MoMuOSBMain.logger.info("===LOADFILES===");
             for (String filename: files.keySet()) {
                 BufferedReader reader = new BufferedReader(new FileReader(files.get(filename)));
                 StringBuilder content = new StringBuilder();
@@ -110,8 +109,8 @@ public class FileDriver {
             }
 
         } catch (Exception ex) {
-            Console.error("File can not be loaded");
-            Console.error(ex);
+            MoMuOSBMain.logger.error("File can not be loaded");
+            MoMuOSBMain.logger.error(ex);
             MoMuOSBMain.shutdown();
         }
     }
@@ -121,17 +120,16 @@ public class FileDriver {
      */
     public void saveJson() {
         try {
-            Console.println("===SAVEFILES===");
+            MoMuOSBMain.logger.info("===SAVEFILES===");
             for (String filename: files.keySet()) {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(files.get(filename)));
                 String json = jsons.get(filename).toString();
-                json = Utils.crunchifyPrettyJSONUtility(json);
                 writer.write(json);
                 writer.close();
             }
         } catch (Exception ex) {
-            Console.error("File can not be saved");
-            Console.error(ex);
+            MoMuOSBMain.logger.error("File can not be saved");
+            MoMuOSBMain.logger.error(ex);
             MoMuOSBMain.shutdown();
         }
     }
@@ -155,8 +153,8 @@ public class FileDriver {
                 jsons.put(filename, json);
             }
         } catch (Exception ex) {
-            Console.error("Can not set Property: ");
-            Console.error(ex);
+            MoMuOSBMain.logger.error("Can not set Property: ");
+            MoMuOSBMain.logger.error(ex);
         }
     }
 
@@ -174,7 +172,7 @@ public class FileDriver {
             }
         } catch (Exception ex) {
             setProperty(filename, option, defaultvalue);
-            Console.error(ex);
+            MoMuOSBMain.logger.error(ex);
         }
         return jsons.get(filename).get(option);
     }
@@ -183,7 +181,7 @@ public class FileDriver {
         try {
             return jsons.get(filename).has(option);
         } catch (Exception ex) {
-            Console.error(ex);
+            MoMuOSBMain.logger.error(ex);
         }
         return false;
     }
@@ -214,8 +212,8 @@ public class FileDriver {
                 jsons.get(filename).remove(option);
             }
         } catch (Exception ex) {
-            Console.error("Can not remove Property: ");
-            Console.error(ex);
+            MoMuOSBMain.logger.error("Can not remove Property: ");
+            MoMuOSBMain.logger.error(ex);
         }
     }
 
@@ -226,8 +224,8 @@ public class FileDriver {
                 objects.put(key.toString(), jsons.get(filename).get(key.toString()));
             }
         } catch (Exception ex) {
-            Console.error("Can not list Property: ");
-            Console.error(ex);
+            MoMuOSBMain.logger.error("Can not list Property: ");
+            MoMuOSBMain.logger.error(ex);
         }
         return objects;
     }
