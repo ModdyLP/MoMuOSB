@@ -1,0 +1,17 @@
+{
+  bot.Playing: TestBetrieb
+  bot.UserName: MoMuOSB
+  bot.Debug: false
+  bot.language: en
+  bot.DeleteAnswer.On: true
+  bot.DeleteAnswer.Time: 5
+  bot.prefix: ""
+  bot.ownerbypass: true
+  music.defaultvolume: 10
+  auth.googleauthtoken: ""
+  auth.googlecustomsearchid: 002710779101845872719:o_wp4w-dqqi
+  auth.token: MjQxNjIwNzA4MDY3NzcwMzcw.DRusQg.8e6S70UfaofWYpnhP9PvhDtyeQU
+  genderroles: false
+  bot.Shards: 1
+  bot.owner: "148086480160423936"
+}

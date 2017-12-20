@@ -9,19 +9,32 @@ import storage.api.Storage;
 public class ConfigLoader implements Storage {
     public static void loadConfigOptions() {
         DRIVER.createNewFile(DRIVER.CONFIG);
-        DRIVER.getProperty(DRIVER.CONFIG,"botanswerdeletseconds", 5);
-        DRIVER.getProperty(DRIVER.CONFIG,"debug", false);
-        DRIVER.getProperty(DRIVER.CONFIG,"defaultplaying", "TestBetrieb");
-        DRIVER.getProperty(DRIVER.CONFIG,"defaultUsername", "MoMuOSB");
-        DRIVER.getProperty(DRIVER.CONFIG, "defaultvolume", 10);
-        DRIVER.getProperty(DRIVER.CONFIG,"deleteBotAnswers", true);
-        DRIVER.getProperty(DRIVER.CONFIG, "googleauthtoken", "");
-        DRIVER.getProperty(DRIVER.CONFIG, "googlecustomsearchid","002710779101845872719:o_wp4w-dqqi");
-        DRIVER.getProperty(DRIVER.CONFIG, "language", "en");
-        DRIVER.getProperty(DRIVER.CONFIG,"token", "");
-        DRIVER.getProperty(DRIVER.CONFIG, "ownerbypass", true);
-        DRIVER.getProperty(DRIVER.CONFIG, "botprefix", "");
+
+        //Generell Settings
+        DRIVER.getProperty(DRIVER.CONFIG,"bot.Playing", "TestBetrieb");
+        DRIVER.getProperty(DRIVER.CONFIG,"bot.UserName", "MoMuOSB");
+        DRIVER.getProperty(DRIVER.CONFIG,"bot.Debug", false);
+        DRIVER.getProperty(DRIVER.CONFIG, "bot.language", "en");
+        DRIVER.getProperty(DRIVER.CONFIG,"bot.Shards", 3);
+        DRIVER.getProperty(DRIVER.CONFIG,"bot.owner", "");
+
+        //Custom Settings
+        DRIVER.getProperty(DRIVER.CONFIG,"bot.DeleteAnswer.On", true);
+        DRIVER.getProperty(DRIVER.CONFIG,"bot.DeleteAnswer.Time", 5);
+        DRIVER.getProperty(DRIVER.CONFIG, "bot.prefix", "");
+        DRIVER.getProperty(DRIVER.CONFIG, "bot.ownerbypass", true);
+
+        //Music
+        DRIVER.getProperty(DRIVER.CONFIG, "music.defaultvolume", 10);
+
+        //Authentication
+        DRIVER.getProperty(DRIVER.CONFIG, "auth.googleauthtoken", "");
+        DRIVER.getProperty(DRIVER.CONFIG, "auth.googlecustomsearchid","002710779101845872719:o_wp4w-dqqi");
+        DRIVER.getProperty(DRIVER.CONFIG,"auth.token", "");
+
+        //Modules
         DRIVER.getProperty(DRIVER.CONFIG, "genderroles", false);
+
         DRIVER.saveJson();
     }
 }

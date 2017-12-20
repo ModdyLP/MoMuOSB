@@ -1,5 +1,6 @@
 package main;
 
+import discord.bot.Bot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import storage.ConfigLoader;
@@ -30,12 +31,9 @@ public class MoMuOSBMain {
             logger.info("Language loading complete!");
 
 
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                        public void run() {
-                            shutdown();
-                        }
-                    });
+            Runtime.getRuntime().addShutdownHook(new Thread(MoMuOSBMain::shutdown));
 
+            Bot.getBotInst().startBot();
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             logger.error(ex);
@@ -46,6 +44,7 @@ public class MoMuOSBMain {
      * Shutdown Method
      */
     public static void shutdown() {
+        Bot.getBotInst().getBot().shutdownNow();
         MoMuOSBMain.logger.info("====================================Bot shutting down...==============================");
         MoMuOSBMain.logger.info("ByeBye... Created by ModdyLP @2017");
     }
