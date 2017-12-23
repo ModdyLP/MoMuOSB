@@ -14,7 +14,7 @@ public class RegisterCommands implements Fast{
     /**
      * Commands Registration
      */
-    static void registerAll() {
+    public static void registerAll() {
         Console.println("Command scanning...");
         //register commands
         COMMAND.registerCommand(InfoCommands.class, new InfoCommands());

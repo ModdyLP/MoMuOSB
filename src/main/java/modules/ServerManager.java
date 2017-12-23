@@ -21,14 +21,32 @@ public class ServerManager extends Module implements Fast{
     @Command(
             command = "setserverenabled",
             alias = "sse",
+            description = "Adds a Server to the List",
+            arguments = {"ServerID", "Module {join, music, banned}"},
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean addEnabledServer(MessageReceivedEvent event, String[] args) {
+        try {
+            SERVER_CONTROL.addEnabledServer(INIT.BOT.getGuildByID(Long.valueOf(args[0])), args[1]);
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
+        } catch (Exception ex) {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
+            Console.error(ex);
+        }
+        return true;
+    }
+    @Command(
+            command = "setServerDisabled",
+            alias = "ssd",
             description = "Removes a Server from List",
             arguments = {"ServerID", "Module {join, music, banned}"},
             permission = Globals.BOT_OWNER,
             prefix = Globals.ADMIN_PREFIX
     )
-    public boolean removeDisabledServer(MessageReceivedEvent event, String[] args) {
+    public boolean removeEnabledServer(MessageReceivedEvent event, String[] args) {
         try {
-            SERVER_CONTROL.removeDisabledServer(INIT.BOT.getGuildByID(Long.valueOf(args[0])), args[1]);
+            SERVER_CONTROL.removeEnabledServer(INIT.BOT.getGuildByID(Long.valueOf(args[0])), args[1]);
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);

@@ -5,6 +5,9 @@ import discord.DiscordInit;
 import discord.SystemInfo;
 import events.Command;
 import events.Module;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import permission.PermissionController;
 import storage.LanguageMethod;
 import sx.blah.discord.handle.obj.*;
@@ -45,12 +48,7 @@ public class InfoCommands extends Module implements Fast {
             prefix = Globals.INFO_PREFIX
     )
     public boolean help(MessageReceivedEvent event, String[] args) {
-        new Thread(() -> {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success_wait")), true);
-            for (EmbedBuilder builder : genbuildHelp(event)) {
-                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
-            }
-        }).start();
+        genbuildHelp(event);
         return true;
     }
 
@@ -75,19 +73,19 @@ public class InfoCommands extends Module implements Fast {
             IUser user = Utils.getUserByID(args[0]);
             if (user != null) {
                 EmbedBuilder builder = new EmbedBuilder();
-                builder.withTitle(user.getName()+" -- "+user.getStringID());
-                builder.withDescription("Registriert seid: "+user.getCreationDate().toString()+"\n");
+                builder.withTitle(user.getName() + " -- " + user.getStringID());
+                builder.withDescription("Registriert seid: " + user.getCreationDate().toString() + "\n");
                 builder.withThumbnail(user.getAvatarURL());
-                builder.appendDescription("Nickname: "+user.getDisplayName(event.getGuild())+"\n");
+                builder.appendDescription("Nickname: " + user.getDisplayName(event.getGuild()) + "\n");
                 StringBuilder builder1 = new StringBuilder();
-                for (IGuild guild: Utils.getServerbyUser(user)) {
-                   builder1.append(guild.getName()).append("  ").append(guild.getStringID()).append("  ").append(guild.getRegion().getName());
+                for (IGuild guild : Utils.getServerbyUser(user)) {
+                    builder1.append(guild.getName()).append("  ").append(guild.getStringID()).append("  ").append(guild.getRegion().getName());
                 }
                 builder.appendField("Server", builder1.toString(), false);
 
                 BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
             } else {
-                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("User not found with this ID: "+args[0]), false);
+                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("User not found with this ID: " + args[0]), false);
             }
 
         }).start();
@@ -192,6 +190,7 @@ public class InfoCommands extends Module implements Fast {
             return false;
         }
     }
+
     /**
      * Get the Owner
      *
@@ -212,7 +211,7 @@ public class InfoCommands extends Module implements Fast {
         if (guild != null) {
             IUser user = guild.getOwner();
             if (user != null) {
-                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Owner of Server("+guild.getName()+") is "+user.mention(), false);
+                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Owner of Server(" + guild.getName() + ") is " + user.mention(), false);
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
             } else {
                 BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", false);
@@ -269,28 +268,18 @@ public class InfoCommands extends Module implements Fast {
         return builder;
     }
 
-    private ArrayList<EmbedBuilder> genbuildHelp(MessageReceivedEvent event) {
-        ArrayList<EmbedBuilder> builders = new ArrayList<>();
-        int page = 1;
-        String botprefix = DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString();
-        EmbedBuilder builder = new EmbedBuilder();
-        builders.add(page - 1, builder);
-        builders.get(page - 1).withDescription(LANG.getTranslation("help_noneinfo"));
-        builders.get(page - 1).appendDescription(LANG.getTranslation("help_prefixinfo"));
-        int count = 0;
-        for (Command command : COMMAND.getAllCommands()) {
-            if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
-                String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + botprefix + command.prefix() + command.alias() +
-                        "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
-                        "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) +
-                        "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
-                builders.get(page - 1).appendField((count + 1) + ". " + LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
+    private void genbuildHelp(MessageReceivedEvent event) {
+        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success_wait")), true);
+        Task<ArrayList<EmbedBuilder>> task = BotUtils.generateHelp(event);
+        task.setOnSucceeded(workerStateEvent -> new Thread(() -> {
+            try {
+                for (EmbedBuilder builder : task.get()) {
+                    BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
+                }
+            } catch (Exception ex) {
+                Console.error(ex);
             }
-            page = Utils.checkIfEmbedisToBig(builders, page, ":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
-            count++;
-        }
-        builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + " / "+COMMAND.getAllCommands().size()+")" + LANG.getTranslation("help_page") + 1 + " :information_source:");
-        return builders;
+        }).start());
     }
 
     @LanguageMethod(

@@ -30,7 +30,7 @@ public class SystemInfo {
         return Runtime.getRuntime().totalMemory();
     }
 
-    public long usedMem() {
+    private long usedMem() {
         return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     }
     public String getUsedMem() {
@@ -52,18 +52,16 @@ public class SystemInfo {
     }
 
     private String OsInfo() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\nOS:                |");
-        sb.append(this.OSname());
-        sb.append("\n");
-        sb.append("Version:           |");
-        sb.append(this.OSversion());
-        sb.append(" : ");
-        sb.append(this.OsArch());
-        sb.append("\n");
-        sb.append("CPU Cores:         |");
-        sb.append(runtime.availableProcessors());
-        sb.append("\n");
-        return sb.toString();
+        return "\nOS:                |" +
+                this.OSname() +
+                "\n" +
+                "Version:           |" +
+                this.OSversion() +
+                " : " +
+                this.OsArch() +
+                "\n" +
+                "CPU Cores:         |" +
+                runtime.availableProcessors() +
+                "\n";
     }
 }

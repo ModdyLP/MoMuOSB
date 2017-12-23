@@ -1,8 +1,6 @@
 package events;
 
-import com.koloboke.collect.impl.hash.Hash;
 import discord.BotUtils;
-import discord.ServerControl;
 import discord.Stats;
 import modules.RoleManagement;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -11,12 +9,10 @@ import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.EmbedBuilder;
 import util.Console;
 import util.Fast;
 import util.SMB;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +37,7 @@ public class UserEvents implements Fast{
     public void onUserJoin(UserJoinEvent event) {
         Console.debug(Console.recievedprefix+"User joined: [S]"+event.getGuild().getName()+" [U]"+event.getUser().getName());
         Stats.addUser();
-        if (!SERVER_CONTROL.getDisabledlist(SERVER_CONTROL.JOIN_MODULE).contains(event.getGuild().getStringID()) && DRIVER.getPropertyOnly(DRIVER.CONFIG, "genderroles").equals(true)) {
+        if (SERVER_CONTROL.getEnabledList(SERVER_CONTROL.JOIN_MODULE).contains(event.getGuild().getStringID()) && DRIVER.getPropertyOnly(DRIVER.CONFIG, "genderroles").equals(true)) {
             if (RoleManagement.isGenderdefined(event.getGuild())) {
                 user.put(event.getUser(), event.getGuild());
                 Console.debug(Console.recievedprefix+"Waiting for Answer"+ Arrays.toString(user.keySet().toArray())+"  "+ Arrays.toString(user.values().toArray()));
