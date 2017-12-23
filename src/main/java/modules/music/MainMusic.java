@@ -44,7 +44,7 @@ public class MainMusic extends Module implements Fast{
             prefix = Globals.MUSIC_PREFIX
     )
     public boolean joinCommand(MessageReceivedEvent event, String[] args) {
-        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "music_disabled_default").equals(false) || !SERVER_CONTROL.getEnabledList(SERVER_CONTROL.MUSIC_MODULE).contains(event.getGuild().getStringID())) {
+        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE+"_enabled_default").equals(false) || !SERVER_CONTROL.getEnabledList(SERVER_CONTROL.MUSIC_MODULE).contains(event.getGuild().getStringID())) {
             IVoiceChannel userVoiceChannel = event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel();
 
             if (userVoiceChannel == null)

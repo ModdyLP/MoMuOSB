@@ -63,7 +63,7 @@ public class ServerControl implements Fast {
         DRIVER.createNewFile(DRIVER.MODULE);
         enabledList.get(module).clear();
         if (DRIVER.hasKey(DRIVER.MODULE, module + "_enabled_servers")) {
-            JSONArray jArray = Utils.objectToJSONArray(DRIVER.getPropertyOnly(DRIVER.MODULE, module + "_disabled_servers"));
+            JSONArray jArray = Utils.objectToJSONArray(DRIVER.getPropertyOnly(DRIVER.MODULE, module + "_enabled_servers"));
             if (jArray != null) {
                 for (int i = 0; i < jArray.length(); i++) {
                     enabledList.get(module).add(jArray.get(i).toString());

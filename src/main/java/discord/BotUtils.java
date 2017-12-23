@@ -301,7 +301,7 @@ public class BotUtils implements Fast {
         Command helpcommand = COMMAND.getCommandByName("help");
         Console.println("Type "+ DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString()+helpcommand.prefix()+helpcommand.command()+" for getting help.");
         Console.println("====================================Bot Start completed===============================");
-        ServerListener.getInstance().running = true;
+        ServerListener.running = true;
     }
     public static Task<ArrayList<EmbedBuilder>> generateHelp(MessageReceivedEvent event) {
         Task<ArrayList<EmbedBuilder>> task = new Task<ArrayList<EmbedBuilder>>() {
