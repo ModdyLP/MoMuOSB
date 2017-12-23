@@ -38,6 +38,7 @@ public class ServerControl implements Fast {
                 enabledList.get(module).add(guild.getStringID());
                 DRIVER.setProperty(DRIVER.MODULE, module + "_enabled_servers", enabledList.get(module));
                 Console.debug("Saved: |" + guild.getStringID() + "   " + module + "    " + guild.getStringID());
+                DRIVER.saveJson();
             }
         } catch (Exception ex) {
             Console.error(module + "| Cant add Server");
@@ -52,7 +53,9 @@ public class ServerControl implements Fast {
                 Console.debug("Server added as Banned");
                 DRIVER.setProperty(DRIVER.MODULE, BAN_MODULE + "_enabled_servers", enabledList.get(BAN_MODULE));
                 Console.debug("Saved: |" + guild + "   " + BAN_MODULE + "    " + guild);
+                DRIVER.saveJson();
             }
+
         } catch (Exception ex) {
             Console.error("Banned| Cant add Server");
             Console.error(ex);
