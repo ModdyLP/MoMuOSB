@@ -1,10 +1,9 @@
 package util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
@@ -19,7 +18,7 @@ public class Console implements Fast{
     private static String prefix = "[MoMuOSB]";
     public static String recievedprefix = "[R]";
     public static String sendprefix = "[S]";
-    final static Logger logger = LoggerFactory.getLogger(Console.class);
+    private final static Logger logger = LogManager.getLogger();
 
     /**
      * Debug Message
@@ -30,7 +29,7 @@ public class Console implements Fast{
             String debugprefix = "[DEBUG]";
             String[] parts = message.split("\n");
             for (String part: parts) {
-                System.out.println(Utils.format(getTimeNow())+prefix + debugprefix + part);
+                //System.out.println(Utils.format(getTimeNow())+prefix + debugprefix + part);
                 logger.info(prefix + debugprefix + part);
             }
         }
@@ -45,7 +44,7 @@ public class Console implements Fast{
         String errorprefix = "[ERROR]";
         String[] parts = message.split("\n");
         for (String part: parts) {
-            System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + part);
+            //System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + part);
             logger.error(prefix + errorprefix + part);
         }
     }
@@ -61,7 +60,7 @@ public class Console implements Fast{
             e.printStackTrace();
         }
         for(StackTraceElement stackTraceElement : message.getStackTrace()) {
-            System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + System.lineSeparator() + stackTraceElement.toString());
+            //System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + System.lineSeparator() + stackTraceElement.toString());
             logger.error(prefix+ errorprefix + System.lineSeparator() + stackTraceElement.toString());
         }
     }
@@ -74,7 +73,7 @@ public class Console implements Fast{
         String infoprefix = "[INFO]";
         String[] parts = message.split("\n");
         for (String part: parts) {
-            System.out.println(Utils.format(getTimeNow())+prefix + infoprefix + part);
+            //System.out.println(Utils.format(getTimeNow())+prefix + infoprefix + part);
             logger.info(prefix + infoprefix + part);
         }
     }
