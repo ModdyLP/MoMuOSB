@@ -64,6 +64,7 @@ public class LanguageLoader implements Fast{
         DRIVER.setProperty(DEF_LANG, "annotation_error", "Invalid Annotation in Module %1s Ex: %2s");
         DRIVER.setProperty(DEF_LANG, "token_error", "Please provide a token inside of the config.json");
         DRIVER.setProperty(DEF_LANG, "execution_error", "Error occurred on Command Execution: %1s");
+        DRIVER.setProperty(DEF_LANG, "prefixinccorect", "The Prefix is incorrect. The Command was found. The correct Prefix is \" %1s \"");
 
         DRIVER.setProperty(DEF_LANG, "notsend_error", "Message could not be sent! Error: %1s");
         DRIVER.setProperty(DEF_LANG, "notdeleted_error", "Message could not be deleted! Error: %1s");

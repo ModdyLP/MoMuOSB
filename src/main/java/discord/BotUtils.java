@@ -1,6 +1,7 @@
 package discord;
 
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.vdurmont.emoji.EmojiManager;
 import events.Command;
 import events.RegisterCommands;
 import events.ServerListener;
@@ -9,6 +10,7 @@ import modules.RoleManagement;
 import modules.music.MainMusic;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.obj.Message;
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
 import util.Fast;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -24,6 +26,7 @@ import util.Utils;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -59,7 +62,7 @@ public class BotUtils implements Fast {
         try {
             RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
                 if (channel.isPrivate()) {
-                    Console.error("Message not send. Try to send public message to private Channel"+message);
+                    Console.error("Message not send. Try to send public message to private Channel" + message);
                     return null;
                 }
                 if (INIT.BOT.getGuildByID(channel.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
@@ -73,6 +76,23 @@ public class BotUtils implements Fast {
                     }
                 } else {
                     Console.debug("BOT is not on this server: " + channel.getGuild().getName());
+                    return null;
+                }
+
+            });
+            return feature.get();
+        } catch (DiscordException e) {
+            Console.error(String.format(LANG.getTranslation("notsend_error"), e.getMessage()));
+            return null;
+        }
+    }
+    public static IMessage updateMessage(IMessage message, String text) {
+        try {
+            RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
+                if (INIT.BOT.getGuildByID(message.getGuild().getLongID()).getUsers().contains(INIT.BOT.getOurUser())) {
+                    return message.edit(text);
+                } else {
+                    Console.debug("BOT is not on this server: " + message.getGuild().getName());
                     return null;
                 }
 
@@ -140,6 +160,7 @@ public class BotUtils implements Fast {
             return null;
         }
     }
+
     public static IMessage updateEmbMessage(IChannel channel, EmbedBuilder builder, IMessage message) {
         try {
             RequestBuffer.RequestFuture<IMessage> feature = RequestBuffer.request(() -> {
@@ -244,6 +265,17 @@ public class BotUtils implements Fast {
             Console.error("BulkDelete: " + String.format(LANG.getTranslation("notdeleted_error"), e.getMessage()));
         }
     }
+
+    public static void addReactionToMessage(IMessage message, String emoji) {
+        try {
+            RequestBuffer.request(() -> {
+                message.addReaction(EmojiManager.getForAlias(emoji));
+            });
+        } catch (Exception ex) {
+            Console.error("Reaction not added(OUTTER): " + ex.getMessage());
+        }
+    }
+
     public static void initBot() {
         Console.println("Bot login success");
         Console.println("Shards: " + INIT.BOT.getShardCount());
@@ -279,61 +311,62 @@ public class BotUtils implements Fast {
         ServerListener.getInstance().saveGuilds();
         Console.println("====================================Bot Status========================================");
         INIT.BOT.getShards().forEach(iShard -> {
-            Console.println("Shard "+iShard.getInfo()[0]+": "+iShard.isReady()+" Servers: "+iShard.getGuilds().size()+"  Ping: "+iShard.getResponseTime());
+            Console.println("Shard " + iShard.getInfo()[0] + ": " + iShard.isReady() + " Servers: " + iShard.getGuilds().size() + "  Ping: " + iShard.getResponseTime());
         });
         Optional stream = INIT.BOT.getOurUser().getPresence().getStreamingUrl();
         Optional playtext = INIT.BOT.getOurUser().getPresence().getPlayingText();
-        Console.println("Username: "+INIT.BOT.getOurUser().getName());
-        Console.println("Status: "+INIT.BOT.getOurUser().getPresence().getStatus());
+        Console.println("Username: " + INIT.BOT.getOurUser().getName());
+        Console.println("Status: " + INIT.BOT.getOurUser().getPresence().getStatus());
         if (stream.isPresent()) {
-            Console.println("Streaming: "+stream.get());
+            Console.println("Streaming: " + stream.get());
         } else {
             Console.println("Streaming: OFFLINE");
         }
         if (playtext.isPresent()) {
-            Console.println("Playing: "+playtext.get());
+            Console.println("Playing: " + playtext.get());
         } else {
             Console.println("Playing: NOTHING");
         }
 
         SystemInfo info = new SystemInfo();
-        Console.println("SystemInfo: "+info.Info()+"\n");
+        Console.println("SystemInfo: " + info.Info() + "\n");
         Command helpcommand = COMMAND.getCommandByName("help");
-        Console.println("Type "+ DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString()+helpcommand.prefix()+helpcommand.command()+" for getting help.");
+        Console.println("Type " + DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString() + helpcommand.prefix() + helpcommand.command() + " for getting help.");
         Console.println("====================================Bot Start completed===============================");
         ServerListener.running = true;
     }
-    public static Task<ArrayList<EmbedBuilder>> generateHelp(MessageReceivedEvent event) {
-        Task<ArrayList<EmbedBuilder>> task = new Task<ArrayList<EmbedBuilder>>() {
-            @Override
-            protected ArrayList<EmbedBuilder> call() throws Exception {
-                ArrayList<EmbedBuilder> builders = new ArrayList<>();
-                int page = 1;
-                String botprefix = DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString();
-                EmbedBuilder builder = new EmbedBuilder();
-                builders.add(page - 1, builder);
-                builders.get(page - 1).withDescription(LANG.getTranslation("help_noneinfo"));
-                builders.get(page - 1).appendDescription(LANG.getTranslation("help_prefixinfo"));
-                int count = 0;
-                for (Command command : COMMAND.getAllCommands()) {
-                    if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
-                        String string = "\n" + LANG.getTranslation("help_alias") + ":               | " + botprefix + command.prefix() + command.alias() +
-                                "\n" + LANG.getTranslation("help_arguments") + ":   | " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
-                                "\n" + LANG.getTranslation("help_description") + ":   | " + LANG.getMethodDescription(command) +
-                                "\n" + LANG.getTranslation("help_permission") + ":   | " + command.permission() + "\n";
-                        builders.get(page - 1).appendField((count + 1) + ". " + LANG.getTranslation("help_command") + "       | " + botprefix + command.prefix() + command.command(), string, false);
-                    }
-                    page = Utils.checkIfEmbedisToBig(builders, page, ":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
-                    count++;
+
+    public static Future<ArrayList<EmbedBuilder>> generateHelp(MessageReceivedEvent event) {
+        Callable<ArrayList<EmbedBuilder>> task = () -> {
+            ArrayList<EmbedBuilder> builders = new ArrayList<>();
+            int page = 1;
+            String botprefix = DRIVER.getPropertyOnly(DRIVER.CONFIG, "botprefix").toString();
+            EmbedBuilder builder = new EmbedBuilder();
+            builders.add(page - 1, builder);
+            builders.get(page - 1).withDescription(LANG.getTranslation("help_noneinfo"));
+            builders.get(page - 1).appendDescription(LANG.getTranslation("help_prefixinfo"));
+            builders.get(page - 1).withColor(Color.CYAN);
+            int count = 0;
+            for (Command command : COMMAND.getAllCommands()) {
+                if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
+                    String string = "\n**" + LANG.getTranslation("help_alias") + "**:               = " + botprefix + command.prefix() + command.alias() +
+                            "\n**" + LANG.getTranslation("help_arguments") + "**:  = " + Arrays.toString(command.arguments()).replace("[", "").replace("]", "") +
+                            "\n**" + LANG.getTranslation("help_description") + "**: = " + LANG.getMethodDescription(command) +
+                            "\n**" + LANG.getTranslation("help_permission") + "**:  = " + command.permission() + "\n";
+                    builders.get(page - 1).appendField((count + 1) + ".  " + botprefix + command.prefix() + command.command(), string, false);
                 }
-                builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + " / "+COMMAND.getAllCommands().size()+")" + LANG.getTranslation("help_page") + 1 + " :information_source:");
-                return builders;
+                page = Utils.checkIfEmbedisToBig(builders, page, ":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
+                count++;
             }
+            builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + " / " + COMMAND.getAllCommands().size() + ")" + LANG.getTranslation("help_page") + 1 + " :information_source:");
+            return builders;
         };
 
 
-        new Thread(task).start();
-        return task;
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        Future<ArrayList<EmbedBuilder>> future = executor.submit(task);
+        System.out.println("future done? " + future.isDone());
+        return future;
     }
 
 

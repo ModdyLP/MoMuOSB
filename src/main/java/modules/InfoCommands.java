@@ -10,6 +10,7 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import permission.PermissionController;
 import storage.LanguageMethod;
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
 import sx.blah.discord.handle.obj.*;
 import util.*;
 import main.MoMuOSBMain;
@@ -21,9 +22,11 @@ import java.awt.*;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.concurrent.Future;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -222,6 +225,22 @@ public class InfoCommands extends Module implements Fast {
             return false;
         }
     }
+    @Command(
+            command = "ping",
+            description = "Ping the Bot",
+            alias = "pong",
+            arguments = {},
+            permission = Globals.BOT_INFO,
+            prefix = Globals.INFO_PREFIX
+    )
+    public boolean ping(MessageReceivedEvent event, String[] args) {
+        IMessage message = BotUtils.sendMessage(event.getChannel(), "Pinging...", false);
+        if (message != null) {
+            BotUtils.updateMessage(message, event.getMessage().getCreationDate().until(message.getCreationDate(), ChronoUnit.MILLIS) + "ms | Websocket: " + event.getGuild().getShard().getResponseTime() + "ms");
+            BotUtils.addReactionToMessage(message, "x");
+        }
+        return true;
+    }
 
     /**
      * Stats Command
@@ -270,16 +289,15 @@ public class InfoCommands extends Module implements Fast {
 
     private void genbuildHelp(MessageReceivedEvent event) {
         BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success_wait")), true);
-        Task<ArrayList<EmbedBuilder>> task = BotUtils.generateHelp(event);
-        task.setOnSucceeded(workerStateEvent -> new Thread(() -> {
+        Future<ArrayList<EmbedBuilder>> task = BotUtils.generateHelp(event);
             try {
                 for (EmbedBuilder builder : task.get()) {
-                    BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
+                    IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
+                    BotUtils.addReactionToMessage(message, "x");
                 }
             } catch (Exception ex) {
                 Console.error(ex);
             }
-        }).start());
     }
 
     @LanguageMethod(
@@ -299,18 +317,18 @@ public class InfoCommands extends Module implements Fast {
         DRIVER.setProperty(DEF_LANG, "stats_shard_ping", "Ping for Shard");
 
         //Help Command
-        DRIVER.setProperty(DEF_LANG, "help_title", "All Commands");
+        DRIVER.setProperty(DEF_LANG, "help_title", "You have access to these Commands: ");
         DRIVER.setProperty(DEF_LANG, "help_page", "Page");
         DRIVER.setProperty(DEF_LANG, "help_command", "Command");
         DRIVER.setProperty(DEF_LANG, "help_alias", "Alias");
         DRIVER.setProperty(DEF_LANG, "help_arguments", "Arguments");
         DRIVER.setProperty(DEF_LANG, "help_description", "Description");
-        DRIVER.setProperty(DEF_LANG, "help_noneinfo", "If you want to reset a Value, then type for each argument NA.");
+        DRIVER.setProperty(DEF_LANG, "help_noneinfo", "**__If you want to reset a Value, then type for each argument NA.__**");
         DRIVER.setProperty(DEF_LANG, "help_prefixinfo", "\nThe Prefixes are \n" +
-                "Admin Prefix:   !   \n" +
-                "Info Prefix:    .   \n" +
-                "Game Prefix:    ~   \n" +
-                "music Prefix:   $   \n");
+                "**Admin Prefix**:   !   \n" +
+                "**Info Prefix**:    .   \n" +
+                "**Game Prefix**:    ~   \n" +
+                "**Music Prefix**:   $   \n");
         DRIVER.setProperty(DEF_LANG, "help_permission", "Permission");
 
     }

@@ -1,12 +1,13 @@
 package events;
 
+import com.vdurmont.emoji.EmojiManager;
 import discord.BotUtils;
 import discord.Stats;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
+import sx.blah.discord.handle.obj.*;
 import util.Console;
 import util.Fast;
 import util.SMB;
@@ -46,6 +47,14 @@ public class EventListener implements Fast {
      * @param event The Event
      */
     @EventSubscriber
+    public void onReactionAddEvent(ReactionAddEvent event) {
+        IMessage message = event.getMessage();
+        IReaction reaction = message.getReactionByUnicode(EmojiManager.getForAlias("x"));
+        if (reaction.getUserReacted(INIT.BOT.getOurUser()) && reaction.getUsers().size() > 1) {
+            BotUtils.deleteMessageOne(message);
+        }
+    }
+    @EventSubscriber
     public void onMessageReceivedEvent(MessageReceivedEvent event) { // This method is NOT called because it doesn't have the @EventSubscriber annotation
         new Thread(() -> {
             try {
@@ -69,19 +78,15 @@ public class EventListener implements Fast {
                             Stats.addCommands();
                             Console.debug(Console.recievedprefix + "Message: " + message + " Author: " + event.getAuthor().getName() + " Channel: " + event.getChannel().getName());
                             //Check if Invoke Messages should be deleted
-                            if (DRIVER.getProperty(DRIVER.CONFIG, "deleteinvokes", true).equals(true)) {
-                                if (INIT.BOT.getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
-                                    Console.debug(Console.sendprefix + "Message deleted: [" + message + "]");
-                                    event.getMessage().delete();
-                                } else {
-                                    Console.debug(Console.sendprefix + "Message not deleted: [" + message + "] -- nopermissions");
-                                }
-                            }
+                            deleteInvoke(event, message);
                             if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
                                 initiateCommand(args, command, event);
                             } else {
                                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
                             }
+                        } else if (command != null && prefix.contains(botprefix)) {
+                            deleteInvoke(event, message);
+                            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + String.format(LANG.getTranslation("prefixinccorect"), command.prefix())), true);
                         }
                     }
                 } else {
@@ -131,6 +136,16 @@ public class EventListener implements Fast {
         args = new String[]{};
         if (messageparts.length > 1) {
             args = message.replace(messageparts[0], "").trim().split(" ");
+        }
+    }
+    private void deleteInvoke(MessageReceivedEvent event, String message){
+        if (DRIVER.getProperty(DRIVER.CONFIG, "deleteinvokes", true).equals(true)) {
+            if (INIT.BOT.getOurUser().getPermissionsForGuild(event.getGuild()).contains(Permissions.MANAGE_MESSAGES)) {
+                Console.debug(Console.sendprefix + "Message deleted: [" + message + "]");
+                event.getMessage().delete();
+            } else {
+                Console.debug(Console.sendprefix + "Message not deleted: [" + message + "] -- nopermissions");
+            }
         }
     }
 
