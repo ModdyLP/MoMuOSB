@@ -1,13 +1,17 @@
 package main;
 
+import discord.BotUtils;
 import discord.DiscordInit;
 import discord.Stats;
 import modules.RoleManagement;
+import modules.music.MainMusic;
 import storage.ConfigLoader;
+import sx.blah.discord.handle.obj.IGuild;
 import util.Console;
 import util.Fast;
 
 import java.sql.Date;
+import java.util.Objects;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -58,6 +62,13 @@ public class MoMuOSBMain implements Fast {
         if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
             INIT.BOT.logout();
         }
+        for (IGuild guild: Objects.requireNonNull(INIT.BOT != null ? INIT.BOT.getGuilds() : null)) {
+            if (MainMusic.playmessages.containsKey(guild)) {
+                BotUtils.deleteMessageOne(MainMusic.playmessages.get(guild));
+                MainMusic.playmessages.remove(guild);
+            }
+        }
+
         Console.println("ByeBye... Created by ModdyLP @2017");
     }
 }

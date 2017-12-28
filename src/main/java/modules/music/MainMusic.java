@@ -32,7 +32,7 @@ public class MainMusic extends Module implements Fast{
 
     public static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
     private static final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
-    private static final HashMap<IGuild, IMessage> playmessages = new HashMap<>();
+    public static final HashMap<IGuild, IMessage> playmessages = new HashMap<>();
 
 
     @Command(
@@ -160,7 +160,7 @@ public class MainMusic extends Module implements Fast{
             @Override
             public void trackLoaded(AudioTrack track) {
                 BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add"), track.getInfo().title)), true);
-                BotUtils.updateEmbMessage(channel, updateState(track.getInfo().title, "1" ,"1"), playmessages.get(channel.getGuild()));
+                BotUtils.updateEmbMessage(channel, updateState(musicManager.player.getPlayingTrack().getInfo().title, "1" ,"1"), playmessages.get(channel.getGuild()));
                 play(musicManager, track);
             }
 
@@ -175,7 +175,7 @@ public class MainMusic extends Module implements Fast{
                 BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add_queue"), firstTrack.getInfo().title, playlist.getName())), true);
 
                 play(musicManager, firstTrack);
-                BotUtils.updateEmbMessage(channel, updateState(firstTrack.getInfo().title, String.valueOf(playlist.getTracks().size()), String.valueOf(firstTrack.getPosition())), playmessages.get(channel.getGuild()));
+                BotUtils.updateEmbMessage(channel, updateState(musicManager.player.getPlayingTrack().getInfo().title, String.valueOf(musicManager.player.getPlayingTrack().getPosition()), String.valueOf(playlist.getTracks().size())), playmessages.get(channel.getGuild()));
             }
 
             @Override
