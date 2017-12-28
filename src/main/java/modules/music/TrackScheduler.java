@@ -45,6 +45,7 @@ public class TrackScheduler extends AudioEventAdapter {
     // track goes to the queue instead.
     if (!player.startTrack(track, true)) {
       queue.offer(track);
+      BotUtils.updateEmbMessage(MainMusic.playmessages.get(guild).getChannel(), MainMusic.updateState(track.getInfo().title, String.valueOf(this.getQueue().size()) ,String.valueOf(track.getPosition())), MainMusic.playmessages.get(guild));
     }
   }
 
@@ -64,6 +65,9 @@ public class TrackScheduler extends AudioEventAdapter {
     // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
     if (endReason.mayStartNext) {
       nextTrack();
-    }
+      if (queue.isEmpty()) {
+        BotUtils.updateEmbMessage(MainMusic.playmessages.get(guild).getChannel(), MainMusic.updateState("Queue End", String.valueOf(this.getQueue().size()), String.valueOf(0)), MainMusic.playmessages.get(guild));
+      }
+      }
   }
 }
