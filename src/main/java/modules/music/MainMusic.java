@@ -160,7 +160,7 @@ public class MainMusic extends Module implements Fast{
             @Override
             public void trackLoaded(AudioTrack track) {
                 BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add"), track.getInfo().title)), true);
-                BotUtils.updateEmbMessage(channel, updateState(musicManager.player.getPlayingTrack().getInfo().title, String.valueOf(musicManager.scheduler.getQueue().size()) ,String.valueOf(musicManager.player.getPlayingTrack().getPosition())), playmessages.get(channel.getGuild()));
+                BotUtils.updateEmbMessage(channel, updateState(track.getInfo().title, String.valueOf(musicManager.scheduler.getQueue().size()) ,String.valueOf(track.getPosition())), playmessages.get(channel.getGuild()));
                 play(musicManager, track);
             }
 
