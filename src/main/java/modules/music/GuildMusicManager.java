@@ -2,6 +2,7 @@ package modules.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import sx.blah.discord.handle.obj.IGuild;
 
 /**
  * Holder for both the player and a track scheduler for one guild.
@@ -19,10 +20,11 @@ public class GuildMusicManager {
   /**
    * Creates a player and a track scheduler.
    * @param manager Audio player manager to use for creating the player.
+   * @param guild
    */
-  public GuildMusicManager(AudioPlayerManager manager) {
+  public GuildMusicManager(AudioPlayerManager manager, IGuild guild) {
     player = manager.createPlayer();
-    scheduler = new TrackScheduler(player);
+    scheduler = new TrackScheduler(player, guild);
     player.addListener(scheduler);
   }
 

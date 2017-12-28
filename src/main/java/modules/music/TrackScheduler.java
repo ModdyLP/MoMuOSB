@@ -4,6 +4,8 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import discord.BotUtils;
+import sx.blah.discord.handle.obj.IGuild;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -14,6 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TrackScheduler extends AudioEventAdapter {
   private final AudioPlayer player;
   private final BlockingQueue<AudioTrack> queue;
+  private final IGuild guild;
 
   public BlockingQueue<AudioTrack> getQueue() {
     return queue;
@@ -23,10 +26,12 @@ public class TrackScheduler extends AudioEventAdapter {
 
   /**
    * @param player The audio player this scheduler uses
+   * @param guild
    */
-  public TrackScheduler(AudioPlayer player) {
+  public TrackScheduler(AudioPlayer player, IGuild guild) {
     this.player = player;
     this.queue = new LinkedBlockingQueue<>();
+    this.guild = guild;
   }
 
   /**
@@ -49,7 +54,9 @@ public class TrackScheduler extends AudioEventAdapter {
   public void nextTrack() {
     // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
     // giving null to startTrack, which is a valid argument and will simply stop the player.
-    player.startTrack(queue.poll(), false);
+    AudioTrack track = queue.poll();
+    player.startTrack(track, false);
+    BotUtils.updateEmbMessage(MainMusic.playmessages.get(guild).getChannel(), MainMusic.updateState(track.getInfo().title, String.valueOf(this.getQueue().size()) ,String.valueOf(track.getPosition())), MainMusic.playmessages.get(guild));
   }
 
   @Override

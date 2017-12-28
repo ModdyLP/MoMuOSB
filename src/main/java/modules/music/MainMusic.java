@@ -17,6 +17,7 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.audio.AudioPlayer;
+import util.Console;
 import util.Fast;
 import util.Globals;
 import util.SMB;
@@ -148,7 +149,7 @@ public class MainMusic extends Module implements Fast{
 
     private static synchronized GuildMusicManager getGuildAudioPlayer(IGuild guild) {
         long guildId = guild.getLongID();
-        GuildMusicManager musicManager = musicManagers.computeIfAbsent(guildId, k -> new GuildMusicManager(playerManager));
+        GuildMusicManager musicManager = musicManagers.computeIfAbsent(guildId, k -> new GuildMusicManager(playerManager, guild));
 
         guild.getAudioManager().setAudioProvider(musicManager.getAudioProvider());
 
@@ -163,7 +164,7 @@ public class MainMusic extends Module implements Fast{
             @Override
             public void trackLoaded(AudioTrack track) {
                 BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add"), track.getInfo().title)), true);
-                BotUtils.updateEmbMessage(channel, updateState(track.getInfo().title, String.valueOf(musicManager.scheduler.getQueue().size()) ,String.valueOf(track.getPosition())), playmessages.get(channel.getGuild()));
+                Console.debug("Loaded track: "+track.getInfo().title);
                 play(musicManager, track);
             }
 
@@ -222,7 +223,7 @@ public class MainMusic extends Module implements Fast{
         DRIVER.setProperty(DEF_LANG, "disabledserver", "This server is disabled for using the Music Module");
 
     }
-    private static EmbedBuilder updateState(String song, String queuesize, String quequepos) {
+    public static EmbedBuilder updateState(String song, String queuesize, String quequepos) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.withTitle("Music Box");
         builder.withColor(Color.cyan);
