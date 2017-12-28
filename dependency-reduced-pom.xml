@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.moddylp</groupId>
   <artifactId>momuosb</artifactId>
-  <version>2017122301</version>
+  <version>2017122801</version>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <resources>
