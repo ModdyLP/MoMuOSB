@@ -58,10 +58,6 @@ public class MoMuOSBMain implements Fast {
         Console.println("====================================Bot shutting down...==============================");
         Stats.saveStats();
         RoleManagement.saveGenders();
-
-        if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
-            INIT.BOT.logout();
-        }
         for (IGuild guild: Objects.requireNonNull(INIT.BOT != null ? INIT.BOT.getGuilds() : null)) {
             if (MainMusic.playmessages.containsKey(guild)) {
                 BotUtils.deleteMessageOne(MainMusic.playmessages.get(guild));
@@ -73,6 +69,11 @@ public class MoMuOSBMain implements Fast {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
+            INIT.BOT.logout();
+        }
+
+
         Console.println("ByeBye... Created by ModdyLP @2017");
     }
 }
