@@ -145,7 +145,7 @@ public class BotUtils implements Fast {
                         deleteMessageFromBot(message, delete);
                         return message;
                     } else {
-                        Console.error(String.format(LANG.getTranslation("notsendpermission_error"), channel.getGuild().getName(), channel.getName()));
+                        Console.error(String.format(LANG.getTranslation("notsendpermission_error"), channel.getGuild().getName(), channel.getName(), "Common Error"));
                         return null;
                     }
                 } else {
@@ -296,8 +296,10 @@ public class BotUtils implements Fast {
         Console.println("Loading Permissions from SaveFile");
         PERM.loadPermissions(INIT.BOT.getGuilds());
         PERM.setDefaultPermissions(INIT.BOT.getGuilds(), false);
-        INIT.BOT.changePlayingText(DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultplaying").toString());
-        INIT.BOT.changeUsername(DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultUsername").toString());
+        RequestBuffer.request(() -> {
+            INIT.BOT.changePlayingText(DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultplaying").toString());
+            INIT.BOT.changeUsername(DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultUsername").toString());
+        });
         Console.println("Loading Command Descriptions");
         for (Command command : COMMAND.getAllCommands()) {
             LANG.getMethodDescription(command);

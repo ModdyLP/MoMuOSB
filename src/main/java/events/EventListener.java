@@ -50,7 +50,7 @@ public class EventListener implements Fast {
     public void onReactionAddEvent(ReactionAddEvent event) {
         IMessage message = event.getMessage();
         IReaction reaction = message.getReactionByUnicode(EmojiManager.getForAlias("x"));
-        if (reaction.getUserReacted(INIT.BOT.getOurUser()) && reaction.getUsers().size() > 1) {
+        if (reaction != null && reaction.getUserReacted(INIT.BOT.getOurUser()) && reaction.getUsers().size() > 1) {
             BotUtils.deleteMessageOne(message);
         }
     }
