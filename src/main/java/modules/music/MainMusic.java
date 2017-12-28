@@ -53,6 +53,9 @@ public class MainMusic extends Module implements Fast{
             playmessages.put(event.getGuild(), message);
             userVoiceChannel.join();
             this.volumeMusic(event, new String[]{DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultvolume").toString()});
+            if (args.length > 0) {
+                playMusic(event, args);
+            }
             return true;
         } else {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("disabledserver")), true);
@@ -99,7 +102,7 @@ public class MainMusic extends Module implements Fast{
         IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
 
         if (botVoiceChannel == null) {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("music_notinchannel")), true);
+            joinCommand(event, args);
             return false;
         }
 

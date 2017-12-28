@@ -68,7 +68,11 @@ public class MoMuOSBMain implements Fast {
                 MainMusic.playmessages.remove(guild);
             }
         }
-
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Console.println("ByeBye... Created by ModdyLP @2017");
     }
 }
