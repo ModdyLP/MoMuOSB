@@ -297,8 +297,9 @@ public class ChangeCommands extends Module implements Fast {
     )
     public boolean getLogs(MessageReceivedEvent event, String[] args) {
         try {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage("Logs were send to your private messages"), true);
             if (args.length > 0) {
-                IMessage message = BotUtils.sendEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("The Logs of the last 7 days"), false);
+                IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("The Logs of the last 7 days"), false);
                 BotUtils.addReactionToMessage(message, "x");
                 File dir = new File("./logs");
                 int days = Integer.valueOf(args[0]);
@@ -306,7 +307,8 @@ public class ChangeCommands extends Module implements Fast {
                 if (dir.isDirectory()) {
                     List<File> list = Arrays.asList(Objects.requireNonNull(dir.listFiles()));
                     for (File file : list) {
-                        event.getAuthor().getOrCreatePMChannel().sendFile(file.getName(), file);
+                        IMessage test = event.getAuthor().getOrCreatePMChannel().sendFile(file.getName(), file);
+                        BotUtils.addReactionToMessage(test, "x");
                         logs++;
                         if (logs == days) {
                             break;
@@ -314,10 +316,10 @@ public class ChangeCommands extends Module implements Fast {
                     }
                 }
             } else {
-                BotUtils.sendEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("Please provide a valid Count of Days"), true);
+                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("Please provide a valid Count of Days"), true);
             }
         } catch (Exception ex) {
-            BotUtils.sendEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("The Creation of the Logs failed"), true);
+            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("The Creation of the Logs failed"), true);
         }
         return true;
     }
