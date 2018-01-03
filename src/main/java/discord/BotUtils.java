@@ -356,9 +356,10 @@ public class BotUtils implements Fast {
                             "\n**" + LANG.getTranslation("help_description") + "**: = " + LANG.getMethodDescription(command) +
                             "\n**" + LANG.getTranslation("help_permission") + "**:  = " + command.permission() + "\n";
                     builders.get(page - 1).appendField((count + 1) + ".  " + botprefix + command.prefix() + command.command(), string, false);
+                    count++;
                 }
                 page = Utils.checkIfEmbedisToBig(builders, page, ":information_source: " + LANG.getTranslation("help_title") + " Page: " + page + " :information_source:");
-                count++;
+
             }
             builders.get(0).withTitle(":information_source: " + LANG.getTranslation("help_title") + "(" + count + " / " + COMMAND.getAllCommands().size() + ")" + LANG.getTranslation("help_page") + 1 + " :information_source:");
             return builders;
