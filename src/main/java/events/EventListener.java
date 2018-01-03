@@ -82,7 +82,7 @@ public class EventListener implements Fast {
                             if (PERM.hasPermission(event.getAuthor(), event.getGuild(), command.permission())) {
                                 initiateCommand(args, command, event);
                             } else {
-                                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
+                                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nopermissions_error")), true);
                             }
                         } else if (command != null && prefix.contains(botprefix)) {
                             deleteInvoke(event, message);
@@ -145,6 +145,7 @@ public class EventListener implements Fast {
                 event.getMessage().delete();
             } else {
                 Console.debug(Console.sendprefix + "Message not deleted: [" + message + "] -- nopermissions");
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR + LANG.getTranslation("nomanagepermission_error")), true);
             }
         }
     }
