@@ -58,18 +58,18 @@ public class MoMuOSBMain implements Fast {
         Console.println("====================================Bot shutting down...==============================");
         Stats.saveStats();
         RoleManagement.saveGenders();
-        for (IGuild guild: Objects.requireNonNull(INIT.BOT != null ? INIT.BOT.getGuilds() : null)) {
-            if (MainMusic.playmessages.containsKey(guild)) {
-                BotUtils.deleteMessageOne(MainMusic.playmessages.get(guild));
-                MainMusic.playmessages.remove(guild);
-            }
-        }
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
+            for (IGuild guild: Objects.requireNonNull(INIT.BOT != null ? INIT.BOT.getGuilds() : null)) {
+                if (MainMusic.playmessages.containsKey(guild)) {
+                    BotUtils.deleteMessageOne(MainMusic.playmessages.get(guild));
+                    MainMusic.playmessages.remove(guild);
+                }
+            }
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             INIT.BOT.logout();
         }
 

@@ -7,6 +7,7 @@ import storage.LanguageInterface;
 import storage.LanguageMethod;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.util.EmbedBuilder;
 import util.*;
 
@@ -92,7 +93,8 @@ public class ServerManager extends Module implements Fast{
                 builder.appendDesc(Markdown.bold(serverinst.getName())+": "+serverinst.getStringID()+" \n");
             }
             builder.withColor(Color.green);
-            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
+            IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
+            BotUtils.addReactionToMessage(message, "x");
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.SUCCESS+LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
         }

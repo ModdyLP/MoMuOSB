@@ -8,6 +8,7 @@ import storage.LanguageInterface;
 import storage.LanguageMethod;
 import storage.RestRequest;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.util.EmbedBuilder;
 import util.Console;
 import util.Fast;
@@ -45,7 +46,8 @@ public class Gamestats extends Module implements Fast{
                 builder.withTitle(args[1]+" "+LANG.getTranslation("game_overwatch_level")+": "+(competitive.getInt("prestige") * 100 + competitive.getInt("level")));
                 builder.appendField(LANG.getTranslation("game_overwatch_comprank")+": ", competitive.get("comprank").toString()+"   "+competitive.getString("tier"), false);
                 builder.appendField(LANG.getTranslation("game_overwatch_gameswon"), quickplay.get("games_won").toString(), false);
-                BotUtils.sendEmbMessage(event.getChannel(), builder, false);
+                IMessage message = BotUtils.sendEmbMessage(event.getChannel(), builder, false);
+                BotUtils.addReactionToMessage(message, "x");
             } else {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("game_unsupported")), true);
             }

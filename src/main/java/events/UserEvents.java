@@ -37,7 +37,7 @@ public class UserEvents implements Fast{
     public void onUserJoin(UserJoinEvent event) {
         Console.debug(Console.recievedprefix+"User joined: [S]"+event.getGuild().getName()+" [U]"+event.getUser().getName());
         Stats.addUser();
-        if (SERVER_CONTROL.getEnabledList(SERVER_CONTROL.JOIN_MODULE).contains(event.getGuild().getStringID()) && DRIVER.getPropertyOnly(DRIVER.CONFIG, "genderroles").equals(true)) {
+        if (SERVER_CONTROL.getEnabledList(SERVER_CONTROL.JOIN_MODULE).contains(event.getGuild().getStringID())) {
             if (RoleManagement.isGenderdefined(event.getGuild())) {
                 user.put(event.getUser(), event.getGuild());
                 Console.debug(Console.recievedprefix+"Waiting for Answer"+ Arrays.toString(user.keySet().toArray())+"  "+ Arrays.toString(user.values().toArray()));

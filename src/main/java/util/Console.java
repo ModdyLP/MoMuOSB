@@ -59,10 +59,8 @@ public class Console implements Fast{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for(StackTraceElement stackTraceElement : message.getStackTrace()) {
-            //System.out.println(Utils.format(getTimeNow())+prefix + errorprefix + System.lineSeparator() + stackTraceElement.toString());
-            logger.error(prefix+ errorprefix + System.lineSeparator() + stackTraceElement.toString());
-        }
+        message.printStackTrace();
+        logger.error(prefix+ errorprefix + System.lineSeparator() + message.getMessage());
     }
 
     /**

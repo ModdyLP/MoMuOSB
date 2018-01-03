@@ -164,7 +164,6 @@ public class EventListener implements Fast {
                 for (String arg: command.arguments()) {
                     if (arg.contains("[]")) {
                         newargs.addAll(Arrays.asList(args));
-                        return;
                     }
                 }
                 if (args.length > command.arguments().length && newargs.size() == 0) {

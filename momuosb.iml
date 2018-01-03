@@ -53,5 +53,4 @@
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.10.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.logging.log4j:log4j-core:2.10.0" level="project" />
   </component>
-  <component name="POM File Configuration" pomFile="" />
 </module>

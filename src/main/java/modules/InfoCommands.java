@@ -55,6 +55,7 @@ public class InfoCommands extends Module implements Fast {
         return true;
     }
 
+
     /**
      * Help Command
      *
@@ -66,62 +67,49 @@ public class InfoCommands extends Module implements Fast {
             command = "userinfo",
             description = "Display Infos about a User",
             alias = "usri",
-            arguments = {"UserID"},
-            permission = Globals.BOT_OWNER,
-            prefix = Globals.INFO_PREFIX
-    )
-    public boolean userinfo(MessageReceivedEvent event, String[] args) {
-        new Thread(() -> {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
-            IUser user = Utils.getUserByID(args[0]);
-            if (user != null) {
-                EmbedBuilder builder = new EmbedBuilder();
-                builder.withTitle(user.getName() + " -- " + user.getStringID());
-                builder.withDescription("Registriert seid: " + user.getCreationDate().toString() + "\n");
-                builder.withThumbnail(user.getAvatarURL());
-                builder.appendDescription("Nickname: " + user.getDisplayName(event.getGuild()) + "\n");
-                StringBuilder builder1 = new StringBuilder();
-                for (IGuild guild : Utils.getServerbyUser(user)) {
-                    builder1.append(guild.getName()).append("  ").append(guild.getStringID()).append("  ").append(guild.getRegion().getName());
-                }
-                builder.appendField("Server", builder1.toString(), false);
-
-                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
-            } else {
-                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("User not found with this ID: " + args[0]), false);
-            }
-
-        }).start();
-        return true;
-    }
-
-    /**
-     * Help Command
-     *
-     * @param event MessageEvent
-     * @param args  Argumente [Not needed]
-     * @return state
-     */
-    @Command(
-            command = "getregister",
-            description = "Display the help",
-            alias = "greg",
-            arguments = {"Mention User []"},
+            arguments = {"Mention Users[]"},
             permission = Globals.BOT_INFO,
             prefix = Globals.INFO_PREFIX
     )
-    public boolean getRegisterDate(MessageReceivedEvent event, String[] args) {
+    public boolean userinfo(MessageReceivedEvent event, String[] args) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
         new Thread(() -> {
-            StringBuilder content = new StringBuilder();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy H:m:s");
-            if (event.getMessage().getMentions().size() > 0) {
+            try {
                 for (IUser user : event.getMessage().getMentions()) {
-                    content.append(user.getName()).append(":  ").append(user.getCreationDate().format(formatter)).append("\n");
+                    ArrayList<IGuild> userjoinedguilds = new ArrayList<>();
+                    for (IGuild guild : Utils.getServerbyUser(user)) {
+                            userjoinedguilds.add(guild);
+                            if (user.getNicknameForGuild(guild) != null && !user.getNicknameForGuild(guild).isEmpty()) {
+                                stringBuilder.append(" ").append(user.getNicknameForGuild(guild)).append(" ");
+                            }
+                    }
+                    if (stringBuilder.length() == 0) {
+                        stringBuilder.append("No Nicknames");
+                    }
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.withColor(Color.cyan);
+                    builder.withTitle("UserInfo for " + user.getName());
+                    builder.appendField("Signed Up", user.getCreationDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), true);
+                    builder.appendField("Shared Servers", String.valueOf(userjoinedguilds.size()), true);
+                    builder.appendField("Nicknames", stringBuilder.toString(), false);
+                    builder.withThumbnail(user.getAvatarURL());
+                    StringBuilder builder1 = new StringBuilder();
+                    for (IGuild guild : Utils.getServerbyUser(user)) {
+                        builder1.append(guild.getName()).append("  ").append("  ").append(guild.getRegion().getName());
+                    }
+                    builder.appendField("Server", builder1.toString(), false);
+
+                    IMessage message = BotUtils.sendEmbMessage(event.getChannel(), builder, false);
+                    BotUtils.addReactionToMessage(message, "x");
                 }
-            } else {
-                content.append("No User specified");
+                if (event.getMessage().getMentions().size() == 0) {
+                    BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage("You should mention at least one User"), true);
+                }
+            } catch (Exception ex) {
+                Console.error(ex);
+                BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage("Something went wrong"), true);
             }
-            BotUtils.sendMessage(event.getChannel(), content.toString(), false);
         }).start();
         return true;
     }
@@ -138,19 +126,15 @@ public class InfoCommands extends Module implements Fast {
             description = "Invites the bot",
             alias = "ib",
             arguments = {},
-            permission = Globals.BOT_MANAGE,
+            permission = Globals.BOT_INFO,
             prefix = Globals.INFO_PREFIX
     )
     public boolean inviteBot(MessageReceivedEvent event, String[] args) {
-        if (event.getAuthor().equals(DiscordInit.getInstance().getDiscordClient().getApplicationOwner())) {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
-            EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
-            BotInviteBuilder builder = new BotInviteBuilder(INIT.BOT).withPermissions(permissions);
-            BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build(), false);
-        } else {
-            BotUtils.sendMessage(event.getChannel(), LANG.ERROR + LANG.getTranslation("botowner_error"), true);
-        }
-
+        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
+        EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
+        BotInviteBuilder builder = new BotInviteBuilder(INIT.BOT).withPermissions(permissions);
+        IMessage message = BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build(), false);
+        BotUtils.addReactionToMessage(message, "x");
         return true;
     }
 
@@ -179,13 +163,14 @@ public class InfoCommands extends Module implements Fast {
             if (channel != null) {
                 IInvite invite = channel.createInvite(0, 1, false, false);
                 if (invite != null) {
-                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), invite.toString() + "   ||||   " + invite.getCode(), false);
+                    IMessage message = BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), invite.toString() + "   ||||   " + invite.getCode(), false);
+                    BotUtils.addReactionToMessage(message, "x");
                 } else {
-                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "The Bot cant create a InviteLink", false);
+                    BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "The Bot cant create a InviteLink", true);
                 }
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
             } else {
-                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", false);
+                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", true);
                 return false;
             }
             return true;
@@ -214,10 +199,11 @@ public class InfoCommands extends Module implements Fast {
         if (guild != null) {
             IUser user = guild.getOwner();
             if (user != null) {
-                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Owner of Server(" + guild.getName() + ") is " + user.mention(), false);
+                IMessage message = BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Owner of Server(" + guild.getName() + ") is " +user.getName()+"  ("+user.getStringID()+") "+ user.mention(), false);
+                BotUtils.addReactionToMessage(message, "x");
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
             } else {
-                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", false);
+                BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", true);
                 return false;
             }
             return true;
@@ -225,6 +211,7 @@ public class InfoCommands extends Module implements Fast {
             return false;
         }
     }
+
     @Command(
             command = "ping",
             description = "Ping the Bot",
@@ -258,7 +245,8 @@ public class InfoCommands extends Module implements Fast {
             prefix = Globals.INFO_PREFIX
     )
     public boolean stats(MessageReceivedEvent event, String[] args) {
-        BotUtils.sendEmbMessage(event.getChannel(), genbuildStats(event), false);
+        IMessage message = BotUtils.sendEmbMessage(event.getChannel(), genbuildStats(event), false);
+        BotUtils.addReactionToMessage(message, "x");
         return true;
     }
 
@@ -290,14 +278,14 @@ public class InfoCommands extends Module implements Fast {
     private void genbuildHelp(MessageReceivedEvent event) {
         BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success_wait")), true);
         Future<ArrayList<EmbedBuilder>> task = BotUtils.generateHelp(event);
-            try {
-                for (EmbedBuilder builder : task.get()) {
-                    IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
-                    BotUtils.addReactionToMessage(message, "x");
-                }
-            } catch (Exception ex) {
-                Console.error(ex);
+        try {
+            for (EmbedBuilder builder : task.get()) {
+                IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
+                BotUtils.addReactionToMessage(message, "x");
             }
+        } catch (Exception ex) {
+            Console.error(ex);
+        }
     }
 
     @LanguageMethod(

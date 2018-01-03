@@ -5,6 +5,7 @@ import events.Command;
 import events.Module;
 import storage.LanguageInterface;
 import storage.LanguageMethod;
+import sx.blah.discord.handle.obj.IMessage;
 import util.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,7 +44,8 @@ public class SearchCommand extends Module implements Fast{
                 search.remove(event.getGuild());
                 if (args[0].equalsIgnoreCase("google")) {
                     if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "googleauthtoken").equals("")) {
-                        BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("searchtoken_google")), true);
+                        IMessage message = BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("searchtoken_google")), true);
+                        BotUtils.addReactionToMessage(message, "x");
                         return;
                     }
                     RestRequest request = new RestRequest();
@@ -146,7 +148,8 @@ public class SearchCommand extends Module implements Fast{
         builder.withColor(Color.cyan);
         builder.withImage(links.get(event.getGuild()).get(searchmarker.get(event.getGuild())));
         builder.withUrl(links.get(event.getGuild()).get(searchmarker.get(event.getGuild())));
-        BotUtils.sendEmbMessage(event.getChannel(), builder, false);
+        IMessage message = BotUtils.sendEmbMessage(event.getChannel(), builder, false);
+        BotUtils.addReactionToMessage(message, "x");
     }
 
     @LanguageMethod(

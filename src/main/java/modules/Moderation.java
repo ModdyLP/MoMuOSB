@@ -97,9 +97,9 @@ public class Moderation extends Module implements Fast {
                     if (!message.isDeleted()) {
                         BotUtils.deleteMessageOne(message);
                         count++;
+                        Thread.sleep(1000);
                     }
                 }
-                Thread.sleep(1000);
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("del_wait_success")), true);
             } catch (Exception ex) {
                 BotUtils.sendMessage(event.getChannel(), LANG.ERROR + String.format(LANG.getTranslation("deletion_error"), count, total, ex.getMessage()), true);

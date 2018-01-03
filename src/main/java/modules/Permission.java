@@ -6,6 +6,7 @@ import events.Module;
 import storage.LanguageInterface;
 import storage.LanguageMethod;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.util.EmbedBuilder;
 import util.*;
@@ -196,7 +197,8 @@ public class Permission extends Module implements Fast {
             }
         }
         for (EmbedBuilder builderinst : builders) {
-            BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builderinst, false);
+            IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builderinst, false);
+            BotUtils.addReactionToMessage(message, "x");
         }
     }
 }
