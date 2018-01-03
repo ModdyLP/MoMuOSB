@@ -81,7 +81,7 @@ public class InfoCommands extends Module implements Fast {
                     for (IGuild guild : Utils.getServerbyUser(user)) {
                             userjoinedguilds.add(guild);
                             if (user.getNicknameForGuild(guild) != null && !user.getNicknameForGuild(guild).isEmpty()) {
-                                stringBuilder.append(" ").append(user.getNicknameForGuild(guild)).append(" ");
+                                stringBuilder.append(user.getNicknameForGuild(guild)).append("\n");
                             }
                     }
                     if (stringBuilder.length() == 0) {
@@ -96,7 +96,7 @@ public class InfoCommands extends Module implements Fast {
                     builder.withThumbnail(user.getAvatarURL());
                     StringBuilder builder1 = new StringBuilder();
                     for (IGuild guild : Utils.getServerbyUser(user)) {
-                        builder1.append(guild.getName()).append("  ").append("  ").append(guild.getRegion().getName());
+                        builder1.append(guild.getName()).append("  ").append("  ").append(guild.getRegion().getName()).append("\n");
                     }
                     builder.appendField("Server", builder1.toString(), false);
 
