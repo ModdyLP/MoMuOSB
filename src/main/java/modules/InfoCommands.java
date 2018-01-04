@@ -74,8 +74,8 @@ public class InfoCommands extends Module implements Fast {
                 DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
                 java.util.Date date = format.parse(args[1]);
                 System.out.println(date);
-                builder.withTitle("Quote from " + event.getAuthor().mention() + " at " +format.format(date)+" in the Game "+args[0]);
-                builder.withDesc(Utils.makeArgsToString(args, new String[]{args[0], args[1]}));
+                builder.withTitle("Quote from " + event.getAuthor().getNicknameForGuild(event.getGuild()) + " at " +format.format(date)+" in the Game "+args[0]);
+                builder.withDesc("\n"+Utils.makeArgsToString(args, new String[]{args[0], args[1]})+"\n");
                 BotUtils.sendEmbMessage(event.getChannel(), builder, false);
             } else {
                 throw new Exception("To few Arguments");
