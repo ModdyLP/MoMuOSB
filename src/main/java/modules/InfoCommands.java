@@ -1,31 +1,26 @@
 package modules;
 
 import discord.BotUtils;
-import discord.DiscordInit;
 import discord.SystemInfo;
 import events.Command;
 import events.Module;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
-import permission.PermissionController;
-import storage.LanguageMethod;
-import sx.blah.discord.handle.impl.obj.ReactionEmoji;
-import sx.blah.discord.handle.obj.*;
-import util.*;
 import main.MoMuOSBMain;
+import storage.LanguageMethod;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.BotInviteBuilder;
 import sx.blah.discord.util.EmbedBuilder;
+import util.*;
 
 import java.awt.*;
 import java.sql.Date;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Locale;
 import java.util.concurrent.Future;
 
 /**
@@ -52,6 +47,43 @@ public class InfoCommands extends Module implements Fast {
     )
     public boolean help(MessageReceivedEvent event, String[] args) {
         genbuildHelp(event);
+        return true;
+    }
+
+
+    /**
+     * Help Command
+     *
+     * @param event MessageEvent
+     * @param args  Argumente [Not needed]
+     * @return state
+     */
+    @Command(
+            command = "zitat",
+            description = "Create a Quote in this channel",
+            alias = "zt",
+            arguments = {"Game", "Date", "Quote[]"},
+            permission = Globals.BOT_INFO,
+            prefix = Globals.INFO_PREFIX
+    )
+    public boolean zitat(MessageReceivedEvent event, String[] args) {
+        try {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.withColor(Color.YELLOW);
+            if (args.length >= 3) {
+                DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+                java.util.Date date = format.parse(args[1]);
+                System.out.println(date);
+                builder.withTitle("Quote from " + event.getAuthor().mention() + " at " +format.format(date)+" in the Game "+args[0]);
+                builder.withDesc(Utils.makeArgsToString(args, new String[]{args[0], args[1]}));
+                BotUtils.sendEmbMessage(event.getChannel(), builder, false);
+            } else {
+                throw new Exception("To few Arguments");
+            }
+        } catch (Exception ex) {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage("A error occurred: "+ex.getMessage()), true);
+            Console.error(ex);
+        }
         return true;
     }
 
