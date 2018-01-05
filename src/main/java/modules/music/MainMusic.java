@@ -10,6 +10,7 @@ import discord.BotUtils;
 import events.Command;
 import events.Module;
 import storage.LanguageMethod;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -170,16 +171,9 @@ public class MainMusic extends Module implements Fast{
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                AudioTrack firstTrack = playlist.getSelectedTrack();
-
-                if (firstTrack == null) {
-                    firstTrack = playlist.getTracks().get(0);
+                for (AudioTrack track : playlist.getTracks()) {
+                    musicManager.scheduler.queue(track);
                 }
-
-                BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add_queue"), firstTrack.getInfo().title, playlist.getName())), true);
-
-                play(musicManager, firstTrack);
-                BotUtils.updateEmbMessage(channel, updateState(musicManager.player.getPlayingTrack().getInfo().title, String.valueOf(playlist.getTracks().size()), String.valueOf(musicManager.player.getPlayingTrack().getPosition())), playmessages.get(channel.getGuild()));
             }
 
             @Override

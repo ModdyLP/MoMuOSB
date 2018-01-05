@@ -9,6 +9,7 @@ import sx.blah.discord.handle.obj.IGuild;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class schedules tracks for the audio player. It contains the queue of tracks.
@@ -45,7 +46,7 @@ public class TrackScheduler extends AudioEventAdapter {
         if (!player.startTrack(track, true)) {
             queue.offer(track);
         } else {
-            BotUtils.updateEmbMessage(MainMusic.playmessages.get(guild).getChannel(), MainMusic.updateState(track.getInfo().title, String.valueOf(this.getQueue().size()), String.valueOf(track.getPosition())), MainMusic.playmessages.get(guild));
+            BotUtils.updateEmbMessage(MainMusic.playmessages.get(guild).getChannel(), MainMusic.updateState(track.getInfo().title, String.valueOf(getQueue().size()), String.valueOf(getAudiotrackPositioninQueue(track))), MainMusic.playmessages.get(guild));
         }
     }
 
@@ -57,8 +58,20 @@ public class TrackScheduler extends AudioEventAdapter {
         // giving null to startTrack, which is a valid argument and will simply stop the player.
         AudioTrack track = queue.poll();
         player.startTrack(track, false);
-        BotUtils.updateEmbMessage(MainMusic.playmessages.get(guild).getChannel(), MainMusic.updateState(track.getInfo().title, String.valueOf(this.getQueue().size()), String.valueOf(track.getPosition())), MainMusic.playmessages.get(guild));
+        BotUtils.updateEmbMessage(MainMusic.playmessages.get(guild).getChannel(), MainMusic.updateState(track.getInfo().title, String.valueOf(getQueue().size()), String.valueOf(getAudiotrackPositioninQueue(track))), MainMusic.playmessages.get(guild));
     }
+
+    public int getAudiotrackPositioninQueue(AudioTrack track) {
+        AtomicInteger position = new AtomicInteger();
+        queue.forEach(obj -> {
+            if (obj.equals(track)) {
+                return;
+            }
+            position.incrementAndGet();
+        });
+        return position.get();
+    }
+
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
@@ -67,7 +80,7 @@ public class TrackScheduler extends AudioEventAdapter {
             nextTrack();
         } else {
             if (queue.isEmpty()) {
-                BotUtils.updateEmbMessage(MainMusic.playmessages.get(guild).getChannel(), MainMusic.updateState("Queue End", String.valueOf(this.getQueue().size()), String.valueOf(0)), MainMusic.playmessages.get(guild));
+                BotUtils.updateEmbMessage(MainMusic.playmessages.get(guild).getChannel(), MainMusic.updateState("Queue End", String.valueOf(this.getQueue().size()), "0"), MainMusic.playmessages.get(guild));
             }
         }
     }
