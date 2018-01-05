@@ -30,11 +30,25 @@ import java.util.Map;
 /**
  * Created by ModdyLP on 30.06.2017. Website: https://moddylp.de/
  */
-public class MainMusic extends Module implements Fast{
+public class MainMusic extends Module implements Fast {
 
     public static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
     private static final Map<Long, GuildMusicManager> musicManagers = new HashMap<>();
     public static final HashMap<IGuild, IMessage> playmessages = new HashMap<>();
+
+    private static MainMusic instance;
+
+    public static String STOPPED = "Stopped";
+    public static String PLAYING = "Playing";
+    public static String PAUSED = "Paused";
+
+    public static MainMusic getInstance() {
+        return instance;
+    }
+
+    public MainMusic() {
+        instance = this;
+    }
 
 
     @Command(
@@ -46,18 +60,19 @@ public class MainMusic extends Module implements Fast{
             prefix = Globals.MUSIC_PREFIX
     )
     public boolean joinCommand(MessageReceivedEvent event, String[] args) {
-        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE+"_enabled_default").equals(false) || !SERVER_CONTROL.getEnabledList(SERVER_CONTROL.MUSIC_MODULE).contains(event.getGuild().getStringID())) {
+        if (DRIVER.getPropertyOnly(DRIVER.CONFIG, SERVER_CONTROL.MUSIC_MODULE + "_enabled_default").equals(false) || !SERVER_CONTROL.getEnabledList(SERVER_CONTROL.MUSIC_MODULE).contains(event.getGuild().getStringID())) {
             IVoiceChannel userVoiceChannel = event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel();
 
             if (userVoiceChannel == null)
                 return false;
-            IMessage message = BotUtils.sendEmbMessage(event.getChannel(), updateState("None", "0", "0"), false);
+            IMessage message = BotUtils.sendEmbMessage(event.getChannel(), updateState("None", "0", "0", STOPPED), false);
             playmessages.put(event.getGuild(), message);
             userVoiceChannel.join();
             this.volumeMusic(event, new String[]{DRIVER.getPropertyOnly(DRIVER.CONFIG, "defaultvolume").toString()});
             if (args.length > 0) {
                 playMusic(event, args);
             }
+            MusicReactionListener.getInstance().initMessage(event.getGuild());
             return true;
         } else {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("disabledserver")), true);
@@ -74,22 +89,25 @@ public class MainMusic extends Module implements Fast{
             prefix = Globals.MUSIC_PREFIX
     )
     public boolean leaveMusic(MessageReceivedEvent event, String[] args) {
-        IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
-        if (playmessages.containsKey(event.getGuild())) {
-            BotUtils.deleteMessageOne(playmessages.get(event.getGuild()));
-            playmessages.remove(event.getGuild());
+        leave(event.getGuild(), event.getChannel());
+        return true;
+    }
+
+    public void leave(IGuild guild, IChannel channel) {
+        IVoiceChannel botVoiceChannel = INIT.BOT.getOurUser().getVoiceStateForGuild(guild).getChannel();
+        if (playmessages.containsKey(guild)) {
+            BotUtils.deleteMessageOne(playmessages.get(guild));
+            playmessages.remove(guild);
         }
         if (botVoiceChannel == null) {
-            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("music_notinchannel_user")), true);
-            return false;
+            BotUtils.sendEmbMessage(channel, SMB.shortMessage(LANG.getTranslation("music_notinchannel_user")), true);
         }
 
-        AudioPlayer audioP = AudioPlayer.getAudioPlayerForGuild(event.getGuild());
+        AudioPlayer audioP = AudioPlayer.getAudioPlayerForGuild(guild);
         if (audioP != null) {
             audioP.clear();
         }
         botVoiceChannel.leave();
-        return true;
     }
 
     @Command(
@@ -129,6 +147,19 @@ public class MainMusic extends Module implements Fast{
     }
 
     @Command(
+            command = "stop",
+            alias = "stop",
+            description = "The Bot stop playing.",
+            arguments = {},
+            permission = "music_control",
+            prefix = Globals.MUSIC_PREFIX
+    )
+    public boolean stop(MessageReceivedEvent event, String[] args) {
+        stop(event.getGuild());
+        return true;
+    }
+
+    @Command(
             command = "volume",
             alias = "vol",
             description = "The Bot volume.",
@@ -145,6 +176,18 @@ public class MainMusic extends Module implements Fast{
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("music_volumechangeerror")), true);
         }
         return true;
+    }
+
+    public static void stop(IGuild guild) {
+        getGuildAudioPlayer(guild).player.stopTrack();
+    }
+
+    public static void pause(IGuild guild) {
+        if (getGuildAudioPlayer(guild).player.isPaused()) {
+            getGuildAudioPlayer(guild).player.setPaused(false);
+        } else {
+            getGuildAudioPlayer(guild).player.setPaused(true);
+        }
     }
 
 
@@ -165,7 +208,7 @@ public class MainMusic extends Module implements Fast{
             @Override
             public void trackLoaded(AudioTrack track) {
                 BotUtils.sendEmbMessage(channel, SMB.shortMessage(String.format(LANG.getTranslation("music_add"), track.getInfo().title)), true);
-                Console.debug("Loaded track: "+track.getInfo().title);
+                Console.debug("Loaded track: " + track.getInfo().title);
                 play(musicManager, track);
             }
 
@@ -192,7 +235,7 @@ public class MainMusic extends Module implements Fast{
         musicManager.scheduler.queue(track);
     }
 
-    private static void skipTrack(IChannel channel) {
+    public static void skipTrack(IChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         musicManager.scheduler.nextTrack();
 
@@ -209,7 +252,7 @@ public class MainMusic extends Module implements Fast{
         DRIVER.setProperty(DEF_LANG, "music_notinchannel_user", "You are not in a Voice Channel.");
         DRIVER.setProperty(DEF_LANG, "music_volumechange", "Volume changed from %1s to %2s.");
         DRIVER.setProperty(DEF_LANG, "music_volumechangeerror", "Can't change volume.");
-        DRIVER.setProperty(DEF_LANG, "music_add","Adding to queue: %1s.");
+        DRIVER.setProperty(DEF_LANG, "music_add", "Adding to queue: %1s.");
         DRIVER.setProperty(DEF_LANG, "music_add_queue", "Adding to queue %1s (first track of playlist %2s).");
         DRIVER.setProperty(DEF_LANG, "music_notfound", "Nothing found by %1s.");
         DRIVER.setProperty(DEF_LANG, "music_notloaded", "Could not play the choosen song.");
@@ -217,12 +260,14 @@ public class MainMusic extends Module implements Fast{
         DRIVER.setProperty(DEF_LANG, "disabledserver", "This server is disabled for using the Music Module");
 
     }
-    public static EmbedBuilder updateState(String song, String queuesize, String quequepos) {
+
+    public static EmbedBuilder updateState(String song, String queuesize, String quequepos, String state) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.withTitle("Music Box");
         builder.withColor(Color.cyan);
         builder.appendField("Song", song, false);
-        builder.appendField("Queue", quequepos+" /  "+queuesize, false);
+        builder.appendField("Queue", quequepos + " /  " + queuesize, true);
+        builder.appendField("State", state, true);
         return builder;
     }
 }

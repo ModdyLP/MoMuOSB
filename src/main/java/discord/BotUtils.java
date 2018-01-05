@@ -269,7 +269,7 @@ public class BotUtils implements Fast {
     public static void addReactionToMessage(IMessage message, String emoji) {
         try {
             RequestBuffer.request(() -> {
-                message.addReaction(EmojiManager.getForAlias(emoji));
+                message.addReaction(ReactionEmoji.of(emoji));
             });
         } catch (Exception ex) {
             Console.error("Reaction not added(OUTTER): " + ex.getMessage());

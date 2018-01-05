@@ -55,25 +55,31 @@ public class MoMuOSBMain implements Fast {
      * Shutdown Method
      */
     public static void shutdown() {
-        Console.println("====================================Bot shutting down...==============================");
-        Stats.saveStats();
-        RoleManagement.saveGenders();
-        if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
-            for (IGuild guild: Objects.requireNonNull(INIT.BOT != null ? INIT.BOT.getGuilds() : null)) {
-                if (MainMusic.playmessages.containsKey(guild)) {
-                    BotUtils.deleteMessageOne(MainMusic.playmessages.get(guild));
-                    MainMusic.playmessages.remove(guild);
+        try {
+            Console.println("====================================Bot shutting down...==============================");
+            Stats.saveStats();
+            RoleManagement.saveGenders();
+            if (INIT.BOT != null && INIT.BOT.isLoggedIn()) {
+                for (IGuild guild : Objects.requireNonNull(INIT.BOT != null ? INIT.BOT.getGuilds() : null)) {
+                    if (MainMusic.playmessages.containsKey(guild)) {
+                        BotUtils.deleteMessageOne(MainMusic.playmessages.get(guild));
+                        MainMusic.playmessages.remove(guild);
+                        Console.debug("Deleted Play Message");
+                    }
                 }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Console.debug("Bot will log out now");
+                INIT.BOT.logout();
             }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            INIT.BOT.logout();
+
+
+            Console.println("ByeBye... Created by ModdyLP @2017");
+        } catch (Exception ex) {
+            Console.error(ex);
         }
-
-
-        Console.println("ByeBye... Created by ModdyLP @2017");
     }
 }

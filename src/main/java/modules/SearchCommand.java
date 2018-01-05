@@ -45,7 +45,7 @@ public class SearchCommand extends Module implements Fast{
                 if (args[0].equalsIgnoreCase("google")) {
                     if (DRIVER.getPropertyOnly(DRIVER.CONFIG, "googleauthtoken").equals("")) {
                         IMessage message = BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.ERROR+LANG.getTranslation("searchtoken_google")), true);
-                        BotUtils.addReactionToMessage(message, "x");
+                        BotUtils.addReactionToMessage(message, "\u274C");
                         return;
                     }
                     RestRequest request = new RestRequest();
@@ -149,7 +149,7 @@ public class SearchCommand extends Module implements Fast{
         builder.withImage(links.get(event.getGuild()).get(searchmarker.get(event.getGuild())));
         builder.withUrl(links.get(event.getGuild()).get(searchmarker.get(event.getGuild())));
         IMessage message = BotUtils.sendEmbMessage(event.getChannel(), builder, false);
-        BotUtils.addReactionToMessage(message, "x");
+        BotUtils.addReactionToMessage(message, "\u274C");
     }
 
     @LanguageMethod(

@@ -1,5 +1,6 @@
 package modules.music;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import sx.blah.discord.handle.obj.IGuild;
@@ -23,6 +24,10 @@ public class GuildMusicManager {
    * @param guild
    */
   public GuildMusicManager(AudioPlayerManager manager, IGuild guild) {
+    manager.enableGcMonitoring();
+    manager.setFrameBufferDuration(1000);
+    manager.setItemLoaderThreadPoolSize(500);
+    manager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.MEDIUM);
     player = manager.createPlayer();
     scheduler = new TrackScheduler(player, guild);
     player.addListener(scheduler);

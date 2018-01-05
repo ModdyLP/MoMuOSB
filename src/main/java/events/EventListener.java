@@ -49,7 +49,7 @@ public class EventListener implements Fast {
     @EventSubscriber
     public void onReactionAddEvent(ReactionAddEvent event) {
         IMessage message = event.getMessage();
-        IReaction reaction = message.getReactionByUnicode(EmojiManager.getForAlias("x"));
+        IReaction reaction = message.getReactionByEmoji(ReactionEmoji.of("\u274C"));
         if (reaction != null && reaction.getUserReacted(INIT.BOT.getOurUser()) && reaction.getUsers().size() > 1) {
             BotUtils.deleteMessageOne(message);
         }

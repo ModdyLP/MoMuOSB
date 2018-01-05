@@ -198,7 +198,7 @@ public class Permission extends Module implements Fast {
         }
         for (EmbedBuilder builderinst : builders) {
             IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builderinst, false);
-            BotUtils.addReactionToMessage(message, "x");
+            BotUtils.addReactionToMessage(message, "\u274C");
         }
     }
 }

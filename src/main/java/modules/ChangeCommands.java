@@ -300,7 +300,7 @@ public class ChangeCommands extends Module implements Fast {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage("Logs were send to your private messages"), true);
             if (args.length > 0) {
                 IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("The Logs of the last 7 days"), false);
-                BotUtils.addReactionToMessage(message, "x");
+                BotUtils.addReactionToMessage(message, "\u274C");
                 File dir = new File("./logs");
                 int days = Integer.valueOf(args[0]);
                 int logs = 0;
@@ -308,7 +308,7 @@ public class ChangeCommands extends Module implements Fast {
                     List<File> list = Arrays.asList(Objects.requireNonNull(dir.listFiles()));
                     for (File file : list) {
                         IMessage test = event.getAuthor().getOrCreatePMChannel().sendFile(file.getName(), file);
-                        BotUtils.addReactionToMessage(test, "x");
+                        BotUtils.addReactionToMessage(test, "\u274C");
                         logs++;
                         if (logs == days) {
                             break;

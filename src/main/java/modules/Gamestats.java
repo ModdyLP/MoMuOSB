@@ -47,7 +47,7 @@ public class Gamestats extends Module implements Fast{
                 builder.appendField(LANG.getTranslation("game_overwatch_comprank")+": ", competitive.get("comprank").toString()+"   "+competitive.getString("tier"), false);
                 builder.appendField(LANG.getTranslation("game_overwatch_gameswon"), quickplay.get("games_won").toString(), false);
                 IMessage message = BotUtils.sendEmbMessage(event.getChannel(), builder, false);
-                BotUtils.addReactionToMessage(message, "x");
+                BotUtils.addReactionToMessage(message, "\u274C");
             } else {
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.getTranslation("game_unsupported")), true);
             }

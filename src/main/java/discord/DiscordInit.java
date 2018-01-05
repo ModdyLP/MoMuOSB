@@ -3,6 +3,7 @@ package discord;
 import events.EventListener;
 import events.ServerListener;
 import events.UserEvents;
+import modules.music.MusicReactionListener;
 import util.Fast;
 import sx.blah.discord.api.IDiscordClient;
 import util.Console;
@@ -41,6 +42,7 @@ public class DiscordInit implements Fast{
              cli.getDispatcher().registerListener(EventListener.getInstance());
              cli.getDispatcher().registerListener(ServerListener.getInstance());
              cli.getDispatcher().registerListener(UserEvents.getInstance());
+             cli.getDispatcher().registerListener(MusicReactionListener.getInstance());
              cli.login();
              BOT = cli;
         }
