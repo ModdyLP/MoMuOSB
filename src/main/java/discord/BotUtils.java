@@ -1,32 +1,34 @@
 package discord;
 
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import com.vdurmont.emoji.EmojiManager;
+import emoji4j.EmojiUtils;
 import events.Command;
 import events.RegisterCommands;
 import events.ServerListener;
-import javafx.concurrent.Task;
 import modules.RoleManagement;
 import modules.music.MainMusic;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.impl.obj.Message;
-import sx.blah.discord.handle.impl.obj.ReactionEmoji;
-import util.Fast;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
 import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.EmbedBuilder;
-import sx.blah.discord.util.MessageHistory;
 import sx.blah.discord.util.RequestBuffer;
 import util.Console;
+import util.Fast;
 import util.Footer;
 import util.Utils;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by N.Hartmann on 28.06.2017.
@@ -269,7 +271,7 @@ public class BotUtils implements Fast {
     public static void addReactionToMessage(IMessage message, String emoji) {
         try {
             RequestBuffer.request(() -> {
-                message.addReaction(ReactionEmoji.of(emoji));
+                message.addReaction(ReactionEmoji.of(EmojiUtils.getEmoji(emoji).getEmoji()));
             });
         } catch (Exception ex) {
             Console.error("Reaction not added(OUTTER): " + ex.getMessage());

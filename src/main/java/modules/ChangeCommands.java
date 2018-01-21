@@ -3,11 +3,14 @@ package modules;
 import discord.BotUtils;
 import events.Command;
 import events.Module;
+import events.UserEvents;
 import storage.LanguageInterface;
 import storage.LanguageMethod;
 import sx.blah.discord.handle.impl.obj.Embed;
+import sx.blah.discord.handle.obj.IEmoji;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
 import util.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -28,6 +31,25 @@ import java.util.Objects;
  */
 public class ChangeCommands extends Module implements Fast {
 
+
+    @Command(
+            command = "testuser",
+            description = "TestUserJoin",
+            alias = "testu",
+            arguments = {"UserMention[]"},
+            permission = Globals.BOT_OWNER,
+            prefix = Globals.ADMIN_PREFIX
+    )
+    public boolean testuser(MessageReceivedEvent event, String[] args) {
+       if (event.getMessage().getMentions().size() > 0) {
+            for (IUser user: event.getMessage().getMentions()) {
+                UserEvents.getInstance().sendAwaittoUser(event.getGuild(), user);
+            }
+        } else {
+            BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage("You should mention at least one User."), true);
+        }
+        return true;
+    }
     /**
      * Change the Avatar of the Bot
      *
@@ -300,7 +322,7 @@ public class ChangeCommands extends Module implements Fast {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage("Logs were send to your private messages"), true);
             if (args.length > 0) {
                 IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage("The Logs of the last 7 days"), false);
-                BotUtils.addReactionToMessage(message, "\u274C");
+                BotUtils.addReactionToMessage(message, "x");
                 File dir = new File("./logs");
                 int days = Integer.valueOf(args[0]);
                 int logs = 0;
@@ -308,7 +330,7 @@ public class ChangeCommands extends Module implements Fast {
                     List<File> list = Arrays.asList(Objects.requireNonNull(dir.listFiles()));
                     for (File file : list) {
                         IMessage test = event.getAuthor().getOrCreatePMChannel().sendFile(file.getName(), file);
-                        BotUtils.addReactionToMessage(test, "\u274C");
+                        BotUtils.addReactionToMessage(test, "x");
                         logs++;
                         if (logs == days) {
                             break;

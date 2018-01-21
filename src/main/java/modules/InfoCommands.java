@@ -141,7 +141,7 @@ public class InfoCommands extends Module implements Fast {
                     builder.appendField("Server", builder1.toString(), false);
 
                     IMessage message = BotUtils.sendEmbMessage(event.getChannel(), builder, false);
-                    BotUtils.addReactionToMessage(message, "\u274C");
+                    BotUtils.addReactionToMessage(message, "x");
                 }
                 if (event.getMessage().getMentions().size() == 0) {
                     BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage("You should mention at least one User"), true);
@@ -174,7 +174,7 @@ public class InfoCommands extends Module implements Fast {
         EnumSet<Permissions> permissions = EnumSet.allOf(Permissions.class);
         BotInviteBuilder builder = new BotInviteBuilder(INIT.BOT).withPermissions(permissions);
         IMessage message = BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), builder.build(), false);
-        BotUtils.addReactionToMessage(message, "\u274C");
+        BotUtils.addReactionToMessage(message, "x");
         return true;
     }
 
@@ -204,7 +204,7 @@ public class InfoCommands extends Module implements Fast {
                 IInvite invite = channel.createInvite(0, 1, false, false);
                 if (invite != null) {
                     IMessage message = BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), invite.toString() + "   ||||   " + invite.getCode(), false);
-                    BotUtils.addReactionToMessage(message, "\u274C");
+                    BotUtils.addReactionToMessage(message, "x");
                 } else {
                     BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "The Bot cant create a InviteLink", true);
                 }
@@ -240,7 +240,7 @@ public class InfoCommands extends Module implements Fast {
             IUser user = guild.getOwner();
             if (user != null) {
                 IMessage message = BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "Owner of Server(" + guild.getName() + ") is " +user.getName()+"  ("+user.getStringID()+") "+ user.mention(), false);
-                BotUtils.addReactionToMessage(message, "\u274C");
+                BotUtils.addReactionToMessage(message, "x");
                 BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(LANG.SUCCESS + LANG.getTranslation("command_success")), true);
             } else {
                 BotUtils.sendPrivMessage(event.getAuthor().getOrCreatePMChannel(), "No Channel found", true);
@@ -264,7 +264,7 @@ public class InfoCommands extends Module implements Fast {
         IMessage message = BotUtils.sendMessage(event.getChannel(), "Pinging...", false);
         if (message != null) {
             BotUtils.updateMessage(message, event.getMessage().getCreationDate().until(message.getCreationDate(), ChronoUnit.MILLIS) + "ms | Websocket: " + event.getGuild().getShard().getResponseTime() + "ms");
-            BotUtils.addReactionToMessage(message, "\u274C");
+            BotUtils.addReactionToMessage(message, "x");
         }
         return true;
     }
@@ -286,7 +286,7 @@ public class InfoCommands extends Module implements Fast {
     )
     public boolean stats(MessageReceivedEvent event, String[] args) {
         IMessage message = BotUtils.sendEmbMessage(event.getChannel(), genbuildStats(event), false);
-        BotUtils.addReactionToMessage(message, "\u274C");
+        BotUtils.addReactionToMessage(message, "x");
         return true;
     }
 
@@ -321,7 +321,7 @@ public class InfoCommands extends Module implements Fast {
         try {
             for (EmbedBuilder builder : task.get()) {
                 IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
-                BotUtils.addReactionToMessage(message, "\u274C");
+                BotUtils.addReactionToMessage(message, "x");
             }
         } catch (Exception ex) {
             Console.error(ex);

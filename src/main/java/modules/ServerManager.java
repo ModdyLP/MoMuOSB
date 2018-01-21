@@ -94,7 +94,7 @@ public class ServerManager extends Module implements Fast{
             }
             builder.withColor(Color.green);
             IMessage message = BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), builder, false);
-            BotUtils.addReactionToMessage(message, "\u274C");
+            BotUtils.addReactionToMessage(message, "x");
         } catch (Exception ex) {
             BotUtils.sendEmbMessage(event.getChannel(), SMB.shortMessage(String.format(LANG.SUCCESS+LANG.getTranslation("commonmessage_error"), ex.getMessage())), true);
         }

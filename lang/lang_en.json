@@ -42,7 +42,7 @@
   "help_prefixinfo": "\nThe Prefixes are \n**Admin Prefix**:   !   \n**Info Prefix**:    .   \n**Game Prefix**:    ~   \n**Music Prefix**:   $   \n",
   "getImage_getImage": "Get Image from Web",
   "banServer_banserver": "Ban a Server",
-  "female_ask": "Are you Male or Female? \nAnswer with the Gender like this: \n@%1s f or @%1s m \n f \u003d female, m \u003d male",
+  "female_ask": "You are joining the Discord-Server from \"%1s\".\nNow all you have to do is choose whether you\u0027re male or female\nto be assigned to a role here on this server.\n\nYou need the Role to talk to your friends or to join in specific channels.\n\nUnderneath you can choose the Gender by clicking one of the \"Reaction buttons\"\nand then you are ready to go :smile:",
   "help_arguments": "Arguments",
   "annotation_error": "Invalid Annotation in Module %1s Ex: %2s",
   "gender_role_added": "You get the Role: %1s",

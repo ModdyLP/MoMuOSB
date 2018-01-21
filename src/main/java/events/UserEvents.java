@@ -3,10 +3,13 @@ package events;
 import discord.BotUtils;
 import discord.Stats;
 import modules.RoleManagement;
+import sx.blah.discord.api.events.Event;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import util.Console;
@@ -24,7 +27,7 @@ import java.util.List;
 public class UserEvents implements Fast{
     private static UserEvents instance;
 
-    private static HashMap<IUser, IGuild> user = new HashMap<>();
+    private HashMap<IUser, IGuild> users = new HashMap<>();
 
     public static UserEvents getInstance() {
         if (instance == null) {
@@ -35,37 +38,45 @@ public class UserEvents implements Fast{
 
     @EventSubscriber
     public void onUserJoin(UserJoinEvent event) {
-        Console.debug(Console.recievedprefix+"User joined: [S]"+event.getGuild().getName()+" [U]"+event.getUser().getName());
+        sendAwaittoUser(event.getGuild(), event.getUser());
+    }
+
+    public void sendAwaittoUser(IGuild guild, IUser user) {
+        Console.debug(Console.recievedprefix+"User waiting for Gender: [S]"+guild.getName()+" [U]"+user.getName());
         Stats.addUser();
-        if (SERVER_CONTROL.getEnabledList(SERVER_CONTROL.JOIN_MODULE).contains(event.getGuild().getStringID())) {
-            if (RoleManagement.isGenderdefined(event.getGuild())) {
-                user.put(event.getUser(), event.getGuild());
-                Console.debug(Console.recievedprefix+"Waiting for Answer"+ Arrays.toString(user.keySet().toArray())+"  "+ Arrays.toString(user.values().toArray()));
-                BotUtils.sendPrivEmbMessage(event.getUser().getOrCreatePMChannel(), SMB.shortMessage(LANG.getTranslation("female_ask").replaceAll("%1s", INIT.BOT.getOurUser().getName())), false);
+        if (SERVER_CONTROL.getEnabledList(SERVER_CONTROL.JOIN_MODULE).contains(guild.getStringID())) {
+            if (RoleManagement.isGenderdefined(guild)) {
+                users.put(user, guild);
+                Console.debug(Console.recievedprefix+"Waiting for Answer"+ Arrays.toString(users.keySet().toArray())+"  "+ Arrays.toString(users.values().toArray()));
+                IMessage message = BotUtils.sendPrivEmbMessage(user.getOrCreatePMChannel(), SMB.shortMessage(String.format(LANG.getTranslation("female_ask"),guild.getName())), false);
+                BotUtils.addReactionToMessage(message, "mens");
+                BotUtils.addReactionToMessage(message, "womens");
             } else {
                 Console.debug("Server has not valid Gender.");
             }
+        } else {
+            Console.debug("Gender Module is disabled.");
         }
     }
 
-    public void setGenderRole(MessageReceivedEvent event, String gender) {
+    public void setGenderRole(IUser user, String gender) {
         try {
-            List<IRole> roles = RoleManagement.getRoleforGender(user.get(event.getAuthor()), gender);
+            List<IRole> roles = RoleManagement.getRoleforGender(users.get(user), gender);
             StringBuilder rolename = new StringBuilder();
             if (roles != null) {
                 for (IRole role : roles) {
                     rolename.append(role.getName()).append(",");
-                    event.getAuthor().addRole(role);
+                    user.addRole(role);
                 }
                 if (roles.size() > 0) {
-                    user.remove(event.getAuthor());
+                    users.remove(user);
                 }
-                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(String.format(LANG.getTranslation("gender_role_added"), rolename.toString())), true);
+                BotUtils.sendPrivEmbMessage(user.getOrCreatePMChannel(), SMB.shortMessage(String.format(LANG.getTranslation("gender_role_added"), rolename.toString())), true);
             } else {
-                BotUtils.sendPrivEmbMessage(event.getAuthor().getOrCreatePMChannel(), SMB.shortMessage(LANG.getTranslation("role_notfound")), true);
+                BotUtils.sendPrivEmbMessage(user.getOrCreatePMChannel(), SMB.shortMessage(LANG.getTranslation("role_notfound")), true);
             }
         } catch (Exception ex) {
-            BotUtils.sendPrivEmbMessage(event.getGuild().getOwner().getOrCreatePMChannel(), SMB.shortMessage(LANG.getTranslation("role_permissions")), true);
+            BotUtils.sendPrivEmbMessage(user.getOrCreatePMChannel(), SMB.shortMessage(LANG.getTranslation("role_permissions")), true);
         }
     }
 }

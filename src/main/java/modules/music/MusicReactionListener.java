@@ -28,16 +28,16 @@ public class MusicReactionListener {
         IMessage message = event.getMessage();
         if (MainMusic.playmessages.containsValue(message)) {
                 if (event.getReaction().getUsers().size() > 1 && event.getReaction().getUserReacted(INIT.BOT.getOurUser())) {
-                    if (event.getReaction().getEmoji().equals(ReactionEmoji.of("\u23F9"))) {
+                    if (event.getReaction().getEmoji().equals(ReactionEmoji.of(event.getGuild().getEmojiByName("stop_button")))) {
                         MainMusic.stop(event.getGuild());
                     }
-                    if (event.getReaction().getEmoji().equals(ReactionEmoji.of("\u23ED"))) {
+                    if (event.getReaction().getEmoji().equals(ReactionEmoji.of(event.getGuild().getEmojiByName("track_next")))) {
                         MainMusic.skipTrack(event.getChannel());
                     }
-                    if (event.getReaction().getEmoji().equals(ReactionEmoji.of("\u23EF"))) {
+                    if (event.getReaction().getEmoji().equals(ReactionEmoji.of(event.getGuild().getEmojiByName("play_pause")))) {
                         MainMusic.pause(event.getGuild());
                     }
-                    if (event.getReaction().getEmoji().equals(ReactionEmoji.of("\u26D4"))) {
+                    if (event.getReaction().getEmoji().equals(ReactionEmoji.of(event.getGuild().getEmojiByName("no_entry_sign")))) {
                         MainMusic.getInstance().leave(event.getGuild(), event.getChannel());
                     }
                     event.getReaction().getUsers().forEach(user -> {
@@ -52,10 +52,10 @@ public class MusicReactionListener {
 
     public void initMessage(IGuild guild) {
         if (MainMusic.playmessages.get(guild) != null) {
-            BotUtils.addReactionToMessage(MainMusic.playmessages.get(guild), "\u23F9"); //STOP
-            BotUtils.addReactionToMessage(MainMusic.playmessages.get(guild), "\u23EF"); //PAUSE
-            BotUtils.addReactionToMessage(MainMusic.playmessages.get(guild), "\u23ED"); //NEXT
-            BotUtils.addReactionToMessage(MainMusic.playmessages.get(guild), "\u26D4"); //LEAVE
+            BotUtils.addReactionToMessage(MainMusic.playmessages.get(guild), "stop_button"); //STOP
+            BotUtils.addReactionToMessage(MainMusic.playmessages.get(guild), "play_pause"); //PAUSE
+            BotUtils.addReactionToMessage(MainMusic.playmessages.get(guild),"track_next"); //NEXT
+            BotUtils.addReactionToMessage(MainMusic.playmessages.get(guild), "no_entry_sign"); //LEAVE
         } else {
             Console.error("The message was null on reaction init.");
         }

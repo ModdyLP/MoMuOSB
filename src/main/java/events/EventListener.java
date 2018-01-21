@@ -3,6 +3,7 @@ package events;
 import com.vdurmont.emoji.EmojiManager;
 import discord.BotUtils;
 import discord.Stats;
+import emoji4j.EmojiUtils;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
@@ -49,8 +50,18 @@ public class EventListener implements Fast {
     @EventSubscriber
     public void onReactionAddEvent(ReactionAddEvent event) {
         IMessage message = event.getMessage();
-        IReaction reaction = message.getReactionByEmoji(ReactionEmoji.of("\u274C"));
-        if (reaction != null && reaction.getUserReacted(INIT.BOT.getOurUser()) && reaction.getUsers().size() > 1) {
+        IReaction deletereaction = message.getReactionByEmoji(ReactionEmoji.of(EmojiUtils.getEmoji("x").getEmoji()));
+        IReaction malereaction = message.getReactionByEmoji(ReactionEmoji.of(EmojiUtils.getEmoji("mens").getEmoji()));
+        IReaction femalereaction = message.getReactionByEmoji(ReactionEmoji.of(EmojiUtils.getEmoji("womens").getEmoji()));
+        if (deletereaction != null && deletereaction.getUserReacted(INIT.BOT.getOurUser()) && deletereaction.getUsers().size() > 1) {
+            BotUtils.deleteMessageOne(message);
+        }
+        if (femalereaction != null && femalereaction.getUserReacted(INIT.BOT.getOurUser()) && femalereaction.getUsers().size() > 1) {
+            UserEvents.getInstance().setGenderRole(event.getUser(), "f");
+            BotUtils.deleteMessageOne(message);
+        }
+        if (malereaction != null && malereaction.getUserReacted(INIT.BOT.getOurUser()) && malereaction.getUsers().size() > 1) {
+            UserEvents.getInstance().setGenderRole(event.getUser(), "m");
             BotUtils.deleteMessageOne(message);
         }
     }
@@ -90,12 +101,7 @@ public class EventListener implements Fast {
                         }
                     }
                 } else {
-                    if (event.getMessage().getMentions().contains(INIT.BOT.getOurUser()) && (event.getMessage().getContent().contains("f") || event.getMessage().getContent().contains("m"))) {
-                        String[] messageparts = event.getMessage().getContent().trim().split(" ");
-                        if (messageparts.length == 2) {
-                            UserEvents.getInstance().setGenderRole(event, messageparts[1]);
-                        }
-                    } else if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
+                    if (event.getMessage().getContent().contains("~") && event.getMessage().getContent().contains(" ") && event.getAuthor().equals(INIT.BOT.getApplicationOwner())) {
                         String msgcontent = event.getMessage().getContent();
                         String userid = msgcontent.substring(msgcontent.indexOf("~") + 1, msgcontent.indexOf(" ")).trim();
                         Console.debug("Search for User: |"+userid+"|");
