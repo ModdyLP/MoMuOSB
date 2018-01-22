@@ -5,6 +5,7 @@ import discord.DiscordInit;
 import discord.Stats;
 import modules.RoleManagement;
 import modules.music.MainMusic;
+import spark.Spark;
 import storage.ConfigLoader;
 import sx.blah.discord.handle.obj.IGuild;
 import util.Console;
@@ -42,6 +43,7 @@ public class MoMuOSBMain implements Fast {
                             shutdown();
                         }
                     });
+            Spark.init();
             DiscordInit.getInstance().init();
 
         } catch (Exception ex) {
@@ -75,7 +77,7 @@ public class MoMuOSBMain implements Fast {
                 Console.debug("Bot will log out now");
                 INIT.BOT.logout();
             }
-
+            Spark.stop();
 
             Console.println("ByeBye... Created by ModdyLP @2017");
         } catch (Exception ex) {
