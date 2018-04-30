@@ -15,7 +15,7 @@ public class BotMainEvents extends ListenerAdapter implements Storage {
 
 
     BotMainEvents() {
-        for (int i = 0; i < ((long) DRIVER.getProperty(DRIVER.CONFIG, "bot.Shards", 3)); i++)
+        for (int i = 0; i < ((double) CONFIG.get( "bot.Shards", 3)); i++)
         {
            ready.put(i, false);
         }

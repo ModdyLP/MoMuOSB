@@ -1,0 +1,27 @@
+
+
+error:
+    common_error: 'There was an error!'
+    commonmessage_error: 'There was an error! Error: %1s'
+    annotation_error: 'Invalid Annotation in Module %1s Ex: %2s'
+    token_error: 'Please provide a token inside of the config.json'
+    execution_error: 'Error occurred on Command Execution: %1s'
+    notsend_error: 'Message could not be sent! Error: %1s'
+    notdeleted_error: 'Message could not be deleted! Error: %1s'
+    private_error: 'You can not use commands in direct messages'
+    nopermissions_error: 'You have no Permission to use this command.'
+    nomanagepermission_error: 'The Bot has no Permission to Manage Messages.'
+    tofewarguments_error: 'You have provided to few arguments. %1s of %2s'
+    tomanyarguments_error: 'You have provided to many arguments. %1s of %2s'
+    botowner_error: 'This command can only be used from Bot Owner.'
+    deletion_error: 'Deletion of Messages failed (%1s of %2s) Error: %3s'
+    notsendpermission_error: 'Message could not be send! The Bot has not enough Permissions for [%1s] - #%2s Error: %3s'
+
+info:
+    deleteprivinfo: 'Deletion was successfull.'
+    role_permissions: 'Bot requires a higher position in role Hierarchy to add the Gender roles'
+    private_msg_not_owner: 'You can not send Messages directly to other Users. \n Please write a message without a mention to contact the Bot Owner.'
+    login_info: 'Bot sign into the server. Please wait until the Bot is ready...'
+    command_success: 'The command was successful!'
+    command_success_wait: 'The command was successful. Please wait... Result is generating...'
+    shutdowninfo: 'The Bot will shutting down in 10 seconds! Bye bye.'

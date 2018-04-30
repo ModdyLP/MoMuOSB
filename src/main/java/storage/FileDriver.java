@@ -17,8 +17,8 @@ import java.util.Objects;
 public class FileDriver {
 
     //FILEDRIVE IS NOT TRANSLATED - CAUSES ERRORS BECAUSE LANGUAGE IS NOT LOADED
-    public String CONFIG = "config.hjson";
-    public String MODULE = "modules.hjson";
+    public String CONFIG = "config.json";
+    public String MODULE = "modules.json";
 
     private static FileDriver instance;
     private static HashMap<String, File> files = new HashMap<>();
@@ -114,10 +114,6 @@ public class FileDriver {
             MoMuOSBMain.logger.error(ex);
             MoMuOSBMain.shutdown();
         }
-    }
-
-    public void setComment(String filename, String comment) {
-        //TODO: Add Comment Option
     }
     /**
      * Set A property in a specific file

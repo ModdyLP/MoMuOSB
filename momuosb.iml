@@ -38,6 +38,9 @@
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
     <orderEntry type="library" name="Maven: org.hjson:hjson:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.jagrosh:JDA-Utilities:1.9" level="project" />
+    <orderEntry type="library" name="Maven: de.moddylp:simplecommentconfig:20180430" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
   </component>
   <component name="POM File Configuration" pomFile="" />
 </module>

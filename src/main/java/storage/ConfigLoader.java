@@ -1,5 +1,6 @@
 package storage;
 
+import main.MoMuOSBMain;
 import storage.api.Storage;
 
 /**
@@ -8,33 +9,31 @@ import storage.api.Storage;
  */
 public class ConfigLoader implements Storage {
     public static void loadConfigOptions() {
-        DRIVER.createNewFile(DRIVER.CONFIG);
-
         //Generell Settings
-        DRIVER.getProperty(DRIVER.CONFIG,"bot.Playing", "TestBetrieb");
-        DRIVER.getProperty(DRIVER.CONFIG,"bot.UserName", "MoMuOSB");
-        DRIVER.getProperty(DRIVER.CONFIG,"bot.Debug", false);
-        DRIVER.getProperty(DRIVER.CONFIG, "bot.language", "en");
-        DRIVER.getProperty(DRIVER.CONFIG,"bot.Shards", 3);
-        DRIVER.getProperty(DRIVER.CONFIG,"bot.owner", "");
+        CONFIG.get("bot.Playing", "TestBetrieb");
+        CONFIG.get("bot.UserName", "MoMuOSB");
+        CONFIG.get("bot.Debug", false);
+        CONFIG.get("bot.language", "en");
+        CONFIG.get("bot.Shards", 3);
+        CONFIG.get("bot.owner", "");
 
         //Custom Settings
-        DRIVER.getProperty(DRIVER.CONFIG,"bot.DeleteAnswer.On", true);
-        DRIVER.getProperty(DRIVER.CONFIG,"bot.DeleteAnswer.Time", 5);
-        DRIVER.getProperty(DRIVER.CONFIG, "bot.prefix", "");
-        DRIVER.getProperty(DRIVER.CONFIG, "bot.ownerbypass", true);
+        CONFIG.get("bot.DeleteAnswer.On", true);
+        CONFIG.get("bot.DeleteAnswer.Time", 5);
+        CONFIG.get("bot.prefix", "");
+        CONFIG.get("bot.ownerbypass", true);
 
         //Music
-        DRIVER.getProperty(DRIVER.CONFIG, "music.defaultvolume", 10);
+        CONFIG.get( "music.defaultvolume", 10);
 
         //Authentication
-        DRIVER.getProperty(DRIVER.CONFIG, "auth.googleauthtoken", "");
-        DRIVER.getProperty(DRIVER.CONFIG, "auth.googlecustomsearchid","002710779101845872719:o_wp4w-dqqi");
-        DRIVER.getProperty(DRIVER.CONFIG,"auth.token", "");
+        CONFIG.get( "auth.googleauthtoken", "");
+        CONFIG.get("auth.googlecustomsearchid","002710779101845872719:o_wp4w-dqqi");
+        CONFIG.get("auth.token", "");
 
         //Modules
-        DRIVER.getProperty(DRIVER.CONFIG, "genderroles", false);
+        CONFIG.get( "modules.genderroles", false);
 
-        DRIVER.saveJson();
+        CONFIG.saveToFile();
     }
 }

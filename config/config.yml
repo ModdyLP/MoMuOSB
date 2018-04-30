@@ -1,0 +1,29 @@
+#__________________________________________#
+#              MoMuOSB Config              #
+#    Only edit if you know what you do.    #
+#__________________________________________#
+
+bot:
+    Playing: 'TestBetrieb'
+    UserName: 'MoMuOSB'
+    Debug: false
+    language: 'en'
+    Shards: 3.0
+    owner: ''
+    prefix: ''
+    ownerbypass: true
+
+    DeleteAnswer:
+        On: true
+        Time: 5.0
+
+music:
+    defaultvolume: 10.0
+
+auth:
+    googleauthtoken: ''
+    googlecustomsearchid: '002710779101845872719:o_wp4w-dqqi'
+    token: ''
+
+modules:
+    genderroles: false
